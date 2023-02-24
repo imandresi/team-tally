@@ -6,8 +6,9 @@
  * Time: 18:56
  */
 
-namespace TEAMTALLY;
+namespace TEAMTALLY\Core;
 
+use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
@@ -17,22 +18,21 @@ include_once( TEAMTALLY_INCLUDES_DIR . 'system/helper.php' );
 
 class Loader extends Singleton {
 
-	static $hooks = '';
-
-
 	/**
 	 * Loads dependencies
 	 */
 	private function load_dependencies() {
 		// Initializing class Autoloader
-		Core\Autoloader::init();
+		Autoloader::init();
 
-	}
+		// Loads frontend routines
+		Front_Loader::load();
 
-	/**
-	 * Loads common classes
-	 */
-	private function load_common_classes() {
+		// Loads admin routines
+		Admin_Loader::load();
+
+		// Loads models
+		Leagues_Model::load();
 
 	}
 
@@ -48,16 +48,7 @@ class Loader extends Singleton {
 	 */
 	protected function init() {
 		$this->load_dependencies();
-
-		// Loads common classes to admin and front
-		$this->load_common_classes();
-
-		// Loads frontend routines
-		Front_Loader::load();
-
-		// Loads admin routines
-		Admin_Loader::load();
-
+		$this->language_setup();
 	}
 
 	/**

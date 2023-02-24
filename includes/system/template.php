@@ -15,11 +15,21 @@ class Template {
 	 * @param $var_list
 	 */
 	protected static function evaluate_vars( &$html, $var_list ) {
+
 		if ( is_array( $var_list ) ) {
 			foreach ( $var_list as $key => $value ) {
+				$value = !$value ? '' : $value;
 				if ( ( is_string( $value ) ) || ( is_numeric( $value ) ) ) {
-					$search = '{' . $key . '}';
-					$html   = str_replace( $search, $value, $html );
+
+					// value will not be escaped
+					$search = '{{{' . $key . '}}}';
+					$html = str_replace( $search, $value, $html );
+
+					// value will be escaped
+					$search = '{{' . $key . '}}';
+					$value  = esc_html( $value );
+					$html = str_replace( $search, $value, $html );
+
 				}
 			}
 		}

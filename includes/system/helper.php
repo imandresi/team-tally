@@ -737,7 +737,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			}
 
 			// merges $_POST data if it exists
-			// TODO: Normalement $_POST est supprimé par WordPress. Voir une autre technique alternative.
 			if ( isset( $_POST ) ) {
 				$page_request_data['query'] = array_merge( $page_request_data['query'], $_POST );
 			}
@@ -1203,7 +1202,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		 *
 		 * @return void
 		 */
-		public static function str_enqueue_script( $script_info ) {
+		public static function str_enqueue_script( $script_info, $force_reload = false ) {
 			$params = array(
 				'handle' => null,
 				'src'    => null,
@@ -1274,7 +1273,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			$src = $params['src'];
 			$ext = strtolower( pathinfo( $src, PATHINFO_EXTENSION ) );
 
-			$src = TEAMTALLY_ASSETS_URI . $src;
+			$src     = TEAMTALLY_ASSETS_URI . $src;
+			$version = $params['ver'] . ( $force_reload ? '_' . uniqid() : '' );
 
 			switch ( $ext ) {
 				case 'css':
@@ -1282,7 +1282,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 						$params['handle'],
 						$src,
 						$params['deps'],
-						$params['ver']
+						$version
 					);
 					break;
 
@@ -1291,7 +1291,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 						$params['handle'],
 						$src,
 						$params['deps'],
-						$params['ver']
+						$version,
+						true
 					);
 					break;
 			}
@@ -1305,9 +1306,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		 *
 		 * @return void
 		 */
-		public static function str_enqueue_script_list( $script_list ) {
+		public static function str_enqueue_script_list( $script_list, $force_reload = false ) {
 			foreach ( $script_list as $script_info ) {
-				self::str_enqueue_script( $script_info );
+				self::str_enqueue_script( $script_info, $force_reload );
 			}
 
 		}
@@ -1418,6 +1419,50 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			return $html;
 
 
+		}
+
+		/**
+		 * Converts SVG data into a Base 64 data URI
+		 *
+		 * @param string $svg_data
+		 *
+		 * @return string
+		 */
+		public static function svg_to_base64( $svg_data ) {
+			$base64_data = base64_encode( $svg_data );
+			$data_uri    = 'data:image/svg+xml;base64,' . $base64_data;
+
+			return $data_uri;
+		}
+
+		/**
+		 * Returns a string containing a base64 data URI version of an SVG file
+		 *
+		 * @param $filename
+		 *
+		 * @return false|string
+		 */
+		public static function svg_file_to_base64( $filename ) {
+
+			if ( ! file_exists( $filename ) ) {
+				return false;
+			}
+
+			$svg_data = file_get_contents( $filename );
+
+			return self::svg_to_base64( $svg_data );
+
+		}
+
+		/**
+		 * Checks if the provided filename is of an image
+		 *
+		 * @param $filename
+		 *
+		 * @return false|int
+		 */
+		public static function filename_is_image( $filename ) {
+			return preg_match( "/\.(png|jpg|jpeg|gif|bmp)\s*$/i", $filename );
 		}
 
 	} /* End of class Helper */

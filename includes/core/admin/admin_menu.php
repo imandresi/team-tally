@@ -8,10 +8,20 @@
 
 namespace TEAMTALLY\Core\Admin;
 
+use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
 class Admin_Menu extends Singleton {
+
+	const SLUG_MAIN_MENU = 'teamtally_main_menu';
+	const SLUG_SUBMENU_LEAGUES = 'teamtally_leagues';
+	const SLUG_SUBMENU_ABOUT = 'teamtally_about';
+	const SLUG_SUBMENU_LEAGUES_VIEW = 'teamtally_leagues_view';
+	const SLUG_SUBMENU_LEAGUES_ADD = 'teamtally_leagues_add';
+
+	const MENU_CAPABILITY = 'edit_posts';
+	const MENU_ICON_FILENAME = TEAMTALLY_ASSETS_IMAGES_DIR . 'football.svg';
 
 	/**
 	 * WordPress ADMIN_MENU action
@@ -23,59 +33,48 @@ class Admin_Menu extends Singleton {
 		 * Main admin menu : TOP PROF Mada
 		 */
 		add_menu_page(
-			'TOP PROF Mada - Administration',
-			'TOP PROF Mada',
-			'edit_courses',
-			'topprofmada_main_menu',
+			'TEAM Tally - Dashboard',
+			'TEAM Tally',
+			self::MENU_CAPABILITY,
+			self::SLUG_MAIN_MENU,
 			function () {
-				return '<pre>test</pre>';
 			},
-			'dashicons-universal-access-alt',
+			Helper::svg_file_to_base64( self::MENU_ICON_FILENAME ),
 			3
 		);
 
-		/**
-		 * Submenu: 'Lister les cours'
-		 */
-		$submenu['topprofmada_main_menu'][400] = array(
-			'Lister les cours',
-			'edit_courses',
-			'edit.php?post_type=topprofmada_cours'
-		);
-
-		/**
-		 * Submenu: 'Ajouter un cours'
-		 */
-		$submenu['topprofmada_main_menu'][420] = array(
-			'Ajouter un cours',
-			'edit_courses',
-			'post-new.php?post_type=topprofmada_cours'
-		);
-
-		/**
-		 * Creates the submenu for the 'matiere' taxonomy
-		 */
-		$submenu['topprofmada_main_menu'][500] = array(
-			'Matières',
-			'manage_options',
-			'/wp-admin/edit-tags.php?taxonomy=matiere'
-		);
-
-		/**
-		 * Creates the submenu for the 'import matiere'
-		 */
 		add_submenu_page(
-			'topprofmada_main_menu',
-			'Gestionnaire de matières',
-			'Importer des matières',
-			'manage_options',
-			'topprofmada_import_matieres',
-			array( __NAMESPACE__ . '\Admin_Import_Matieres', 'main_page' )
+			self::SLUG_MAIN_MENU,
+			'LEAGUES MANAGER',
+			'All Leagues',
+			self::MENU_CAPABILITY,
+			self::SLUG_SUBMENU_LEAGUES_VIEW,
+			array(Leagues_Controller::class, 'admin_management_page' ),
+			null
 		);
 
-		unset( $submenu['edit.php?post_type=topprofmada_cours'] );
+		add_submenu_page(
+			self::SLUG_MAIN_MENU,
+			'ADD / EDIT LEAGUE',
+			'Add New',
+			self::MENU_CAPABILITY,
+			self::SLUG_SUBMENU_LEAGUES_ADD,
+			array(Leagues_Controller::class, 'admin_page_add_or_edit' ),
+			null
+		);
 
-		remove_menu_page( 'edit.php?post_type=topprofmada_cours' );
+		add_submenu_page(
+			self::SLUG_MAIN_MENU,
+			'ABOUT THE AUTHOR',
+			'About',
+			self::MENU_CAPABILITY,
+			self::SLUG_SUBMENU_ABOUT,
+			function () {
+			},
+			null
+		);
+
+		unset ( $submenu['teamtally_main_menu'][0] );
 
 	}
 

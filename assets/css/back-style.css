@@ -1,1 +1,41 @@
+.teamtally_alignleft {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+}
 
+.teamtally_leagues__add-league .row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.teamtally_leagues__add-league .row .left, .teamtally_leagues__add-league .row .right {
+  padding-right: 20px;
+}
+.teamtally_leagues__add-league .row .left {
+  order: 2;
+}
+.teamtally_leagues__add-league .row .right {
+  order: 1;
+  padding-top: 20px;
+}
+.teamtally_leagues__add-league .row .teamtally_leagues__add-league__photo {
+  border: 1px solid #8c8f94;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 25px;
+  background-size: cover;
+}
+.teamtally_leagues__add-league .row .form-field label {
+  font-weight: bold;
+}
+.teamtally_leagues__add-league div.submit {
+  display: inline-block;
+  margin-top: 30px;
+}
+.teamtally_leagues__add-league div.invalid {
+  border: 4px solid #de3a02 !important;
+}

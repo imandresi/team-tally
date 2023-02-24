@@ -6,8 +6,9 @@
  * Time: 21:32
  */
 
-namespace TEAMTALLY;
+namespace TEAMTALLY\Core;
 
+use TEAMTALLY\Shortcodes\Shortcodes;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
@@ -41,9 +42,6 @@ class Front_Loader extends Singleton {
 
 		// Enqueuing styles and scripts
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_wp_enqueue_scripts' ) );
-
-		// After theme setup
-		add_action( 'after_setup_theme', array( $this, 'after_theme_supports' ) );
 
 		// Loads and registers all shortcodes
 		Shortcodes::load();

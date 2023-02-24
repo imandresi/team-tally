@@ -1,0 +1,48 @@
+
+.teamtally_leagues__add-league {
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+
+    .left, .right {
+      padding-right: 20px;
+    }
+
+    .left {
+      order: 2;
+    }
+
+    .right {
+      order: 1;
+      padding-top: 20px;
+    }
+
+    .teamtally_leagues__add-league__photo {
+      border: 1px solid #8c8f94;
+      width: 200px;
+      height: 200px;
+      margin-bottom: 25px;
+      background-size: cover;
+    }
+
+    .form-field {
+      label {
+        font-weight: bold;
+      }
+    }
+  }
+
+  div.submit {
+    display: inline-block;
+    margin-top: 30px;
+  }
+
+  div.invalid {
+    border: 4px solid #de3a02 !important;
+  }
+
+}

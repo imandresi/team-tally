@@ -9,7 +9,7 @@
 * Author URI:        mandresi@logicia-system.com
 * License:           GPL v2 or later
 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-* Text Domain:       team-tally-plugin
+* Text Domain:       team-tally
 * Domain Path:       /languages
 */
 
