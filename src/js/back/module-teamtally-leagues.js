@@ -65,7 +65,6 @@ if (leaguesMarkerFound) {
         photoCtrl = document.querySelector('form#add-league input[name=league-photo]');
         formerPhotoCtrl = document.querySelector('form#add-league input[name=former-league-photo]');
         formerPhotoUrlCtrl = document.querySelector('form#add-league input[name=former-league-photo-url]');
-        photoCtrl = document.querySelector('form#add-league input[name=league-photo]');
         photoPreview = document.querySelector('.teamtally_leagues__add-league__photo');
         btnFrmSubmitSpinner = document.querySelector('.teamtally_leagues__add-league .submit .spinner');
 
@@ -76,7 +75,7 @@ if (leaguesMarkerFound) {
         const frmEl = document.querySelector('.teamtally_leagues__add-league form');
         frmEl.reset();
 
-        photoCtrl.value = "";
+        photoCtrl.value = formerPhotoCtrl.value;
 
         // Submit the form - Proceed to last validation
         frmEl.addEventListener('submit',

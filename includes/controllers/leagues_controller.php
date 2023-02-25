@@ -11,6 +11,7 @@ namespace TEAMTALLY\Controllers;
 use TEAMTALLY\Models\Generic_Model;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\System\Template;
 use TEAMTALLY\Views\Leagues_View;
 
 class Leagues_Controller {
@@ -22,7 +23,13 @@ class Leagues_Controller {
 	 *
 	 * @return void
 	 */
-	public static function admin_management_page() {
+	public static function admin_page_list_leagues() {
+
+		// makes a loop to build the league $data
+		$leagues = Leagues_Model::get_all_leagues();
+
+		// displays the data using the View
+		Leagues_View::admin_page_list_leagues( $leagues );
 
 	}
 
@@ -34,18 +41,42 @@ class Leagues_Controller {
 	 *
 	 * @return void
 	 */
-	public static function admin_page_add_or_edit() {
+	public static function admin_page_add_or_edit_league() {
 		$post_id = Helper::get_var( $_REQUEST['post_id'], 0 );
+		Leagues_View::admin_page_add_or_edit_league( $post_id, true );
+	}
 
-		// Process Form
-		if ( isset( $_POST['action'] ) ) {
+	/**
+	 * Process the add or edit league form
+	 *
+	 * @return void
+	 */
+	public static function process_form_add_edit_league() {
+		if ( isset( $_POST['action'] ) && ( $_POST['action'] == 'add-edit-league' ) ) {
 			check_admin_referer( 'add-league', 'add-league-nonce' );
 			$post_id = Helper::get_var( $_POST['id'], 0 );
-			$post_id = Leagues_Model::update_league( $_POST, $post_id );
-		}
+			Leagues_Model::update_league( $_POST, $post_id );
 
-		// Display the page
-		Leagues_View::add_or_edit_page( $post_id, true );
+			// redirect to 'list of leagues'
+			$url = admin_url( 'admin.php?page=teamtally_leagues_view' );
+			wp_redirect( $url );
+			exit;
+		}
+	}
+
+	private static function admin_init() {
+		add_action( 'init', array( self::class, 'process_form_add_edit_league' ) );
+	}
+
+	/**
+	 * Initialization
+	 *
+	 * @return void
+	 */
+	public static function init() {
+		if ( is_admin() ) {
+			self::admin_init();
+		}
 
 	}
 

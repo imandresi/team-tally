@@ -285,9 +285,10 @@ class Leagues_View {
 	 *
 	 * @return string
 	 */
-	public static function add_or_edit_page( $post_id = 0, $display = false ) {
+	public static function admin_page_add_or_edit_league( $post_id = 0, $display = false ) {
 		$league_name             = '';
 		$league_country          = '';
+		$league_photo            = '';
 		$former_league_photo     = '';
 		$former_league_photo_url = '';
 
@@ -300,6 +301,7 @@ class Leagues_View {
 				$league_name         = Helper::get_var( $league_data['data']['league-name'] );
 				$league_country      = Helper::get_var( $league_data['data']['league-country'] );
 				$former_league_photo = Helper::get_var( $league_data['data']['league-photo']['id'] );
+				$league_photo        = $former_league_photo;
 
 				if ( $former_league_photo ) {
 					$former_league_photo_url = wp_get_attachment_image_url(
@@ -308,41 +310,97 @@ class Leagues_View {
 						false
 					);
 
-					if (!$former_league_photo_url) {
+					if ( ! $former_league_photo_url ) {
 						$former_league_photo = '';
 					}
 				}
-			}
-			else {
+			} else {
 				$post_id = 0;
 			}
 		}
 
 		$page_title = $post_id ? 'Edit League' : 'Add New League';
 
-		$html = Template::parse( 'admin/leagues/league_add.php', array(
+		$html = Template::parse( 'admin/leagues/add_edit_league.php', array(
 			'id'                      => $post_id,
 			'league_name'             => $league_name,
 			'league_country'          => $league_country,
 			'country_list'            => self::get_country_list(),
+			'league_photo'            => $league_photo,
 			'former_league_photo'     => $former_league_photo,
 			'former_league_photo_url' => $former_league_photo_url,
 			'page_title'              => $page_title,
 		) );
 
-		if ($display) {
+		if ( $display ) {
 			print $html;
 		}
+
+		Helper::debug($html, '$html', true);
+
 
 		return $html;
 	}
 
-	public static function admin_management_page() {
-		$data = array(
-			'add_form' => self::add_or_edit_page(  )
+	/**
+	 * Displays a league item corresponding to $post
+	 *
+	 * @param WP_Post $post
+	 *
+	 * @return void
+	 */
+	public static function display_league( $post ) {
 
+		if ( ! $post ) {
+			return;
+		}
+
+		$league_name = $post->post_title;
+
+		// gets the 'league-country'
+		$field_name     = 'league-country';
+		$league_country = $post->$field_name;
+
+		// gets the 'league-photo' - the ID
+		$field_name   = 'league-photo';
+		$league_photo = $post->$field_name;
+
+		$league_photo_url = '';
+		if ( $league_photo ) {
+			$league_photo_url = wp_get_attachment_image_url( $league_photo, array( 500, 500 ) );
+		}
+
+		$template_data = array(
+			'league_name'       => $league_name,
+			'league_country'    => $league_country,
+			'league_photo'      => $league_photo,
+			'league_photo_url'  => $league_photo_url,
+			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&post_id={$post->ID}" ),
+			'remove_league_url' => '#',
 		);
-		Template::pparse( 'admin/leagues/league_page_management.php', $data );
+
+		$html = Template::parse( 'admin/leagues/league_item.php', $template_data );
+
+		print $html;
+
+	}
+
+	/**
+	 * Displays the list of all leagues
+	 *
+	 * @param array $leagues // contains the list of legues data (WP_Post)
+	 *
+	 * @return void
+	 */
+	public static function admin_page_list_leagues( $leagues ) {
+
+		if ( ! $leagues ) {
+			return;
+		}
+
+		Template::pparse( 'admin/leagues/list_leagues.php', array(
+			'leagues' => $leagues
+		) );
 	}
 
 

@@ -8,6 +8,7 @@
 
 /** @var array-key $country_list */
 /** @var string $league_country */
+/** @var string $league_photo */
 /** @var int $former_league_photo */
 /** @var string $former_league_photo_url */
 
@@ -19,9 +20,9 @@
         <h2>{{page_title}}</h2>
         <div class="teamtally_leagues__add-league">
             <form id="add-league" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="add-league">
+                <input type="hidden" name="action" value="add-edit-league">
                 <input type="hidden" name="id" value="{{{id}}}">
-                <input type="hidden" name="league-photo" value="">
+                <input type="hidden" name="league-photo" value="{{{league_photo}}}">
                 <input type="hidden" name="former-league-photo" value="{{{former_league_photo}}}">
                 <input type="hidden" name="former-league-photo-url" value="{{{former_league_photo_url}}}">
 				<?php wp_nonce_field( 'add-league', 'add-league-nonce' ); ?>

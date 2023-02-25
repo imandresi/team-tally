@@ -11,6 +11,7 @@ namespace TEAMTALLY\Models;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 use WP_Post;
+use WP_Query;
 
 class Leagues_Model extends Singleton {
 	const LEAGUES_POST_TYPE = 'teamtally_leagues';
@@ -27,7 +28,7 @@ class Leagues_Model extends Singleton {
 	public static function get_league( $post ) {
 		$post = Generic_Model::get_post( $post, self::LEAGUES_POST_TYPE );
 
-		if (!$post) {
+		if ( ! $post ) {
 			return false;
 		}
 
@@ -75,6 +76,33 @@ class Leagues_Model extends Singleton {
 		return $post_id;
 
 	}
+
+	/**
+	 * Returns the list of leagues
+	 *
+	 * @return array
+	 */
+	public static function get_all_leagues() {
+		$leagues = array();
+
+		$args = array(
+			'post_type' => self::LEAGUES_POST_TYPE,
+			'order'     => 'ASC',
+			'orderby'   => 'title',
+		);
+
+		$the_query = new WP_Query( $args );
+
+		if ( $the_query->post_count > 0 ) {
+			$leagues = $the_query->posts;
+		}
+
+		wp_reset_postdata();
+
+		return $leagues;
+
+	}
+
 
 	/**
 	 * Initialization of the data model

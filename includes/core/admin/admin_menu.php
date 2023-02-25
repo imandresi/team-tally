@@ -49,7 +49,7 @@ class Admin_Menu extends Singleton {
 			'All Leagues',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_LEAGUES_VIEW,
-			array(Leagues_Controller::class, 'admin_management_page' ),
+			array(Leagues_Controller::class, 'admin_page_list_leagues' ),
 			null
 		);
 
@@ -59,7 +59,7 @@ class Admin_Menu extends Singleton {
 			'Add New',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_LEAGUES_ADD,
-			array(Leagues_Controller::class, 'admin_page_add_or_edit' ),
+			array(Leagues_Controller::class, 'admin_page_add_or_edit_league' ),
 			null
 		);
 
