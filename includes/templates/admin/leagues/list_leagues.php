@@ -13,11 +13,16 @@ use TEAMTALLY\Views\Leagues_View;
 ?>
 
 <div class="teamtally_leagues__list-leagues wrap">
-    <h1 class="wp-heading-inline">Leagues</h1>
+    <h1 class="wp-heading-inline">League Management</h1>
+    <h2>List of all leagues</h2>
     <p>A <b>football league</b> is a competition where multiple <b>football teams</b> play against each other in a
         series of matches
         over a set period of time to earn points. The team with the most points at the end of the season is declared the
         winner of the league.</p>
+
+    <p>On this page, you have the ability to manage leagues. You can add new leagues or modify their properties,
+        including their logo, name, or country. Additionally, you have the option to delete a league.
+        If you click on a specific league, you will gain access to team management options.</p>
 
     <div class="leagues-zone">
 		<?php foreach ( $leagues as $league ) : ?>

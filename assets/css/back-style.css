@@ -84,12 +84,37 @@
   gap: 25px;
   margin: 30px 0;
 }
+@media (max-width: 710px) {
+  .teamtally_leagues__list-leagues .leagues-zone {
+    justify-content: center;
+  }
+}
 
 /**
  * LEAGUE ITEM
  */
 .league-item {
-  width: 385px;
+  width: 22%;
+}
+@media (max-width: 1540px) {
+  .league-item {
+    width: 30%;
+  }
+}
+@media (max-width: 1120px) {
+  .league-item {
+    width: 45%;
+  }
+}
+@media (max-width: 710px) {
+  .league-item {
+    width: 60%;
+  }
+}
+@media (max-width: 500px) {
+  .league-item {
+    width: 100%;
+  }
 }
 
 .teamtally_leagues__league-item {

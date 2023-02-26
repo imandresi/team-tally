@@ -3,8 +3,27 @@
  */
 
 .league-item {
-  width: 385px;
+  width: 22%;
+
+  @media (max-width: 1540px) {
+    width: 30%;
+  }
+
+  @media (max-width: 1120px) {
+    width: 45%;
+  }
+
+  @media (max-width: 710px) {
+    width: 60%;
+  }
+
+  @media (max-width: 500px) {
+    width: 100%;
+  }
+
 }
+
+
 
 .teamtally_leagues__league-item {
   $frame-color: #bbbbbb;
