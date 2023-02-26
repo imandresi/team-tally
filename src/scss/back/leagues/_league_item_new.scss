@@ -1,0 +1,60 @@
+
+
+/**
+ * NEW LEAGUE ITEM BTN
+ */
+
+.teamtally_leagues__league-item_new {
+  position: relative;
+  $primary_color: #ccc;
+
+  aspect-ratio: 386/338;
+  border: 5px dashed $primary_color;
+  cursor: pointer;
+
+  .teamtally_icon_add {
+    $icon-size: 150px;
+
+    position: absolute;
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #8c8f94;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -70%);
+
+    #svg-cross {
+      fill: #e6e7e8;
+    }
+
+  }
+
+  .legend {
+    position: absolute;
+    color: #1d2327;
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &:hover {
+    background-color: #2271b1;
+    border-color: transparent;
+
+    .teamtally_icon_add {
+      background-color: #2271b1;
+
+      #svg-cross {
+        fill:  white;
+      }
+    }
+
+    .legend {
+      color: white;
+    }
+
+  }
+
+}

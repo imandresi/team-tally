@@ -117,12 +117,24 @@ TOOLS.executeIfSelectorExists('body.team-tally_page_teamtally_leagues_add', () =
  * LIST LEAGUES PAGE
  */
 TOOLS.executeIfSelectorExists('body.team-tally_page_teamtally_leagues_view', () => {
+
     document.addEventListener('DOMContentLoaded', () => {
+
+        // Add remove league event
         const removalLinkElements = document.querySelectorAll('.teamtally_leagues__league-item .teamtally-delete');
         removalLinkElements.forEach(el => {
             el.addEventListener('click', confirmLeagueRemoval);
         });
+
+        // Add New league event
+        const btnNewLeagueEl = document.querySelector('.teamtally_leagues__league-item_new');
+        btnNewLeagueEl.addEventListener('click', () => {
+            const url = btnNewLeagueEl.dataset.newLeagueUrl;
+            window.location.href = url;
+        });
+
     });
+
 });
 
 

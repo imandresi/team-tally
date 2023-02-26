@@ -1,0 +1,111 @@
+/**
+ * LEAGUE ITEM
+ */
+
+.league-item {
+  width: 385px;
+}
+
+.teamtally_leagues__league-item {
+  $frame-color: #bbbbbb;
+
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $frame-color;
+  border-radius: 5px;
+  overflow: hidden;
+
+  .thumbnail {
+    position: relative;
+    aspect-ratio: 77/58;
+    overflow: hidden;
+    cursor: pointer;
+
+    .thumbnail__content {
+      position: relative;
+      z-index: 5;
+      display: inline-block;
+      background-size: cover;
+      background-image: none;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 100%;
+
+    }
+
+    .thumbnail__legend {
+      $legend-height: 50px;
+
+      position: absolute;
+      z-index: 10;
+      background-color: black;
+      opacity: 0.7;
+      width: 100%;
+      height: $legend-height;
+      bottom: -$legend-height;
+      left: 0;
+      color: white;
+      text-align: center;
+      line-height: $legend-height;
+      transition: bottom 1s;
+      font-size: 140%;
+
+      &:hover {
+        color: yellow;
+      }
+
+    }
+
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid $frame-color;
+
+    background-color: white;
+    padding: 10px;
+
+    .league-data {
+      .league-name {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin: 5px 0;
+      }
+
+      .league-country {
+        margin: 5px 0;
+
+      }
+    }
+
+    .league-item-buttons {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 10px;
+
+      .teamtally_btn {
+        filter: invert(72%) sepia(4%) saturate(11%) hue-rotate(10deg) brightness(93%) contrast(95%);
+
+        &:hover {
+          filter: invert(30%) sepia(93%) saturate(908%) hue-rotate(352deg) brightness(105%) contrast(120%);
+        }
+      }
+
+    }
+
+  }
+
+  &:hover {
+    .thumbnail {
+      .thumbnail__legend {
+        bottom: 0;
+      }
+    }
+  }
+
+}

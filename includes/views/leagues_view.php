@@ -19,6 +19,9 @@ class Leagues_View {
 
 		/** @var array $country_list */
 		$country_list = array(
+			"WorldWide",
+			"Europa",
+			"Africa",
 			"Afghanistan",
 			"Aland Islands",
 			"Albania",
@@ -336,9 +339,6 @@ class Leagues_View {
 			print $html;
 		}
 
-		Helper::debug( $html, '$html', true );
-
-
 		return $html;
 	}
 
@@ -371,13 +371,13 @@ class Leagues_View {
 		}
 
 		// prepares the delete URL
-		$league_id = $post->ID;
-		$remove_league_url = add_query_arg(array(
-			'action' => 'delete-league',
+		$league_id         = $post->ID;
+		$remove_league_url = add_query_arg( array(
+			'action'    => 'delete-league',
 			'league_id' => $league_id,
-		), admin_url('admin.php'));
+		), admin_url( 'admin.php' ) );
 
-		$remove_league_url = wp_nonce_url($remove_league_url, "league-{$league_id}-remove");
+		$remove_league_url = wp_nonce_url( $remove_league_url, "league-{$league_id}-remove" );
 
 		$template_data = array(
 			'league_id'         => $league_id,
@@ -408,8 +408,14 @@ class Leagues_View {
 			return;
 		}
 
+		// http://www.teamtally.mg/wp-admin/admin.php?page=teamtally_leagues_add
+		$new_league_url = add_query_arg( array(
+			'page' => 'teamtally_leagues_add'
+		), admin_url( 'admin.php' ) );
+
 		Template::pparse( 'admin/leagues/list_leagues.php', array(
-			'leagues' => $leagues
+			'leagues'        => $leagues,
+			'new_league_url' => $new_league_url,
 		) );
 	}
 

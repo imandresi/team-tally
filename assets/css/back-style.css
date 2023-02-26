@@ -24,6 +24,8 @@
   width: 30px;
   height: 30px;
   background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 /**
@@ -59,6 +61,7 @@
   height: 200px;
   margin-bottom: 25px;
   background-size: cover;
+  background-position: center center;
 }
 .teamtally_leagues__add-league .row .form-field label {
   font-weight: bold;
@@ -85,13 +88,16 @@
 /**
  * LEAGUE ITEM
  */
+.league-item {
+  width: 385px;
+}
+
 .teamtally_leagues__league-item {
   display: flex;
   flex-direction: column;
   border: 1px solid #bbbbbb;
   border-radius: 5px;
   overflow: hidden;
-  width: 385px;
 }
 .teamtally_leagues__league-item .thumbnail {
   position: relative;
@@ -106,12 +112,8 @@
   background-size: cover;
   background-image: none;
   background-repeat: no-repeat;
-  transition: transform 2s;
   width: 100%;
   height: 100%;
-}
-.teamtally_leagues__league-item .thumbnail .thumbnail__content:hover {
-  transform: scale(1.5);
 }
 .teamtally_leagues__league-item .thumbnail .thumbnail__legend {
   position: absolute;
@@ -126,9 +128,10 @@
   text-align: center;
   line-height: 50px;
   transition: bottom 1s;
+  font-size: 140%;
 }
-.teamtally_leagues__league-item .thumbnail:hover .thumbnail__legend {
-  bottom: 0;
+.teamtally_leagues__league-item .thumbnail .thumbnail__legend:hover {
+  color: yellow;
 }
 .teamtally_leagues__league-item .footer {
   display: flex;
@@ -140,7 +143,7 @@
   background-color: white;
   padding: 10px;
 }
-.teamtally_leagues__league-item .footer .league-data .leaague-name {
+.teamtally_leagues__league-item .footer .league-data .league-name {
   text-transform: uppercase;
   font-weight: bold;
   margin: 5px 0;
@@ -159,4 +162,51 @@
 }
 .teamtally_leagues__league-item .footer .league-item-buttons .teamtally_btn:hover {
   filter: invert(30%) sepia(93%) saturate(908%) hue-rotate(352deg) brightness(105%) contrast(120%);
+}
+.teamtally_leagues__league-item:hover .thumbnail .thumbnail__legend {
+  bottom: 0;
+}
+
+/**
+ * NEW LEAGUE ITEM BTN
+ */
+.teamtally_leagues__league-item_new {
+  position: relative;
+  aspect-ratio: 386/338;
+  border: 5px dashed #ccc;
+  cursor: pointer;
+}
+.teamtally_leagues__league-item_new .teamtally_icon_add {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #8c8f94;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -70%);
+}
+.teamtally_leagues__league-item_new .teamtally_icon_add #svg-cross {
+  fill: #e6e7e8;
+}
+.teamtally_leagues__league-item_new .legend {
+  position: absolute;
+  color: #1d2327;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.teamtally_leagues__league-item_new:hover {
+  background-color: #2271b1;
+  border-color: transparent;
+}
+.teamtally_leagues__league-item_new:hover .teamtally_icon_add {
+  background-color: #2271b1;
+}
+.teamtally_leagues__league-item_new:hover .teamtally_icon_add #svg-cross {
+  fill: white;
+}
+.teamtally_leagues__league-item_new:hover .legend {
+  color: white;
 }
