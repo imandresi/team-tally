@@ -58,14 +58,52 @@ class Leagues_Controller {
 			Leagues_Model::update_league( $_POST, $post_id );
 
 			// redirect to 'list of leagues'
-			$url = admin_url( 'admin.php?page=teamtally_leagues_view' );
+			$url = add_query_arg( array(
+				'page' => 'teamtally_leagues_view'
+			), admin_url( 'admin.php' ) );
+
 			wp_redirect( $url );
 			exit;
 		}
 	}
 
+	/**
+	 * Run after clicking on league remove button
+	 *
+	 * @return void
+	 */
+	public static function process_league_removal_link() {
+		if ( isset( $_GET['action'] ) && ( $_GET['action'] == 'delete-league' ) ) {
+			$league_id = $_GET['league_id'];
+			$nonce     = "league-{$league_id}-remove";
+
+			// check security
+			if ( ! wp_verify_nonce( $_GET['_wpnonce'], $nonce ) ) {
+				wp_die( 'Your authorization have expired.' );
+			}
+
+			// Everything is ok. We can delete
+			Leagues_Model::delete_league( $league_id );
+
+			// Redirect to list of leagues
+			$url = add_query_arg( array(
+				'page' => 'teamtally_leagues_view'
+			), admin_url( 'admin.php' ) );
+
+			wp_redirect( $url );
+			exit;
+
+		}
+	}
+
+	/**
+	 * Initialization for admin interface
+	 *
+	 * @return void
+	 */
 	private static function admin_init() {
 		add_action( 'init', array( self::class, 'process_form_add_edit_league' ) );
+		add_action( 'init', array( self::class, 'process_league_removal_link' ) );
 	}
 
 	/**

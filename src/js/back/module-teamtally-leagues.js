@@ -1,3 +1,5 @@
+import TOOLS from "./module-tools";
+
 var btnPhotoUpload;
 var btnPhotoRemove;
 var btnFrmSubmitSpinner;
@@ -11,10 +13,33 @@ const teamTallyModule = {};
 export {teamTallyModule as default};
 
 /**
+ * Deletes a league
+ *
+ * @param leagueID
+ */
+// teamTallyModule.confirmRemoval = (leagueID, item) => {
+
+function confirmLeagueRemoval(evt) {
+    const target = evt.target;
+    const leagueID = target.dataset.leagueId;
+
+    const leagueNameEl = document.querySelector(`.league-item-id-${leagueID} .league-name`);
+    const leagueName = leagueNameEl?.textContent;
+
+    const removeEl = document.querySelector(`.league-item-id-${leagueID} .teamtally-delete`);
+    const removeURL = removeEl?.dataset.removeUrl;
+
+    if (confirm(`Would you really want to delete the league "${leagueName}" ?`) && removeURL) {
+        window.location.href = removeURL;
+    }
+
+}
+
+/**
  * Open Media Uploader
  */
 function openMediaUploader() {
-    window.TEAMTALLY.tools.openMediaUploader(mediaUploader => {
+    TOOLS.openMediaUploader(mediaUploader => {
         // Get media attachment details from the frame state
         var attachment = mediaUploader.state().get('selection').first().toJSON();
 
@@ -49,14 +74,9 @@ function removeImage() {
 }
 
 /**
- *  SCRIPT ONLY AVAILABLE FOR: team-tally_page_teamtally_leagues
- *  Check if we are in the 'leagues management' page /wp-admin/admin.php?page=teamtally_leagues
+ * ADD LEAGUE PAGE
  */
-
-const leaguesMarkerFound = document.body.classList.contains('team-tally_page_teamtally_leagues_add');
-
-if (leaguesMarkerFound) {
-
+TOOLS.executeIfSelectorExists('body.team-tally_page_teamtally_leagues_add', () => {
     document.addEventListener('DOMContentLoaded', () => {
 
         // Initialize global variables
@@ -91,5 +111,19 @@ if (leaguesMarkerFound) {
         );
 
     });
+});
 
-} /* End of module */
+/**
+ * LIST LEAGUES PAGE
+ */
+TOOLS.executeIfSelectorExists('body.team-tally_page_teamtally_leagues_view', () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        const removalLinkElements = document.querySelectorAll('.teamtally_leagues__league-item .teamtally-delete');
+        removalLinkElements.forEach(el => {
+            el.addEventListener('click', confirmLeagueRemoval);
+        });
+    });
+});
+
+
+/* End of module */

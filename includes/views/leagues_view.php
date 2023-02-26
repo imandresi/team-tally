@@ -336,7 +336,7 @@ class Leagues_View {
 			print $html;
 		}
 
-		Helper::debug($html, '$html', true);
+		Helper::debug( $html, '$html', true );
 
 
 		return $html;
@@ -370,13 +370,23 @@ class Leagues_View {
 			$league_photo_url = wp_get_attachment_image_url( $league_photo, array( 500, 500 ) );
 		}
 
+		// prepares the delete URL
+		$league_id = $post->ID;
+		$remove_league_url = add_query_arg(array(
+			'action' => 'delete-league',
+			'league_id' => $league_id,
+		), admin_url('admin.php'));
+
+		$remove_league_url = wp_nonce_url($remove_league_url, "league-{$league_id}-remove");
+
 		$template_data = array(
+			'league_id'         => $league_id,
 			'league_name'       => $league_name,
 			'league_country'    => $league_country,
 			'league_photo'      => $league_photo,
 			'league_photo_url'  => $league_photo_url,
 			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&post_id={$post->ID}" ),
-			'remove_league_url' => '#',
+			'remove_league_url' => $remove_league_url,
 		);
 
 		$html = Template::parse( 'admin/leagues/league_item.php', $template_data );

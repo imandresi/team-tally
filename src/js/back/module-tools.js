@@ -32,3 +32,17 @@ teamTallyModule.openMediaUploader = (onSelectHandler) => {
     mediaUploader.open();
 
 }
+
+/**
+ * Checks if a selector exists in a page and then executes the specified code
+ *
+ * @param selector
+ * @param fn
+ *
+ */
+teamTallyModule.executeIfSelectorExists = (selector, fn) => {
+    const markerFound = document.querySelector(selector);
+    if (markerFound) {
+        fn();
+    }
+}

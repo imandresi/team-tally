@@ -49,6 +49,17 @@ class Leagues_Model extends Singleton {
 	}
 
 	/**
+	 * Deletes a league
+	 *
+	 * @param $post_id
+	 *
+	 * @return void
+	 */
+	public static function delete_league( $post_id ) {
+		wp_delete_post( $post_id, true );
+	}
+
+	/**
 	 * Saves or updates the data of a 'League'
 	 *
 	 * @param $data
