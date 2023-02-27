@@ -10,6 +10,8 @@ namespace TEAMTALLY\Models;
 
 use TEAMTALLY\System\Helper;
 use WP_Post;
+use WP_Query;
+use WP_Term;
 
 class Generic_Model {
 
@@ -53,4 +55,66 @@ class Generic_Model {
 		return $post;
 
 	}
+
+
+	/**
+	 * Retrieves info about a particular taxonomy term
+	 *
+	 * @param int|WP_Term $taxonomy_term
+	 * @param $taxonomy_name
+	 *
+	 * @return array|false
+	 */
+	public static function get_taxonomy_term_info($taxonomy_term, $taxonomy_name) {
+		$data = false;
+
+		/** @var WP_Term $taxonomy */
+		$taxonomy = get_term($taxonomy_term, $taxonomy_name);
+
+		if ($taxonomy instanceof WP_Term) {
+			$meta = get_term_meta($taxonomy->term_id, '', true);
+
+			foreach ($meta as &$meta_value) {
+				if (is_array($meta_value)) {
+					$meta_value = $meta_value[0];
+				}
+			}
+
+			$data = array(
+				'raw' => $taxonomy,
+				'meta' => $meta,
+			);
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * Returns a list of posts that are associated to a particular taxonomy term
+	 *
+	 * @param string $post_type
+	 * @param int|string $taxonomy_term
+	 * @param string $taxonomy_name
+	 *
+	 * @return WP_Query
+	 */
+	public static function get_posts_linked_to_taxonomy_term($post_type, $taxonomy_term, $taxonomy_name) {
+		$args = array(
+			'post_type' => $post_type,
+			'tax_query' => array(
+				array(
+					'taxonomy' => $taxonomy_name,
+					'field' => 'id',
+					'terms' => $taxonomy_term
+				)
+			)
+		);
+
+		$posts = new WP_Query( $args );
+
+		return $posts;
+
+	}
+
 }

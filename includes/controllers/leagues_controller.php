@@ -10,6 +10,7 @@ namespace TEAMTALLY\Controllers;
 
 use TEAMTALLY\Models\Generic_Model;
 use TEAMTALLY\Models\Leagues_Model;
+use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
 use TEAMTALLY\System\Template;
 use TEAMTALLY\Views\Leagues_View;
@@ -42,8 +43,8 @@ class Leagues_Controller {
 	 * @return void
 	 */
 	public static function admin_page_add_or_edit_league() {
-		$post_id = Helper::get_var( $_REQUEST['post_id'], 0 );
-		Leagues_View::admin_page_add_or_edit_league( $post_id, true );
+		$term_id = Helper::get_var( $_REQUEST['term_id'], 0 );
+		Leagues_View::admin_page_add_or_edit_league( $term_id, true );
 	}
 
 	/**
@@ -54,8 +55,15 @@ class Leagues_Controller {
 	public static function process_form_add_edit_league() {
 		if ( isset( $_POST['action'] ) && ( $_POST['action'] == 'add-edit-league' ) ) {
 			check_admin_referer( 'add-league', 'add-league-nonce' );
-			$post_id = Helper::get_var( $_POST['id'], 0 );
-			Leagues_Model::update_league( $_POST, $post_id );
+			$league_id = Helper::get_var( $_POST['id'], 0 );
+
+			$data = array(
+				Leagues_Model::LEAGUES_FIELD_NAME    => $_POST['league-name'],
+				Leagues_Model::LEAGUES_FIELD_COUNTRY => $_POST['league-country'],
+				Leagues_Model::LEAGUES_FIELD_PHOTO   => $_POST['league-photo'],
+			);
+
+			Leagues_Model::update_league( $data, $league_id );
 
 			// redirect to 'list of leagues'
 			$url = add_query_arg( array(
@@ -83,7 +91,24 @@ class Leagues_Controller {
 			}
 
 			// Everything is ok. We can delete
-			Leagues_Model::delete_league( $league_id );
+			$delete_status = Leagues_Model::delete_league( $league_id );
+
+			// The League still contains teams, so deletion was aborted
+			// display error admin notice
+			if ( ! $delete_status ) {
+				Admin_Notices::set_message(
+					'Please, make sure the league is empty before deleting it.',
+					Admin_Notices::ADMIN_NOTICE_ERROR,
+					true
+				);
+			}
+			else {
+				Admin_Notices::set_message(
+					'League successfully deleted.',
+					Admin_Notices::ADMIN_NOTICE_SUCCESS,
+					true
+				);
+			}
 
 			// Redirect to list of leagues
 			$url = add_query_arg( array(

@@ -6,11 +6,14 @@
  * Time: 13:32
  */
 
+use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\Views\Leagues_View;
 
 /** @var array $leagues */
 /** @var string $new_league_url */
 ?>
+
+<?php Admin_Notices::all_pending_notices(true); ?>
 
 <div class="teamtally_leagues__list-leagues wrap">
     <h1 class="wp-heading-inline">League Management</h1>

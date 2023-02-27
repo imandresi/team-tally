@@ -10,6 +10,7 @@ namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Models\Leagues_Model;
+use TEAMTALLY\System\Sessions;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
@@ -25,6 +26,9 @@ class Loader extends Singleton {
 	private function load_dependencies() {
 		// Initializing class Autoloader
 		Autoloader::init();
+
+		// Initializing sessions
+		Sessions::init();
 
 		// Loads frontend routines
 		Front_Loader::load();

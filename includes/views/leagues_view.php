@@ -283,27 +283,27 @@ class Leagues_View {
 	/**
 	 * Displays the League add or edit page
 	 *
-	 * @param integer $post_id
+	 * @param integer $league_id
 	 * @param boolean $display
 	 *
 	 * @return string
 	 */
-	public static function admin_page_add_or_edit_league( $post_id = 0, $display = false ) {
+	public static function admin_page_add_or_edit_league( $league_id = 0, $display = false ) {
 		$league_name             = '';
 		$league_country          = '';
 		$league_photo            = '';
 		$former_league_photo     = '';
 		$former_league_photo_url = '';
 
-		// Gets the value referred by the $post_id and extracts its data for editing
-		if ( $post_id && is_numeric( $post_id ) ) {
-			$league_data = Leagues_Model::get_league( $post_id );
+		// Gets the value referred by the $league_id and extracts its data for editing
+		if ( $league_id && is_numeric( $league_id ) ) {
+			$league = Leagues_Model::get_league( $league_id );
 
-			if ( $league_data ) {
-				$post_id             = $league_data['ID'];
-				$league_name         = Helper::get_var( $league_data['data']['league-name'] );
-				$league_country      = Helper::get_var( $league_data['data']['league-country'] );
-				$former_league_photo = Helper::get_var( $league_data['data']['league-photo']['id'] );
+			if ( $league ) {
+				$league_id           = Helper::get_var( $league['data']['term_id'], 0 );
+				$league_name         = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ] );
+				$league_country      = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_COUNTRY ] );
+				$former_league_photo = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_PHOTO ]['id'] );
 				$league_photo        = $former_league_photo;
 
 				if ( $former_league_photo ) {
@@ -318,14 +318,14 @@ class Leagues_View {
 					}
 				}
 			} else {
-				$post_id = 0;
+				$league_id = 0;
 			}
 		}
 
-		$page_title = $post_id ? 'Edit League' : 'Add New League';
+		$page_title = $league_id ? 'Edit League' : 'Add New League';
 
 		$html = Template::parse( 'admin/leagues/add_edit_league.php', array(
-			'id'                      => $post_id,
+			'id'                      => $league_id,
 			'league_name'             => $league_name,
 			'league_country'          => $league_country,
 			'country_list'            => self::get_country_list(),
@@ -345,25 +345,23 @@ class Leagues_View {
 	/**
 	 * Displays a league item corresponding to $post
 	 *
-	 * @param WP_Post $post
+	 * @param array $league
 	 *
 	 * @return void
 	 */
-	public static function display_league( $post ) {
+	public static function display_league( $league ) {
 
-		if ( ! $post ) {
+		if ( ! $league ) {
 			return;
 		}
 
-		$league_name = $post->post_title;
+		$league_name = $league['data'][Leagues_Model::LEAGUES_FIELD_NAME];
 
 		// gets the 'league-country'
-		$field_name     = 'league-country';
-		$league_country = $post->$field_name;
+		$league_country = $league['data'][Leagues_Model::LEAGUES_FIELD_COUNTRY];
 
 		// gets the 'league-photo' - the ID
-		$field_name   = 'league-photo';
-		$league_photo = $post->$field_name;
+		$league_photo = $league['data'][Leagues_Model::LEAGUES_FIELD_PHOTO]['id'];
 
 		$league_photo_url = '';
 		if ( $league_photo ) {
@@ -371,7 +369,7 @@ class Leagues_View {
 		}
 
 		// prepares the delete URL
-		$league_id         = $post->ID;
+		$league_id         = $league['data']['term_id'];
 		$remove_league_url = add_query_arg( array(
 			'action'    => 'delete-league',
 			'league_id' => $league_id,
@@ -385,7 +383,7 @@ class Leagues_View {
 			'league_country'    => $league_country,
 			'league_photo'      => $league_photo,
 			'league_photo_url'  => $league_photo_url,
-			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&post_id={$post->ID}" ),
+			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&term_id={$league_id}" ),
 			'remove_league_url' => $remove_league_url,
 		);
 
@@ -414,7 +412,7 @@ class Leagues_View {
 	 */
 	public static function admin_page_list_leagues( $leagues ) {
 
-		if ( ! $leagues ) {
+		if ( is_bool( $leagues ) && ! $leagues ) {
 			return;
 		}
 

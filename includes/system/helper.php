@@ -27,15 +27,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 		const VALUE_EMPTY_QUERY_PARAM = 'Ø';
 
-		/**
-		 * Admin notices
-		 */
-		const ADMIN_NOTICE_ERROR = 1;
-		const ADMIN_NOTICE_WARNING = 2;
-		const ADMIN_NOTICE_SUCCESS = 3;
-		const ADMIN_NOTICE_INFO = 4;
-
-
 		public static $DEBUG_FILENAME = '';
 
 		/**
@@ -677,7 +668,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 				if ( ! isset( $the_value[ $key ] ) ) {
 					// When auto-creating the key, we must take in account
-					// the fact that if we are not in the end of the array,
+					// the fact that if we are not at the end of the array,
 					// it should be initialized with an empty array otherwise
 					// it has to be initialized with a null value
 					if ( $auto_create ) {
@@ -1344,81 +1335,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			$string = array_values( array_filter( explode( $delimiter, $string ) ) );
 
 			return $string;
-		}
-
-
-		/**
-		 * Displays an admin notice
-		 *
-		 * $notice_type:
-		 *    ADMIN_NOTICE_ERROR
-		 *    ADMIN_NOTICE_WARNING
-		 *    ADMIN_NOTICE_SUCCESS
-		 *    ADMIN_NOTICE_INFO
-		 *
-		 * @param array|string $message
-		 * @param $notice_type
-		 * @param bool $is_dismissible
-		 * @param bool $display
-		 *
-		 * @return string
-		 */
-		public static function admin_notice(
-			$message, $notice_type, $is_dismissible = false, $display = true
-		) {
-
-			if ( empty( $message ) ) {
-				return '';
-			}
-
-			$classes = "notice";
-
-			switch ( $notice_type ) {
-				case self::ADMIN_NOTICE_ERROR:
-					$classes .= ' notice-error';
-					break;
-
-				case self::ADMIN_NOTICE_INFO:
-					$classes .= ' notice-info';
-					break;
-
-				case self::ADMIN_NOTICE_SUCCESS:
-					$classes .= ' notice-success';
-					break;
-
-				case self::ADMIN_NOTICE_WARNING:
-					$classes .= ' notice-warning';
-					break;
-			}
-
-			$classes .= $is_dismissible ? ' is-dismissible' : '';
-
-			$html = "<div class=\"$classes\" style=\"padding: 10px; margin: 10px 20px 10px 2px; font-size: 14px;\">\n";
-
-			if ( is_array( $message ) ) {
-				$count       = count( $message );
-				$extra_style = $count > 1 ? 'list-style-type: circle; margin-left: 20px;' : '';
-
-				$html .= "<ul style=\"margin: 0;{$extra_style}\">";
-
-				foreach ( $message as $msg ) {
-					$html .= "<li>" . $msg . "</li>\n";
-				}
-
-				$html .= '</ul>';
-			} else {
-				$html .= $message;
-			}
-
-			$html .= "</div>\n";
-
-			if ( $display ) {
-				print $html;
-			}
-
-			return $html;
-
-
 		}
 
 		/**

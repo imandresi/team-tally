@@ -6,14 +6,16 @@
  * Time: 12:04
  */
 
+use TEAMTALLY\System\Admin_Notices;
+
 /** @var array-key $country_list */
 /** @var string $league_country */
 /** @var string $league_photo */
 /** @var int $former_league_photo */
 /** @var string $former_league_photo_url */
-
 ?>
 
+<?php Admin_Notices::all_pending_notices(true); ?>
 <div class="wrap">
     <h1>League Management</h1>
     <div class="form-wrap">

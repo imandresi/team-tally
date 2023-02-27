@@ -29,7 +29,9 @@
       width: 200px;
       height: 200px;
       margin-bottom: 25px;
-      background-size: cover;
+      background-size: contain;
+      background-color: white;
+      background-repeat: no-repeat;
       background-position: center center;
     }
 
