@@ -396,6 +396,16 @@ class Leagues_View {
 	}
 
 	/**
+	 * Displays the big button frame for adding new league
+	 *
+	 * @return void
+	 */
+	public static function display_new_league_big_btn() {
+		Template::pparse( 'admin/leagues/new_league_big_btn.php' );
+
+	}
+
+	/**
 	 * Displays the list of all leagues
 	 *
 	 * @param array $leagues // contains the list of legues data (WP_Post)
