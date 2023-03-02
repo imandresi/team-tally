@@ -56,7 +56,7 @@ class Admin_Menu extends Singleton {
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
 			'ADD / EDIT LEAGUE',
-			'Add New',
+			'Add New League',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_LEAGUES_ADD,
 			array(Leagues_Controller::class, 'admin_page_add_or_edit_league' ),

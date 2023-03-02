@@ -38,6 +38,7 @@ class Generic_Model {
 			return false;
 		}
 
+		// Retrieves post_meta associated to the post
 		$post_meta_list = get_post_meta( $post->ID, '', true );
 
 		$post_meta = array();
@@ -49,10 +50,12 @@ class Generic_Model {
 			}
 		}
 
-		$post              = (array) $post;
-		$post['post_meta'] = $post_meta;
+		$post_data = array(
+			'raw' => $post,
+			'meta' => $post_meta,
+		);
 
-		return $post;
+		return $post_data;
 
 	}
 

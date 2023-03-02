@@ -22,20 +22,7 @@ class Admin_Loader extends Singleton {
 	 * and executes various initialization tasks
 	 */
 	private function init_admin_leagues() {
-/*
-		$do_init = Helper::compare_page_request_to(
-			array(
-				'path'  => '/wp-admin/admin.php',
-				'query' => array(
-					'page' => 'teamtally_leagues'
-				)
-			)
-		);
 
-		if ( ! $do_init ) {
-			return;
-		}
-*/
 		// Prepare the use of wp.media for file uploading
 		add_action( 'admin_enqueue_scripts', function ( $hook_suffix ) {
 			if ( $hook_suffix == 'team-tally_page_teamtally_leagues_add' ) {

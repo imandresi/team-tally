@@ -17,7 +17,7 @@ use TEAMTALLY\System\Admin_Notices;
 
 <?php Admin_Notices::all_pending_notices(true); ?>
 <div class="wrap">
-    <h1>League Management</h1>
+    <h1>LEAGUE MANAGEMENT</h1>
     <div class="form-wrap">
         <h2>{{page_title}}</h2>
         <div class="teamtally_leagues__add-league">

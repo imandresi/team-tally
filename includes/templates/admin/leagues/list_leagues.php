@@ -16,7 +16,7 @@ use TEAMTALLY\Views\Leagues_View;
 <?php Admin_Notices::all_pending_notices(true); ?>
 
 <div class="teamtally_leagues__list-leagues wrap">
-    <h1 class="wp-heading-inline">League Management</h1>
+    <h1 class="wp-heading-inline">LEAGUE MANAGEMENT</h1>
     <h2>List of all leagues</h2>
     <p>A <b>football league</b> is a competition where multiple <b>football teams</b> play against each other in a
         series of matches

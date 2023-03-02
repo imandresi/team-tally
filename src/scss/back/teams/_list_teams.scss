@@ -1,0 +1,106 @@
+
+/**
+ * LIST TEAMS
+ */
+
+.teamtally__teams__list_teams {
+    .wp-list-table {
+
+        th, td {
+            &.column-title {
+                width: 250px;
+            }
+
+            &.column-logo {
+                width: 150px;
+                text-align: center;
+            }
+
+            &.column-nickname {
+                width: 150px;
+            }
+
+            &.column-history {
+                min-width: 200px;
+            }
+
+            &.column-date {
+                width: 180px;
+            }
+        }
+
+        .teams-logo {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        @media screen and (max-width: 1300px) {
+            th, td {
+                &.column-title {
+                    width: auto;
+                }
+
+                &.column-logo {
+                    width: 120px;
+                }
+
+                &.column-nickname {
+                    width: 110px;
+                }
+            }
+
+            .teams-logo {
+                width: 100px;
+                height: 100px;
+            }
+
+        }
+
+        @media screen and (max-width: 1100px) {
+            th, td {
+
+                &.column-logo {
+                    width: 120px;
+                }
+
+                &.column-nickname {
+                    width: 100px;
+                }
+
+                &.column-date {
+                    width: 100px;
+                }
+
+            }
+
+            .teams-logo {
+                width: 100px;
+                height: 100px;
+            }
+
+        }
+
+        @media screen and (max-width: 782px) {
+            td {
+                &.column-logo {
+                    text-align: left;
+                }
+
+                &.column-nickname,
+                &.column-history,
+                &.column-logo,
+                &.column-date {
+                    &::before {
+                        font-weight: bold;
+                        color: #888;
+                    }
+                }
+            }
+        }
+
+    }
+}

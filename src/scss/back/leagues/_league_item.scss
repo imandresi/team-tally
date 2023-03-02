@@ -69,8 +69,14 @@
       transition: bottom 1s;
       font-size: 140%;
 
-      &:hover {
-        color: yellow;
+      a {
+        color: white;
+        text-decoration: none;
+
+        &:hover {
+          color: yellow;
+        }
+
       }
 
     }

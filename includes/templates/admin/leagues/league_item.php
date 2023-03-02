@@ -11,7 +11,7 @@
 <div class="teamtally_leagues__league-item league-item league-item-id-{{league_id}}">
     <div class="thumbnail">
         <div class="thumbnail__content" style="background-image: url('{{{league_photo_url}}}')"></div>
-        <div class="thumbnail__legend">Click to manage TEAMS</div>
+        <div class="thumbnail__legend"><a href="{{{manage_teams_url}}}">Click to manage TEAMS</a></div>
     </div>
     <div class="footer">
         <div class="league-data">

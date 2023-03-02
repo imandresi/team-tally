@@ -355,13 +355,13 @@ class Leagues_View {
 			return;
 		}
 
-		$league_name = $league['data'][Leagues_Model::LEAGUES_FIELD_NAME];
+		$league_name = $league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ];
 
 		// gets the 'league-country'
-		$league_country = $league['data'][Leagues_Model::LEAGUES_FIELD_COUNTRY];
+		$league_country = $league['data'][ Leagues_Model::LEAGUES_FIELD_COUNTRY ];
 
 		// gets the 'league-photo' - the ID
-		$league_photo = $league['data'][Leagues_Model::LEAGUES_FIELD_PHOTO]['id'];
+		$league_photo = $league['data'][ Leagues_Model::LEAGUES_FIELD_PHOTO ]['id'];
 
 		$league_photo_url = '';
 		if ( $league_photo ) {
@@ -375,6 +375,14 @@ class Leagues_View {
 			'league_id' => $league_id,
 		), admin_url( 'admin.php' ) );
 
+		// prepares the manage teams URL
+		// /wp-admin/edit.php?post_type=teamtally_teams&league_id=xx
+		$manage_team_url = add_query_arg(array(
+			'post_type' => 'teamtally_teams',
+			'league_id' => $league_id
+		), admin_url('edit.php'));
+
+		// prepares the remove URL
 		$remove_league_url = wp_nonce_url( $remove_league_url, "league-{$league_id}-remove" );
 
 		$template_data = array(
@@ -383,6 +391,7 @@ class Leagues_View {
 			'league_country'    => $league_country,
 			'league_photo'      => $league_photo,
 			'league_photo_url'  => $league_photo_url,
+			'manage_teams_url'  => $manage_team_url,
 			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&term_id={$league_id}" ),
 			'remove_league_url' => $remove_league_url,
 		);

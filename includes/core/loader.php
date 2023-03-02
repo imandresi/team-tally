@@ -9,7 +9,9 @@
 namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Controllers\Leagues_Controller;
+use TEAMTALLY\Controllers\Teams_Controller;
 use TEAMTALLY\Models\Leagues_Model;
+use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Sessions;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
@@ -38,7 +40,12 @@ class Loader extends Singleton {
 
 		// Loads models
 		Leagues_Model::load();
+		Teams_Model::load();
+
+		// Loads controllers
 		Leagues_Controller::init();
+		Teams_Controller::load();
+
 
 	}
 
