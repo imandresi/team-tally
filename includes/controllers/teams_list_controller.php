@@ -130,6 +130,15 @@ class Teams_List_Controller extends Singleton {
 	 */
 	public function customize_teams_list_table_display() {
 
+		// filter listed teams by league
+		add_filter( 'wp_list_table_class_name', function ( $class_name, $args ) {
+			// uses another list table instead of WP_Posts_List_Table
+			// in order to implement filtering by league
+			$class_name = Teams_List_Table::class;
+
+			return $class_name;
+		}, 10, 2 );
+
 		// Customize the columns header
 		add_filter( 'manage_' . Teams_Model::TEAMS_POST_TYPE . '_posts_columns', function ( $columns ) {
 			$columns = array(
@@ -197,15 +206,6 @@ EOT;
 		}
 
 		add_action( 'admin_head-edit.php', array( $this, 'customize_teams_list_page' ) );
-
-		// filter listed teams by league
-		add_filter( 'wp_list_table_class_name', function ( $class_name, $args ) {
-			// uses another list table instead of WP_Posts_List_Table
-			// in order to implement filtering by league
-			$class_name = Teams_List_Table::class;
-
-			return $class_name;
-		}, 10, 2 );
 
 		// customize the teams listing
 		$this->customize_teams_list_table_display();

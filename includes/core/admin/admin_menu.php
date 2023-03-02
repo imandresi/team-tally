@@ -20,7 +20,7 @@ class Admin_Menu extends Singleton {
 	const SLUG_SUBMENU_LEAGUES_VIEW = 'teamtally_leagues_view';
 	const SLUG_SUBMENU_LEAGUES_ADD = 'teamtally_leagues_add';
 
-	const MENU_CAPABILITY = 'edit_posts';
+	const MENU_CAPABILITY = TEAMTALLY_USER_CAPABILITY;
 	const MENU_ICON_FILENAME = TEAMTALLY_ASSETS_IMAGES_DIR . 'football.svg';
 
 	/**

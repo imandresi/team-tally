@@ -79,7 +79,7 @@ class Teams_Edit_Controller extends Singleton {
 
 		// gets the list of all leagues to be displayed in a combobox
 		$leagues = Leagues_Model::get_all_leagues();
-		Teams_View::new_team_page_meta_box_league_content( $leagues, $this->league_id );
+		Teams_View::new_team_page_meta_box_league_content( $leagues, $this->teams->league_id );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Teams_Edit_Controller extends Singleton {
 	 */
 	public function save_posted_team_data( $post_id, $post ) {
 
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( ! current_user_can( TEAMTALLY_USER_CAPABILITY, $post_id ) ) {
 			return;
 		}
 
@@ -99,6 +99,7 @@ class Teams_Edit_Controller extends Singleton {
 
 		// save league as taxonomy term
 		$teams_league = Helper::get_var( $_POST['teams_league'], '' );
+
 		wp_set_post_terms(
 			$post_id,
 			$teams_league,
@@ -120,7 +121,7 @@ class Teams_Edit_Controller extends Singleton {
 		/** @var WP_Post $post */
 		$post = get_post( $post_id );
 
-		if ( $post->post_type != Teams_Model::TEAMS_POST_TYPE ) {
+		if ( isset( $post ) && ( $post->post_type != Teams_Model::TEAMS_POST_TYPE ) ) {
 			return false;
 		}
 

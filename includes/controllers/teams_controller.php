@@ -32,7 +32,16 @@ class Teams_Controller extends Singleton {
 
 		$allowed_page_request_list = array(
 
-			'list_teams_in_trash' => array(
+			'delete_all_teams' => array(
+				'path'  => '/wp-admin/edit.php',
+				'query' => array(
+					'post_status' => 'trash',
+					'post_type'   => Teams_Model::TEAMS_POST_TYPE,
+					'delete_all'  => Helper::VALUE_EMPTY_QUERY_PARAM,
+				)
+			),
+
+			'teams_in_trash' => array(
 				'path'  => '/wp-admin/edit.php',
 				'query' => array(
 					'post_status' => 'trash',
@@ -49,10 +58,10 @@ class Teams_Controller extends Singleton {
 			),
 
 			'delete_post' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => '/wp-admin/post.php',
 				'query' => array(
-					'post_status' => 'trash',
-					'post_type'   => Teams_Model::TEAMS_POST_TYPE
+					'post' => Helper::VALUE_EMPTY_QUERY_PARAM,
+					'action' => 'delete',
 				)
 			),
 
@@ -75,6 +84,13 @@ class Teams_Controller extends Singleton {
 				'query' => array(
 					'post'   => Helper::VALUE_EMPTY_QUERY_PARAM,
 					'action' => 'edit',
+				)
+			),
+
+			'update_post' => array(
+				'path'  => '/wp-admin/post.php',
+				'query' => array(
+					'action' => 'editpost',
 				)
 			),
 
@@ -103,7 +119,7 @@ class Teams_Controller extends Singleton {
 		add_action( 'init', function () {
 			$this->active_page = $this->get_active_page();
 
-			if (!$this->active_page) {
+			if ( ! $this->active_page ) {
 				return;
 			}
 
@@ -124,16 +140,18 @@ class Teams_Controller extends Singleton {
 			switch ( $this->active_page ) {
 				case 'list_draft_teams':
 				case 'list_teams':
-				case 'list_teams_in_trash':
+				case 'teams_in_trash':
 					Teams_List_Controller::run( $this->instance );
 					break;
 
 				case 'add_new_team':
 				case 'edit_post':
+				case 'update_post':
 					Teams_Edit_Controller::run( $this->instance );
 					break;
 
 				case 'delete_post':
+				case 'delete_all_teams':
 				default:
 			}
 
