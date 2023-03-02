@@ -51,7 +51,7 @@ class Generic_Model {
 		}
 
 		$post_data = array(
-			'raw' => $post,
+			'raw'  => $post,
 			'meta' => $post_meta,
 		);
 
@@ -68,23 +68,23 @@ class Generic_Model {
 	 *
 	 * @return array|false
 	 */
-	public static function get_taxonomy_term_info($taxonomy_term, $taxonomy_name) {
+	public static function get_taxonomy_term_info( $taxonomy_term, $taxonomy_name ) {
 		$data = false;
 
 		/** @var WP_Term $taxonomy */
-		$taxonomy = get_term($taxonomy_term, $taxonomy_name);
+		$taxonomy = get_term( $taxonomy_term, $taxonomy_name );
 
-		if ($taxonomy instanceof WP_Term) {
-			$meta = get_term_meta($taxonomy->term_id, '', true);
+		if ( $taxonomy instanceof WP_Term ) {
+			$meta = get_term_meta( $taxonomy->term_id, '', true );
 
-			foreach ($meta as &$meta_value) {
-				if (is_array($meta_value)) {
+			foreach ( $meta as &$meta_value ) {
+				if ( is_array( $meta_value ) ) {
 					$meta_value = $meta_value[0];
 				}
 			}
 
 			$data = array(
-				'raw' => $taxonomy,
+				'raw'  => $taxonomy,
 				'meta' => $meta,
 			);
 		}
@@ -102,17 +102,19 @@ class Generic_Model {
 	 *
 	 * @return WP_Query
 	 */
-	public static function get_posts_linked_to_taxonomy_term($post_type, $taxonomy_term, $taxonomy_name) {
-		$args = array(
+	public static function get_posts_linked_to_taxonomy_term( $post_type, $taxonomy_term, $taxonomy_name, $args = array() ) {
+		$default_args = array(
 			'post_type' => $post_type,
 			'tax_query' => array(
 				array(
 					'taxonomy' => $taxonomy_name,
-					'field' => 'id',
-					'terms' => $taxonomy_term
+					'field'    => 'id',
+					'terms'    => $taxonomy_term
 				)
 			)
 		);
+
+		$args = array_merge( $default_args, $args );
 
 		$posts = new WP_Query( $args );
 

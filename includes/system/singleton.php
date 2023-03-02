@@ -88,7 +88,7 @@ abstract class Singleton {
 	 *
 	 * @return $this The *Singleton* instance.
 	 */
-	public static function get_instance() {
+	public static function get_instance(...$args) {
 
 		// checks multiple execution of this method due to the 'init' method
 		$class_name = get_called_class();
@@ -109,7 +109,7 @@ abstract class Singleton {
 
 			// execution of initialisation method
 			if ( method_exists( $instance['instance'], 'init' ) ) {
-				$instance['instance']->init();
+				$instance['instance']->init($args);
 			}
 
 		}
