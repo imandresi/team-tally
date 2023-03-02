@@ -31,7 +31,12 @@ class Teams_Edit_Controller extends Singleton {
 	 * @return void
 	 */
 	public function customize_add_edit_team_page() {
-		global $post_type_object;
+		global $post_type_object, $post_new_file;
+
+		// modify the url for the button 'Add New Team'
+		if ($this->teams->league_id) {
+			$post_new_file .= "&league_id={$this->teams->league_id}";
+		}
 
 		// sets the label for the 'team name' input
 		add_filter( 'enter_title_here', function () {

@@ -23,6 +23,8 @@
 </style>
 
 <div>
+    <input type="hidden" name="league_id" id="league_id" value="{{selected_league_id}}">
+    <input type="hidden" name="teams_list_url" id="teams_list_url" value="{{teams_list_url}}">
     <label for="teams_league">Select the league which is associated to the team.</label>
     <select id="teams_league" name="teams_league" required autocomplete="off">
         <option>Select a league</option>
