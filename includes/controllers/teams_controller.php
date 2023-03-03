@@ -32,6 +32,32 @@ class Teams_Controller extends Singleton {
 
 		$allowed_page_request_list = array(
 
+			'filter_teams' => array(
+				'path'  => '/wp-admin/edit.php',
+				'query' => array(
+					'post_status'   => 'all',
+					'post_type'     => 'teamtally_teams',
+					'filter_action' => 'Filter'
+				)
+			),
+
+			'bulk_delete' => array(
+				'path'  => '/wp-admin/edit.php',
+				'query' => array(
+					'post_status' => 'all',
+					'post_type'   => 'teamtally_teams',
+					'action'      => 'trash'
+				)
+			),
+
+			'bulk_edit' => array(
+				'path'  => '/wp-admin/edit.php',
+				'query' => array(
+					'screen'    => 'edit-teamtally_teams',
+					'bulk_edit' => Helper::VALUE_EMPTY_QUERY_PARAM,
+				)
+			),
+
 			'delete_all_teams' => array(
 				'path'  => '/wp-admin/edit.php',
 				'query' => array(
@@ -60,7 +86,7 @@ class Teams_Controller extends Singleton {
 			'delete_post' => array(
 				'path'  => '/wp-admin/post.php',
 				'query' => array(
-					'post' => Helper::VALUE_EMPTY_QUERY_PARAM,
+					'post'   => Helper::VALUE_EMPTY_QUERY_PARAM,
 					'action' => 'delete',
 				)
 			),
@@ -141,6 +167,7 @@ class Teams_Controller extends Singleton {
 				case 'list_draft_teams':
 				case 'list_teams':
 				case 'teams_in_trash':
+				case 'filter_teams':
 					Teams_List_Controller::run( $this->instance );
 					break;
 
@@ -152,6 +179,7 @@ class Teams_Controller extends Singleton {
 
 				case 'delete_post':
 				case 'delete_all_teams':
+				case 'bulk_edit':
 				default:
 			}
 

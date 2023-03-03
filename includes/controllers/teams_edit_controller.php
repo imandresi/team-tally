@@ -183,7 +183,7 @@ class Teams_Edit_Controller extends Singleton {
 	 * @return void
 	 */
 	public static function run( $teams ) {
-		self::get_instance( $teams );
+		self::get_instance( $teams ); // this parameter will be sent to self::init()
 	}
 
 }
