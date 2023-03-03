@@ -36,13 +36,13 @@ class Leagues_Model extends Singleton {
 			return false;
 		}
 
-		$league_photo_id       = $league_data['meta'][ self::LEAGUES_FIELD_PHOTO ];
+		$league_photo_id       = Helper::get_var($league_data['meta'][ self::LEAGUES_FIELD_PHOTO ]);
 		$league_photo_metadata = $league_photo_id ? wp_get_attachment_metadata( $league_photo_id ) : false;
 
 		$data = array(
-			'term_id'                   => $league_data['raw']->term_id,
-			self::LEAGUES_FIELD_NAME    => $league_data['raw']->name,
-			self::LEAGUES_FIELD_COUNTRY => $league_data['meta'][ self::LEAGUES_FIELD_COUNTRY ],
+			'term_id'                   => Helper::get_var($league_data['raw']->term_id),
+			self::LEAGUES_FIELD_NAME    => Helper::get_var($league_data['raw']->name),
+			self::LEAGUES_FIELD_COUNTRY => Helper::get_var($league_data['meta'][ self::LEAGUES_FIELD_COUNTRY ]),
 			self::LEAGUES_FIELD_PHOTO   => array(
 				'id'       => $league_photo_id,
 				'metadata' => $league_photo_metadata

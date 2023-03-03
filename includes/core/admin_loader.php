@@ -10,6 +10,7 @@ namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Core\Admin\Admin_Menu;
 use TEAMTALLY\Core\Plugin_Manager;
+use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
 use TEAMTALLY\System\Singleton;
 
@@ -61,6 +62,7 @@ class Admin_Loader extends Singleton {
 
 		Plugin_Manager::setup();
 		Admin_Menu::load();
+		Admin_Notices::init();
 
 		// Loading
 		$this->init_admin_leagues();

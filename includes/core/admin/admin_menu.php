@@ -164,4 +164,3 @@ class Admin_Menu extends Singleton {
 
 }
 
-Admin_Menu::load();

@@ -34,7 +34,6 @@ class Leagues_Controller {
 
 	}
 
-
 	/**
 	 * Hendles the page used to add or edit leagues
 	 *

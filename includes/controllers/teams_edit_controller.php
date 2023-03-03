@@ -10,6 +10,7 @@ namespace TEAMTALLY\Controllers;
 
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
+use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Template;
@@ -34,7 +35,7 @@ class Teams_Edit_Controller extends Singleton {
 		global $post_type_object, $post_new_file;
 
 		// modify the url for the button 'Add New Team'
-		if ($this->teams->league_id) {
+		if ( $this->teams->league_id ) {
 			$post_new_file .= "&league_id={$this->teams->league_id}";
 		}
 
@@ -94,6 +95,10 @@ class Teams_Edit_Controller extends Singleton {
 	 */
 	public function save_posted_team_data( $post_id, $post ) {
 
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
 		if ( ! current_user_can( TEAMTALLY_USER_CAPABILITY, $post_id ) ) {
 			return;
 		}
@@ -115,6 +120,63 @@ class Teams_Edit_Controller extends Singleton {
 	}
 
 	/**
+	 * Checks for empty fields before saving
+	 *
+	 * @param $maybe_empty
+	 * @param $postarr
+	 *
+	 * @return boolean // If true then save is aborted
+	 */
+	public function check_posted_team_data( $maybe_empty, $postarr ) {
+
+		if ( $postarr['post_status'] === 'auto-draft' ) {
+			return $maybe_empty;
+		}
+
+		$team_name = Helper::get_var( $postarr['post_title'], '' );
+		$team_name = trim( $team_name );
+
+		$team_nickname = Helper::get_var( $postarr['team_nickname'], '' );
+		$team_nickname = trim( $team_nickname );
+
+		$team_history = Helper::get_var( $postarr['content'], '' );
+		$team_history = trim( wp_strip_all_tags( $team_history, true ) );
+
+		$team_photo   = Helper::get_var( $postarr['_thumbnail_id'], - 1 );
+		$teams_league = Helper::get_var( $postarr['teams_league'], '' );
+
+		if ( empty( $team_name ) ||
+		     empty( $team_nickname ) ||
+		     empty( $team_history ) ||
+		     empty( $teams_league ) ||
+		     $team_photo == - 1 ) {
+
+			// Avoid displaying success message in order to further replace it with error
+			// In fact this hook removes the &message=... from $location
+			add_filter( 'redirect_post_location', function ( $location, $post_id ) {
+				$location = add_query_arg( array(
+					'post'   => $post_id,
+					'action' => 'edit'
+				), admin_url( 'post.php' ) );
+
+				return $location;
+			}, 10, 2 );
+
+			// Sets an admin notice error
+			Admin_Notices::set_message(
+				__( 'Please fill all fields.' ),
+				Admin_Notices::ADMIN_NOTICE_ERROR,
+				false,
+				'ERROR_EMPTY_FIELDS'
+			);
+
+			return true; // is empty
+		}
+
+		return $maybe_empty;
+	}
+
+	/**
 	 * Proceed to various initialization if the active page is about edit team
 	 *
 	 * @return boolean
@@ -133,8 +195,8 @@ class Teams_Edit_Controller extends Singleton {
 		// Checks if a league is associated to the post
 		$terms = get_the_terms( $post_id, Leagues_Model::LEAGUES_TAXONOMY_NAME );
 		if ( ! is_wp_error( $terms ) && is_array( $terms ) ) {
-			$this->teams->league    = $terms[0];
-			$this->teams->league_id = $this->teams->league->term_id;
+			$this->teams->league    = Leagues_Model::get_league( $terms[0] );
+			$this->teams->league_id = Helper::get_var( $this->teams->league['data']['term_id'], false );
 		}
 
 		$this->teams->active_page = 'edit_team';
@@ -168,6 +230,12 @@ class Teams_Edit_Controller extends Singleton {
 			'new_team_page_meta_boxes'
 		) );
 
+		// hook to check if all the fields are filled correctly before saving
+		add_filter( 'wp_insert_post_empty_content', array(
+			$this,
+			'check_posted_team_data'
+		), 10, 2 );
+
 		// hook when the post is being saved
 		add_action( 'save_post_' . Teams_Model::TEAMS_POST_TYPE, array(
 			$this,
@@ -175,7 +243,6 @@ class Teams_Edit_Controller extends Singleton {
 		), 10, 2 );
 
 	}
-
 
 	/**
 	 * @param Teams_Controller $teams

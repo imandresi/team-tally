@@ -101,7 +101,7 @@ class Admin_Notices {
 	 *
 	 * @return void
 	 */
-	public static function set_message( $message, $notice_type, $is_dismissible = false ) {
+	public static function set_message( $message, $notice_type, $is_dismissible = false, $msg_key = null ) {
 
 		switch ( $notice_type ) {
 			// Allowed $notice_type
@@ -128,8 +128,22 @@ class Admin_Notices {
 			$session_var = array();
 		}
 
-		$session_var[] = $message_data;
+		if ( is_null( $msg_key ) ) {
+			$session_var[] = $message_data;
+		} else {
+			$session_var[ $msg_key ] = $message_data;
+		}
 
+	}
+
+	/**
+	 * Clear messages
+	 *
+	 * @return void
+	 */
+	public static function clear() {
+		$admin_notices = &Sessions::get( "ADMIN_NOTICE" );
+		$admin_notices = array();
 	}
 
 	/**
@@ -162,33 +176,44 @@ class Admin_Notices {
 
 			// Grouping the same status notices by dismissibility
 			$grouped_notice = array(
-			    'dismissible' => array(),
+				'dismissible'     => array(),
 				'not_dismissible' => array()
 			);
 
 			foreach ( $admin_notices[ $notice_type ] as $notice_data ) {
-				$message = Helper::get_var($notice_data['message'], '');
-				$is_dismissible = Helper::get_var($notice_data['is_dismissible'], false);
+				$message        = Helper::get_var( $notice_data['message'], '' );
+				$is_dismissible = Helper::get_var( $notice_data['is_dismissible'], false );
 
-				$notice_key = $is_dismissible ? 'dismissible' : 'not_dismissible';
-				$grouped_notice[$notice_key][] = $message;
+				$notice_key                      = $is_dismissible ? 'dismissible' : 'not_dismissible';
+				$grouped_notice[ $notice_key ][] = $message;
 			}
 
 			// Displaying the grouped notices
-			$html .= self::notice($grouped_notice['dismissible'], $notice_type, true, false );
-			$html .= self::notice($grouped_notice['not_dismissible'], $notice_type, false, false );
+			$html .= self::notice( $grouped_notice['dismissible'], $notice_type, true, false );
+			$html .= self::notice( $grouped_notice['not_dismissible'], $notice_type, false, false );
 
 		}
 
 		// Clear session containing the admin notices
-		$admin_notices = array();
+		self::clear();
 
-		if ($display) {
+		if ( $display ) {
 			print $html;
 		}
 
 		return $html;
 
+	}
+
+	/**
+	 * Initialization
+	 *
+	 * @return void
+	 */
+	public static function init() {
+		add_action( 'all_admin_notices', function () {
+			Admin_Notices::all_pending_notices();
+		} );
 	}
 
 }

@@ -157,7 +157,7 @@ class Teams_Controller extends Singleton {
 			}, 10, 1 );
 
 			// get info about the league if indicated
-			$this->league_id = Helper::get_var( $_GET['league_id'] );
+			$this->league_id = Helper::get_var( $_REQUEST['league_id'] );
 			if ( $this->league_id ) {
 				$this->league = Leagues_Model::get_league( $this->league_id );
 			}
