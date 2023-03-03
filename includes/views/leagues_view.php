@@ -349,7 +349,7 @@ class Leagues_View {
 	 *
 	 * @return void
 	 */
-	public static function display_league( $league ) {
+	public static function display_league( $league, $teams_count = 0 ) {
 
 		if ( ! $league ) {
 			return;
@@ -377,10 +377,10 @@ class Leagues_View {
 
 		// prepares the manage teams URL
 		// /wp-admin/edit.php?post_type=teamtally_teams&league_id=xx
-		$manage_team_url = add_query_arg(array(
+		$manage_team_url = add_query_arg( array(
 			'post_type' => 'teamtally_teams',
 			'league_id' => $league_id
-		), admin_url('edit.php'));
+		), admin_url( 'edit.php' ) );
 
 		// prepares the remove URL
 		$remove_league_url = wp_nonce_url( $remove_league_url, "league-{$league_id}-remove" );
@@ -394,6 +394,7 @@ class Leagues_View {
 			'manage_teams_url'  => $manage_team_url,
 			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&term_id={$league_id}" ),
 			'remove_league_url' => $remove_league_url,
+			'teams_count'       => $teams_count,
 		);
 
 		$html = Template::parse( 'admin/leagues/league_item.php', $template_data );

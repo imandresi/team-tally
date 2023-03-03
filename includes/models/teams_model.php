@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Models;
 
+use TEAMTALLY\System\Helper;
 use TEAMTALLY\System\Singleton;
 use WP_Post;
 
@@ -50,6 +51,33 @@ class Teams_Model extends Singleton {
 
 		return $team_data;
 
+	}
+
+	/**
+	 * Returns the number of teams in a league
+	 *
+	 * @param $league
+	 *
+	 * @return int
+	 */
+	public static function count_teams_in_league($league) {
+
+		$args = array(
+			'post_type' => self::TEAMS_POST_TYPE,
+			'tax_query' => array(
+				array(
+					'taxonomy' => Leagues_Model::LEAGUES_TAXONOMY_NAME,
+					'field' => 'id',
+					'terms' => Helper::get_var($league['data']['term_id'])
+				)
+			)
+		);
+
+		$query = new \WP_Query($args);
+
+		$teams_count = $query->post_count;
+
+		return $teams_count;
 	}
 
 	/**

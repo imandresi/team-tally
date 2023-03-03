@@ -153,7 +153,6 @@ class Leagues_Model extends Singleton {
 
 	}
 
-
 	/**
 	 * Initialization of the data model
 	 *

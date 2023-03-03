@@ -8,6 +8,7 @@
 
 use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\Views\Leagues_View;
+use TEAMTALLY\Models\Teams_Model;
 
 /** @var array $leagues */
 /** @var string $new_league_url */
@@ -29,7 +30,9 @@ use TEAMTALLY\Views\Leagues_View;
 
     <div class="leagues-zone">
 		<?php foreach ( $leagues as $league ) : ?>
-			<?php Leagues_View::display_league( $league ); ?>
+            <?php $teams_count = Teams_Model::count_teams_in_league($league); ?>
+            <?php $teams_count = $teams_count ? "($teams_count)" : ""; ?>
+			<?php Leagues_View::display_league( $league, $teams_count); ?>
 		<?php endforeach; ?>
 
         <!-- Add New League Button -->

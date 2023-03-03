@@ -15,7 +15,7 @@
     </div>
     <div class="footer">
         <div class="league-data">
-            <p class="league-name">{{league_name}}</p>
+            <p><span class="league-name">{{league_name}}</span>&nbsp;{{teams_count}}</p>
             <p class="league-country">{{league_country}}</p>
         </div>
         <div class="league-item-buttons">
