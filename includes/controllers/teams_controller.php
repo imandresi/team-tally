@@ -33,7 +33,7 @@ class Teams_Controller extends Singleton {
 		$allowed_page_request_list = array(
 
 			'filter_teams' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_status'   => 'all',
 					'post_type'     => 'teamtally_teams',
@@ -42,7 +42,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'bulk_delete' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_status' => 'all',
 					'post_type'   => 'teamtally_teams',
@@ -51,7 +51,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'bulk_edit' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'screen'    => 'edit-teamtally_teams',
 					'bulk_edit' => Helper::VALUE_EMPTY_QUERY_PARAM,
@@ -59,7 +59,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'delete_all_teams' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_status' => 'trash',
 					'post_type'   => Teams_Model::TEAMS_POST_TYPE,
@@ -68,7 +68,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'teams_in_trash' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_status' => 'trash',
 					'post_type'   => Teams_Model::TEAMS_POST_TYPE
@@ -76,7 +76,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'list_draft_teams' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_status' => 'draft',
 					'post_type'   => Teams_Model::TEAMS_POST_TYPE
@@ -84,7 +84,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'delete_post' => array(
-				'path'  => '/wp-admin/post.php',
+				'path'  => 'post.php',
 				'query' => array(
 					'post'   => Helper::VALUE_EMPTY_QUERY_PARAM,
 					'action' => 'delete',
@@ -92,21 +92,21 @@ class Teams_Controller extends Singleton {
 			),
 
 			'list_teams' => array(
-				'path'  => '/wp-admin/edit.php',
+				'path'  => 'edit.php',
 				'query' => array(
 					'post_type' => Teams_Model::TEAMS_POST_TYPE
 				)
 			),
 
 			'add_new_team' => array(
-				'path'  => '/wp-admin/post-new.php',
+				'path'  => 'post-new.php',
 				'query' => array(
 					'post_type' => Teams_Model::TEAMS_POST_TYPE
 				)
 			),
 
 			'edit_post' => array(
-				'path'  => '/wp-admin/post.php',
+				'path'  => 'post.php',
 				'query' => array(
 					'post'   => Helper::VALUE_EMPTY_QUERY_PARAM,
 					'action' => 'edit',
@@ -114,7 +114,7 @@ class Teams_Controller extends Singleton {
 			),
 
 			'update_post' => array(
-				'path'  => '/wp-admin/post.php',
+				'path'  => 'post.php',
 				'query' => array(
 					'action' => 'editpost',
 				)
@@ -125,6 +125,8 @@ class Teams_Controller extends Singleton {
 		$result = false;
 
 		foreach ( $allowed_page_request_list as $key => $allowed_request ) {
+			$allowed_request['path'] = wp_make_link_relative( admin_url( $allowed_request['path'] ) );
+
 			$found = Helper::compare_page_request_to( $allowed_request );
 			if ( $found ) {
 				$result = $key;
