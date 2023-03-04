@@ -51,12 +51,16 @@ class Teams_List_Table extends WP_Posts_List_Table {
 
 		$wp_query->get_posts();
 
+		$total_items = $wp_query->post_count;
+
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $this->get_pagination_arg('per_page'),
+			)
+		);
+
 	}
-
-//	public function column_nickname() {
-//
-//	}
-
 
 	/**
 	 * Displays the wp_list_table
