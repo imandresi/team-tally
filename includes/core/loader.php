@@ -46,7 +46,6 @@ class Loader extends Singleton {
 		Leagues_Controller::init();
 		Teams_Controller::load();
 
-
 	}
 
 	/**

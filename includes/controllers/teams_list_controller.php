@@ -22,7 +22,6 @@ class Teams_List_Controller extends Singleton {
 
 	private $last_post;  // used as a cache
 
-
 	/**
 	 * Customize the teams page
 	 *
@@ -130,11 +129,16 @@ class Teams_List_Controller extends Singleton {
 	 */
 	public function customize_teams_list_table_display() {
 
-		// filter listed teams by league
 		add_filter( 'wp_list_table_class_name', function ( $class_name, $args ) {
+
 			// uses another list table instead of WP_Posts_List_Table
 			// in order to implement filtering by league
-			$class_name = Teams_List_Table::class;
+			$screen = Helper::get_var( $args['screen'] );
+
+			if ( $screen ) {
+				$use_alternative_table = $screen->id === 'edit-teamtally_teams';
+				$class_name            = $use_alternative_table ? Teams_List_Table::class : $class_name;
+			}
 
 			return $class_name;
 		}, 10, 2 );
@@ -209,6 +213,15 @@ EOT;
 
 		// customize the teams listing
 		$this->customize_teams_list_table_display();
+
+		// Adds the 'league_id' hidden field to the quick edit form
+		// in order to prevent bug
+		add_action('quick_edit_custom_box', function($column_name, $post_type, $taxonomy) {
+			if ($column_name == 'nickname') {
+				print "<input type=\"hidden\" name=\"league_id\" value=\"{$this->teams->league_id}\">";
+			}
+		}, 10, 3);
+
 	}
 
 

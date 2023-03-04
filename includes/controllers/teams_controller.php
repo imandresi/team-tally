@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Controllers;
 
+use TEAMTALLY\Core\Admin\Teams_List_Table;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Helper;
@@ -31,6 +32,15 @@ class Teams_Controller extends Singleton {
 	public function get_active_page() {
 
 		$allowed_page_request_list = array(
+
+			'quick_edit_post' => array(
+				'path'  => 'admin-ajax.php',
+				'query' => array(
+					'post_type'   => 'teamtally_teams',
+					'screen'      => 'edit-teamtally_teams',
+					'action'      => 'inline-save',
+				)
+			),
 
 			'filter_teams' => array(
 				'path'  => 'edit.php',
@@ -138,7 +148,6 @@ class Teams_Controller extends Singleton {
 
 	}
 
-
 	/**
 	 * Initialization routine
 	 */
@@ -170,6 +179,7 @@ class Teams_Controller extends Singleton {
 				case 'list_teams':
 				case 'teams_in_trash':
 				case 'filter_teams':
+				case 'quick_edit_post':
 					Teams_List_Controller::run( $this->instance );
 					break;
 

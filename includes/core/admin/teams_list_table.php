@@ -9,8 +9,6 @@
 namespace TEAMTALLY\Core\Admin;
 
 use TEAMTALLY\Controllers\Teams_Controller;
-use TEAMTALLY\Controllers\Teams_Edit_Controller;
-use TEAMTALLY\Controllers\Teams_List_Controller;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\System\Helper;
 use \WP_Posts_List_Table;
@@ -54,6 +52,10 @@ class Teams_List_Table extends WP_Posts_List_Table {
 		$wp_query->get_posts();
 
 	}
+
+//	public function column_nickname() {
+//
+//	}
 
 
 	/**
