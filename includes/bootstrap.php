@@ -8,7 +8,8 @@
 
 namespace TEAMTALLY;
 
-require_once( 'includes/system/helper.php' );
+require_once( 'system/helper.php' );
+
 
 use TEAMTALLY\System\Helper;
 
@@ -17,18 +18,12 @@ define( 'TEAMTALLY_VERSION', '1.0' );
 define( 'TEAMTALLY_DEV_MODE', true );
 
 /**
- * Activate Debugging
- */
-//error_reporting( E_ALL );
-//ini_set( 'display_errors', 'On' );
-
-/**
  * Path / Url constants
  */
 
 define( 'TEAMTALLY_TEXT_DOMAIN', 'team-tally' );
 
-define( 'TEAMTALLY_PLUGIN_ENTRY', __DIR__ . '/team-tally.php' );
+define( 'TEAMTALLY_PLUGIN_ENTRY', Helper::normalize_path( dirname( __DIR__ ), true ) . 'team-tally.php' );
 define( 'TEAMTALLY_ROOT_DIR', plugin_dir_path( TEAMTALLY_PLUGIN_ENTRY ) );
 define( 'TEAMTALLY_INCLUDES_DIR', TEAMTALLY_ROOT_DIR . 'includes/' );
 

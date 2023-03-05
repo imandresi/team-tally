@@ -6,7 +6,7 @@
 * Requires at least: 5.3
 * Requires PHP:      7.2
 * Author:            Itanjaka Mandresi
-* Author URI:        mandresi@logicia-system.com
+* Author URI:        mailto:mandresi@logicia-system.com
 * License:           GPL v2 or later
 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 * Text Domain:       team-tally
@@ -32,4 +32,5 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-require_once ('bootstrap.php');
+require_once ('includes/bootstrap.php');
+
