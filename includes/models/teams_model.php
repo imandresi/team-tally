@@ -9,10 +9,9 @@
 namespace TEAMTALLY\Models;
 
 use TEAMTALLY\System\Helper;
-use TEAMTALLY\System\Singleton;
 use WP_Post;
 
-class Teams_Model extends Singleton {
+class Teams_Model {
 
 	const TEAMS_POST_TYPE = 'teamtally_teams';
 	const TEAMS_FIELD_NAME = 'team_name';
@@ -60,20 +59,20 @@ class Teams_Model extends Singleton {
 	 *
 	 * @return int
 	 */
-	public static function count_teams_in_league($league) {
+	public static function count_teams_in_league( $league ) {
 
 		$args = array(
 			'post_type' => self::TEAMS_POST_TYPE,
 			'tax_query' => array(
 				array(
 					'taxonomy' => Leagues_Model::LEAGUES_TAXONOMY_NAME,
-					'field' => 'id',
-					'terms' => Helper::get_var($league['data']['term_id'])
+					'field'    => 'id',
+					'terms'    => Helper::get_var( $league['data']['term_id'] )
 				)
 			)
 		);
 
-		$query = new \WP_Query($args);
+		$query = new \WP_Query( $args );
 
 		$teams_count = $query->post_count;
 
@@ -85,7 +84,7 @@ class Teams_Model extends Singleton {
 	 *
 	 * @return void
 	 */
-	public function initialize_data_model() {
+	public static function initialize_data_model() {
 
 		register_post_type( self::TEAMS_POST_TYPE, array(
 			'supports'           => array(
@@ -138,18 +137,40 @@ class Teams_Model extends Singleton {
 	}
 
 	/**
-	 * Initialization routine
+	 * Deletes all teamsp
+	 *
+	 * @return void
 	 */
-	protected function init() {
-		add_action( 'init', array( $this, 'initialize_data_model' ) );
+	public static function delete_all_teams() {
+		$post_statuses = array(
+			'publish',
+			'future',
+			'draft',
+			'pending',
+			'private',
+			'trash',
+			'auto-draft',
+			'inherit',
+		);
+
+		$args = array(
+			'post_type'      => self::TEAMS_POST_TYPE,
+			'posts_per_page' => - 1, // Set to -1 to retrieve all posts of the given post type
+			'post_status' => $post_statuses,
+		);
+
+		$posts = get_posts( $args );
+
+		foreach ( $posts as $post ) {
+			wp_delete_post( $post->ID, true );
+		}
 	}
 
 	/**
-	 * Loads and executes the class
+	 * Initialization routine
 	 */
-	public static function load() {
-		self::get_instance();
+	public static function init() {
+		add_action( 'init', array( self::class, 'initialize_data_model' ) );
 	}
-
 
 } /* End of Class */

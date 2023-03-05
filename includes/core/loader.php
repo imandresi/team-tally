@@ -32,15 +32,18 @@ class Loader extends Singleton {
 		// Initializing sessions
 		Sessions::init();
 
+		// Loads models
+		Leagues_Model::init();
+		Teams_Model::init();
+
+		// Initialization of activation/deactivation/uninstall hooks
+		Plugin_Manager::init();
+
 		// Loads frontend routines
 		Front_Loader::load();
 
 		// Loads admin routines
 		Admin_Loader::load();
-
-		// Loads models
-		Leagues_Model::load();
-		Teams_Model::load();
 
 		// Loads controllers
 		Leagues_Controller::init();

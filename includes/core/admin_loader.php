@@ -52,8 +52,6 @@ class Admin_Loader extends Singleton {
 
 	}
 
-
-
 	/**
 	 * Automatically called at initialization
 	 */
@@ -65,12 +63,12 @@ class Admin_Loader extends Singleton {
 		// Loading admin styles and scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 
-		Plugin_Manager::setup();
 		Admin_Menu::load();
 		Admin_Notices::init();
 
 		// Loading
 		$this->init_admin_leagues();
+		
 	}
 
 	/**

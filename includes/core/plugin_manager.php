@@ -8,15 +8,17 @@
 
 namespace TEAMTALLY\Core;
 
-use TEAMTALLY\System\Singleton;
+use TEAMTALLY\Models\Leagues_Model;
+use TEAMTALLY\Models\Teams_Model;
+use TEAMTALLY\System\Helper;
 
-class Plugin_Manager extends Singleton {
+class Plugin_Manager {
 
 	/**
 	 * Activation code
 	 * @return void
 	 */
-	private function activate() {
+	public static function activate() {
 
 	}
 
@@ -24,32 +26,29 @@ class Plugin_Manager extends Singleton {
 	 * Deactivation code
 	 * @return void
 	 */
-	private function deactivate() {
+	public static function deactivate() {
 
 	}
 
 	/**
-	 * Uninstall code
+	 * Deactivation code
 	 * @return void
 	 */
-	private function uninstall() {
+	public static function uninstall() {
+		Teams_Model::initialize_data_model();
+		Leagues_Model::initialize_data_model();
 
+		Teams_Model::delete_all_teams();
+		Leagues_Model::delete_all_leagues();
 	}
 
 	/**
 	 * Initialization
 	 */
-	protected function init() {
-		register_activation_hook( TEAMTALLY_PLUGIN_ENTRY, array( $this, 'activate' ) );
-		register_deactivation_hook( TEAMTALLY_PLUGIN_ENTRY, array( $this, 'deactivate' ) );
-		register_uninstall_hook( TEAMTALLY_PLUGIN_ENTRY, array( $this, 'uninstall' ) );
-	}
-
-	/**
-	 * Loader
-	 */
-	public static function setup() {
-		self::get_instance();
+	public static function init() {
+		register_activation_hook( TEAMTALLY_PLUGIN_ENTRY, array( self::class, 'activate' ) );
+		register_deactivation_hook( TEAMTALLY_PLUGIN_ENTRY, array( self::class, 'deactivate' ) );
+		register_uninstall_hook( TEAMTALLY_PLUGIN_ENTRY, array( self::class, 'uninstall' ) );
 	}
 
 }

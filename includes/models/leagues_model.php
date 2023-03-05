@@ -8,13 +8,10 @@
 
 namespace TEAMTALLY\Models;
 
-use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
-use WP_Post;
-use WP_Query;
 use WP_Term;
 
-class Leagues_Model extends Singleton {
+class Leagues_Model {
 
 	const LEAGUES_TAXONOMY_NAME = 'teamtally_leagues';
 	const LEAGUES_FIELD_NAME = 'league_name';
@@ -36,13 +33,13 @@ class Leagues_Model extends Singleton {
 			return false;
 		}
 
-		$league_photo_id       = Helper::get_var($league_data['meta'][ self::LEAGUES_FIELD_PHOTO ]);
+		$league_photo_id       = Helper::get_var( $league_data['meta'][ self::LEAGUES_FIELD_PHOTO ] );
 		$league_photo_metadata = $league_photo_id ? wp_get_attachment_metadata( $league_photo_id ) : false;
 
 		$data = array(
-			'term_id'                   => Helper::get_var($league_data['raw']->term_id),
-			self::LEAGUES_FIELD_NAME    => Helper::get_var($league_data['raw']->name),
-			self::LEAGUES_FIELD_COUNTRY => Helper::get_var($league_data['meta'][ self::LEAGUES_FIELD_COUNTRY ]),
+			'term_id'                   => Helper::get_var( $league_data['raw']->term_id ),
+			self::LEAGUES_FIELD_NAME    => Helper::get_var( $league_data['raw']->name ),
+			self::LEAGUES_FIELD_COUNTRY => Helper::get_var( $league_data['meta'][ self::LEAGUES_FIELD_COUNTRY ] ),
 			self::LEAGUES_FIELD_PHOTO   => array(
 				'id'       => $league_photo_id,
 				'metadata' => $league_photo_metadata
@@ -80,6 +77,29 @@ class Leagues_Model extends Singleton {
 		wp_delete_term( $league_id, self::LEAGUES_TAXONOMY_NAME );
 
 		return true;
+	}
+
+	/**
+	 * Deletes all the existing leagues
+	 *
+	 * @return void
+	 */
+	public static function delete_all_leagues() {
+		$taxonomy_name = Leagues_Model::LEAGUES_TAXONOMY_NAME;
+
+		$terms = get_terms( array(
+			'taxonomy'   => $taxonomy_name,
+			'hide_empty' => false,
+		) );
+
+		if ( ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				wp_delete_term( $term->term_id, $taxonomy_name );
+			}
+		}
+
+		unregister_taxonomy( $taxonomy_name );
+
 	}
 
 	/**
@@ -158,8 +178,7 @@ class Leagues_Model extends Singleton {
 	 *
 	 * @return void
 	 */
-	public function initialize_data_model() {
-
+	public static function initialize_data_model() {
 		register_taxonomy(
 			self::LEAGUES_TAXONOMY_NAME,
 			Teams_Model::TEAMS_POST_TYPE,
@@ -185,15 +204,8 @@ class Leagues_Model extends Singleton {
 	/**
 	 * Initialization routine
 	 */
-	protected function init() {
-		add_action( 'init', array( $this, 'initialize_data_model' ) );
-	}
-
-	/**
-	 * Loads and executes the class
-	 */
-	public static function load() {
-		self::get_instance();
+	public static function init() {
+		add_action( 'init', array( self::class, 'initialize_data_model' ) );
 	}
 
 }

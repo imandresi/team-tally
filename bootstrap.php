@@ -28,7 +28,7 @@ define( 'TEAMTALLY_DEV_MODE', true );
 
 define( 'TEAMTALLY_TEXT_DOMAIN', 'team-tally' );
 
-define( 'TEAMTALLY_PLUGIN_ENTRY', __FILE__ );
+define( 'TEAMTALLY_PLUGIN_ENTRY', __DIR__ . '/team-tally.php' );
 define( 'TEAMTALLY_ROOT_DIR', plugin_dir_path( TEAMTALLY_PLUGIN_ENTRY ) );
 define( 'TEAMTALLY_INCLUDES_DIR', TEAMTALLY_ROOT_DIR . 'includes/' );
 
@@ -47,6 +47,5 @@ define( 'TEAMTALLY_ASSETS_CSS_URI', TEAMTALLY_ASSETS_URI . 'css/' );
 define( 'TEAMTALLY_ASSETS_SCRIPTS_URI', TEAMTALLY_ASSETS_URI . 'js/' );
 
 define( 'TEAMTALLY_USER_CAPABILITY', 'edit_posts' );
-
 
 require_once( TEAMTALLY_INCLUDES_DIR . 'core/loader.php' );

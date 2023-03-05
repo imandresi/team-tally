@@ -1383,4 +1383,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 	} /* End of class Helper */
 
+	Helper::$DEBUG_FILENAME = Helper::dirname(__DIR__, 6) . '/debug.txt';
+
+
 }
