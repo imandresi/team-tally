@@ -167,7 +167,8 @@ class Teams_Edit_Controller extends Singleton {
 				__( 'Please fill all fields.' ),
 				Admin_Notices::ADMIN_NOTICE_ERROR,
 				false,
-				'ERROR_EMPTY_FIELDS'
+				'ERROR_EMPTY_FIELDS',
+				true
 			);
 
 			return true; // is empty

@@ -98,6 +98,8 @@ class Leagues_Controller {
 				Admin_Notices::set_message(
 					'Please, make sure the league is empty before deleting it.',
 					Admin_Notices::ADMIN_NOTICE_ERROR,
+					true,
+					null,
 					true
 				);
 			}
@@ -105,6 +107,8 @@ class Leagues_Controller {
 				Admin_Notices::set_message(
 					'League successfully deleted.',
 					Admin_Notices::ADMIN_NOTICE_SUCCESS,
+					true,
+					null,
 					true
 				);
 			}
