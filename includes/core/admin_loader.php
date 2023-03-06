@@ -12,6 +12,7 @@ use TEAMTALLY\Controllers\Teams_Controller;
 use TEAMTALLY\Core\Admin\Admin_Menu;
 use TEAMTALLY\Core\Admin\Teams_List_Table;
 use TEAMTALLY\Core\Plugin_Manager;
+use TEAMTALLY\Elementor\Elementor_Manager;
 use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
@@ -44,8 +45,8 @@ class Admin_Loader extends Singleton {
 
 		// Loads theme script
 		$script_list = array(
-			'css/back-style.css',
-			'js/back-script.js'
+			'css/admin-style.css',
+			'js/admin-script.js'
 		);
 
 		Helper::str_enqueue_script_list( $script_list, TEAMTALLY_DEV_MODE );
@@ -64,7 +65,8 @@ class Admin_Loader extends Singleton {
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 
 		Admin_Menu::load();
-		Admin_Notices::init();
+		Admin_Notices::load();
+		Elementor_Manager::init();
 
 		// Loading
 		$this->init_admin_leagues();

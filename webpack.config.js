@@ -8,16 +8,16 @@ const assetsPath = path.resolve(__dirname, 'assets');
 
 const commonConfig = {
     entry: {
-        'front-script': {
-            import: './src/js/front/front-script-index.js',
+        'frontend-script': {
+            import: './src/js/frontend/frontend-script-index.js',
             filename: './js/[name].js'
         },
-        'back-script': {
-            import: './src/js/back/back-script-index.js',
+        'admin-script': {
+            import: './src/js/admin/admin-script-index.js',
             filename: './js/[name].js'
         },
-        'front-style': './src/scss/front-style.scss',
-        'back-style': './src/scss/back-style.scss',
+        'frontend-style': './src/scss/frontend-style.scss',
+        'admin-style': './src/scss/admin-style.scss',
     },
 
     output: {

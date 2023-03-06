@@ -12,7 +12,7 @@ use TEAMTALLY\Shortcodes\Shortcodes;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
-class Front_Loader extends Singleton {
+class Frontend_Loader extends Singleton {
 
 	/**
 	 * Enqueue theme styles and scripts
@@ -21,8 +21,8 @@ class Front_Loader extends Singleton {
 
 		// Loads theme script
 		$script_list = array(
-			'css/front-style.css',
-			'js/front-script.js',
+			'css/frontend-style.css',
+			'js/frontend-script.js',
 		);
 
 		Helper::str_enqueue_script_list( $script_list );

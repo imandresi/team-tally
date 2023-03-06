@@ -40,7 +40,7 @@ class Loader extends Singleton {
 		Plugin_Manager::init();
 
 		// Loads frontend routines
-		Front_Loader::load();
+		Frontend_Loader::load();
 
 		// Loads admin routines
 		Admin_Loader::load();
