@@ -78,7 +78,7 @@ class Sessions {
 	 *
 	 * @return void
 	 */
-	private static function regenerate_session_id() {
+	public static function regenerate_session_id() {
 		session_regenerate_id( true );
 	}
 
