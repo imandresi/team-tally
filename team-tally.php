@@ -11,6 +11,7 @@
 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 * Text Domain:       team-tally
 * Domain Path:       /languages
+* Elementor tested up to: 3.11.2
 */
 
 /*
@@ -27,10 +28,11 @@ GNU General Public License for more details.
 
 
 // Prevent Direct call for security reason
-if ( !function_exists( 'add_action' ) ) {
-	echo 'Silence is golden !';
-	exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // silence is golden
 }
 
-require_once ('includes/bootstrap.php');
+add_action( 'plugins_loaded', function () {
+	require_once( 'includes/bootstrap.php' );
+} );
 

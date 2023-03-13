@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <template>
+        <name>Template name 1</name>
+        <container>
+            <![CDATA[
+<p>TEMPLATE 1: This is the container</p>
+            ]]>
+        </container>
+        <item>
+            <![CDATA[
+<p>TEMPLATE 1: This is the item</p>
+            ]]>
+        </item>
+    </template>
+
+    <template>
+        <name>Template name 2</name>
+        <container>
+            <![CDATA[
+<p>TEMPLATE 2: This is the container</p>
+            ]]>
+        </container>
+        <item>
+            <![CDATA[
+<p>TEMPLATE 2: This is the item</p>
+            ]]>
+        </item>
+    </template>
+
+</templates>

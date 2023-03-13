@@ -1,0 +1,96 @@
+@import "admin/custom_admin_notice";
+
+/**
+ * elementor team-listing widget style
+ */
+
+.elementor-control {
+  &.elementor-control-template_btn_save,
+  &.elementor-control-template_btn_remove {
+    display: inline-block;
+    padding: 20px 0 40px 0;
+    margin: 0;
+    width: 50%;
+
+    .elementor-control-content {
+      display: inline-block;
+    }
+
+    button {
+      min-width: 100px;
+    }
+
+  }
+
+  &.elementor-control-template_btn_save {
+    text-align: left;
+    padding-left: 5px;
+
+    button {
+      &:not(disabled) {
+        background-color: black !important;
+      }
+    }
+
+  }
+
+  &.elementor-control-template_btn_remove {
+    text-align: right;
+    padding-right: 5px;
+  }
+
+  &.elementor-control-template_tabs {
+    padding-bottom: 30px;
+  }
+
+}
+
+#elementor-panel-page-editor {
+
+  .team-preview-button {
+    text-align: center;
+    padding: 20px 0;
+
+    button {
+      display: inline-block;
+    }
+
+  }
+
+}
+
+.elementor-control-template_pending {
+  display: block;
+  position: absolute !important;
+  z-index: 2000;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: white !important;
+  visibility: hidden;
+
+  &.is-pending {
+    visibility: visible;
+  }
+
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #000;
+  animation: spinner .6s linear infinite;
+}

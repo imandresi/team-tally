@@ -1294,6 +1294,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		 * Enqueues a list of styles or script
 		 *
 		 * @param $script_list
+		 * @param bool $force_reload
 		 *
 		 * @return void
 		 */

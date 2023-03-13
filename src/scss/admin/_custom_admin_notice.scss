@@ -1,0 +1,95 @@
+/**
+ * Custom admin notice
+ */
+
+.notice {
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border-radius: 3px;
+  position: relative;
+  background-color: #fff;
+  color: #32373c;
+  border: 1px solid #e5e5e5;
+  display: none; // notice is hidden by default
+
+  p {
+    margin: 0;
+  }
+
+  .close-btn-container {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    visibility: hidden;
+
+    .close-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      border: none;
+      background-color: transparent;
+
+      &:before,
+      &:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2px;
+        height: 10px;
+        background-color: black;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      &:before {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+
+    }
+  }
+
+  &.is-dismissible {
+    .close-btn-container {
+      visibility: visible;
+    }
+  }
+
+  &.notice-success {
+    background-color: #d7e5ca;
+    color: #3c763d;
+    border-color: #c1e0b3;
+
+    .close-btn-container {
+      .close-btn {
+        &:before,
+        &:after {
+          background-color: #3c763d;
+        }
+      }
+    }
+
+  }
+
+  &.notice-error {
+    background-color: #f2dede;
+    color: #a94442;
+    border-color: #ebccd1;
+
+    .close-btn-container {
+      .close-btn {
+        &:before,
+        &:after {
+          background-color: #a94442;
+        }
+      }
+    }
+
+  }
+
+}

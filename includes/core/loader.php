@@ -10,6 +10,7 @@ namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
+use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Sessions;
@@ -64,6 +65,7 @@ class Loader extends Singleton {
 	protected function init() {
 		$this->load_dependencies();
 		$this->language_setup();
+
 	}
 
 	/**
