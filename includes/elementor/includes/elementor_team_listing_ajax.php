@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Elementor\Includes;
 
+use TEAMTALLY\Elementor\Models\Team_Listing_Custom_Css_Model;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Elementor\Widgets\Elementor_Team_Listing_Widget;
 use TEAMTALLY\System\Helper;
@@ -28,8 +29,8 @@ class Elementor_Team_Listing_Ajax {
 
 		if ( ! $data ) {
 			$response = array(
-				'success' => false,
-				'error_msg' => __( 'Template not found.' )
+				'success'   => false,
+				'message' => __( 'Template not found.' )
 			);
 
 			wp_send_json( $response );
@@ -57,8 +58,8 @@ class Elementor_Team_Listing_Ajax {
 		// security check
 		if ( ! wp_verify_nonce( $template_nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
 			$response = array(
-				'success' => false,
-				'error_msg' => __( 'Action forbidden. Please reload the page.' ),
+				'success'   => false,
+				'message' => __( 'Action forbidden. Please reload the page.' ),
 			);
 
 			wp_send_json( $response );
@@ -76,7 +77,7 @@ class Elementor_Team_Listing_Ajax {
 			'success'        => true,
 			'template_nonce' => $nonce,
 			'templates'      => $templates,
-			'notice_msg'     => __( 'Template removed.' ),
+			'message'     => __( 'Template removed.' ),
 		);
 
 		wp_send_json( $data );
@@ -100,8 +101,8 @@ class Elementor_Team_Listing_Ajax {
 		// security check
 		if ( ! wp_verify_nonce( $template_nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
 			$response = array(
-				'success' => false,
-				'error_msg' => __( 'Action forbidden. Please reload the page.' )
+				'success'   => false,
+				'message' => __( 'Action forbidden. Please reload the page.' )
 			);
 
 			wp_send_json( $response );
@@ -119,15 +120,45 @@ class Elementor_Team_Listing_Ajax {
 			return $template['name'];
 		}, Team_Listing_Template_Model::get_all_templates() );
 
-		$notice_msg = $is_new_template ? __('New template saved.') : __('Template updated');
-		$data = array(
+		$message = $is_new_template ? __( 'New template saved.' ) : __( 'Template updated' );
+		$data       = array(
 			'success'        => true,
 			'template_nonce' => wp_create_nonce( Elementor_Team_Listing_Widget::SECURITY_NONCE ),
 			'templates'      => $templates,
-			'notice_msg'     => $notice_msg
+			'message'     => $message
 		);
 
 		wp_send_json( $data );
+
+	}
+
+	/**
+	 * Saves the custom css of the team listing widget panel
+	 *
+	 * fired by 'wp_ajax_elementor_team_listing_save_css'
+	 *
+	 * @return void
+	 */
+	public static function action_team_listing_save_css() {
+		$css   = $_REQUEST['css'];
+		$nonce = $_REQUEST['_nonce'];
+
+		// security check
+		if ( ! wp_verify_nonce( $nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
+			$response = array(
+				'success'   => false,
+				'message' => __( 'Action forbidden. Please reload the page.' )
+			);
+
+			wp_send_json( $response );
+		}
+
+		Team_Listing_Custom_Css_Model::save_css( $css );
+
+		wp_send_json( array(
+			'success' => true,
+			'message' => __('Custom CSS saved.')
+		) );
 
 	}
 
@@ -152,6 +183,12 @@ class Elementor_Team_Listing_Ajax {
 		add_action(
 			'wp_ajax_elementor_team_listing_delete_template',
 			array( self::class, 'action_delete_template' )
+		);
+
+		// hook to save the custom css of team listing
+		add_action(
+			'wp_ajax_elementor_team_listing_save_css',
+			array( self::class, 'action_team_listing_save_css' )
 		);
 
 	}

@@ -234,10 +234,10 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                                 setControlValue('template_container', response.container);
                                 setControlValue('template_item', response.item);
                             } else {
-                                const notice_msg = response.error_msg;
+                                const message = response.message;
                                 templatesHelper.showTemplateNotice(
                                     'notice-error',
-                                    notice_msg
+                                    message
                                 );
 
                                 setControlValue('template_name', '');
@@ -290,17 +290,16 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
                 $request.done(function (response) {
 
-                        let noticeType, noticeMsg;
+                        let noticeType;
+                        let noticeMsg = response.message;
 
                         if (response.success) {
                             noticeType = 'notice-success';
-                            noticeMsg = response.notice_msg;
 
                             templatesHelper.updateTemplatesList(response.templates);
                             setControlValue('template_nonce', response.template_nonce);
                         } else {
                             noticeType = 'notice-error';
-                            noticeMsg = response.error_msg;
                         }
 
                         templatesHelper.showTemplateNotice(noticeType, noticeMsg);
@@ -341,19 +340,17 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
                 // executed if the ajax request is ok
                 $request.done(function (response) {
-                    let noticeType, noticeMsg;
-                    let nonce;
+                    let noticeType, nonce;
+                    let noticeMsg = response.message;
 
                     if (response.success) {
                         noticeType = 'notice-success';
-                        noticeMsg = response.notice_msg;
 
                         templatesHelper.updateTemplatesList(response.templates);
                         setControlValue('template_nonce', response.template_nonce);
 
                     } else {
                         noticeType = 'notice-error';
-                        noticeMsg = 'response.error_msg'
                     }
 
                     templatesHelper.showTemplateNotice(
