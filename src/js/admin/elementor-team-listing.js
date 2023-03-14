@@ -9,6 +9,12 @@ const ajaxurl = window.ajaxurl;
 const $e = window.$e;
 
 /**
+ * DATA SENT BY PHP
+ *   string nonce
+ */
+const SHARED_DATA = window.TEAMTALLY.SHARED_DATA;
+
+/**
  * Action automatically triggered when the 'team_listing_widget' panel is activated
  */
 elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', function (panel, model, view) {
@@ -26,7 +32,11 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
          * @param noticeMsg
          */
         showTemplateNotice: (noticeType, noticeMsg) => {
+            if (panel.currentPageView.activeSection !== 'template_section') return;
+
             const controlView = getControlView('template_admin_notice');
+            if (!controlView) return;
+
             displayNotice(controlView.$el, noticeMsg, noticeType, true);
         },
 
@@ -39,7 +49,12 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
          */
         updateTemplatesList: (templates, newSelectedValue = '') => {
 
+            if (panel.currentPageView.activeSection !== 'template_section') return;
+
             const controlView = getControlView('chosen_template');
+
+            if (!controlView) return;
+
             const controlModel = controlView.model;
             const $control = controlView.$el.find('select');
 
@@ -82,16 +97,15 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
          * @param boolean enabled
          */
         enableTemplateEditing(enabled = true) {
+
+            if (panel.currentPageView.activeSection !== 'template_section') return;
+
             const $pendingEl = $('.elementor-control-template_pending');
-            if (!$pendingEl.length) {
-                return;
-            }
+            if (!$pendingEl.length) return;
 
             const btnSaveView = getControlView('template_btn_save');
             const $btn = btnSaveView.$el;
-            if (!$btn.length) {
-                return;
-            }
+            if (!$btn.length) return;
 
             const pendingElOffset = $pendingEl.offset();
             const btnOffset = $btn.offset();
@@ -114,6 +128,54 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         }
     };
 
+
+    /**
+     * Saves all configuration in the widget panel
+     */
+    function saveWidgetConfig() {
+
+        // save template config
+        // save css config
+        const template_name = model.getSetting('template_name');
+        const template_container = model.getSetting('template_container');
+        const template_item = model.getSetting('template_item');
+        const custom_css = model.getSetting('custom_css');
+        const nonce = SHARED_DATA.nonce;
+
+        templatesHelper.enableTemplateEditing(false);
+
+        const $request = $.ajax({
+            url: ajaxurl,
+            method: 'POST',
+            data: {
+                action: 'elementor_team_listing_save_widget_config',
+                template_name: template_name,
+                template_container: template_container,
+                template_item: template_item,
+                custom_css: custom_css,
+                _nonce: nonce,
+            },
+        });
+
+        $request.done(function (response) {
+            let noticeType;
+            let noticeMsg = response.message;
+
+            SHARED_DATA.nonce = response._nonce;
+
+            if (response.success) {
+                noticeType = 'notice-success';
+                templatesHelper.updateTemplatesList(response.templates);
+            } else {
+                noticeType = 'notice-error';
+            }
+
+            templatesHelper.enableTemplateEditing(true);
+
+        });
+
+    }
+
     /**
      * Changes the value of a control and the model at the same time
      *
@@ -127,6 +189,8 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      */
     function setControlValue(key, value) {
         const controlView = getControlView(key);
+        if (!controlView) return;
+
         controlView.setValue(value);
         controlView.render();
     }
@@ -147,7 +211,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         const panel = document.querySelector('#elementor-panel');
         const previewBtn = document.createElement('div');
         previewBtn.setAttribute('class', 'team-preview-button');
-        previewBtn.innerHTML = `<button class="elementor-button elementor-button-default" type="button">PREVIEW CHANGES</button>`;
+        previewBtn.innerHTML = `<button class="elementor-button elementor-button-default" type="button">SAVE AND PREVIEW IN EDITOR</button>`;
 
         const panelContainer = panel.querySelector("#elementor-panel-page-editor");
         panelContainer.prepend(previewBtn);
@@ -272,7 +336,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                 const template_name = model.getSetting('template_name');
                 const template_container = model.getSetting('template_container');
                 const template_item = model.getSetting('template_item');
-                const template_nonce = model.getSetting('template_nonce');
+                const nonce = SHARED_DATA.nonce;
 
                 templatesHelper.enableTemplateEditing(false);
 
@@ -284,7 +348,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                         template_name: template_name,
                         template_container: template_container,
                         template_item: template_item,
-                        template_nonce: template_nonce,
+                        _nonce: nonce,
                     },
                 });
 
@@ -293,17 +357,16 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                         let noticeType;
                         let noticeMsg = response.message;
 
+                        SHARED_DATA.nonce = response._nonce;
+
                         if (response.success) {
                             noticeType = 'notice-success';
-
                             templatesHelper.updateTemplatesList(response.templates);
-                            setControlValue('template_nonce', response.template_nonce);
                         } else {
                             noticeType = 'notice-error';
                         }
 
                         templatesHelper.showTemplateNotice(noticeType, noticeMsg);
-
                         templatesHelper.enableTemplateEditing(true);
                     }
                 );
@@ -324,7 +387,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
             if ((target.classList.contains('elementor-button')) &&
                 ($(target).closest('.elementor-control-template_btn_remove').length > 0)) {
                 const template_name = model.getSetting('template_name');
-                const template_nonce = model.getSetting('template_nonce');
+                const nonce = SHARED_DATA.nonce;
 
                 templatesHelper.enableTemplateEditing(false);
 
@@ -334,7 +397,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                     data: {
                         action: 'elementor_team_listing_delete_template',
                         template_name: template_name,
-                        template_nonce: template_nonce,
+                        _nonce: nonce,
                     },
                 });
 
@@ -343,12 +406,11 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                     let noticeType, nonce;
                     let noticeMsg = response.message;
 
+                    SHARED_DATA.nonce = response._nonce;
+
                     if (response.success) {
                         noticeType = 'notice-success';
-
                         templatesHelper.updateTemplatesList(response.templates);
-                        setControlValue('template_nonce', response.template_nonce);
-
                     } else {
                         noticeType = 'notice-error';
                     }
@@ -378,7 +440,9 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
                 process = true;
             }
+
             return process;
+
         }
 
         /**
@@ -405,6 +469,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
     // console.log('panel', panel);
     // console.log('model', model);
     // console.log('view', view);
+    console.log('shared data', SHARED_DATA);
 
     /**
      * Initialization part

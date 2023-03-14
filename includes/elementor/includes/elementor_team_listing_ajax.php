@@ -15,6 +15,44 @@ use TEAMTALLY\System\Helper;
 
 class Elementor_Team_Listing_Ajax {
 
+	const HAVE_ACCESS_RIGHTS = TEAMTALLY_USER_CAPABILITY;
+
+
+	/**
+	 * Checks security access to the ajax functionality
+	 *
+	 * @return string
+	 */
+	private static function check_security_access( $nonce ) {
+		$forbidden = false;
+
+		$message   = '';
+		$new_nonce = wp_create_nonce( Elementor_Team_Listing_Widget::SECURITY_NONCE );
+
+		if ( ! current_user_can( self::HAVE_ACCESS_RIGHTS ) ) {
+			$message   = __( 'Action forbidden.' );
+			$forbidden = true;
+		}
+
+		// security check
+		if ( ! wp_verify_nonce( $nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
+			$message   = __( 'Action forbidden. Please reload the page.' );
+			$forbidden = true;
+		}
+
+		if ( $forbidden ) {
+			$response = array(
+				'success' => false,
+				'message' => $message,
+				'_nonce'  => $new_nonce,
+			);
+
+			wp_send_json( $response );
+		}
+
+		return $new_nonce;
+
+	}
 
 	/**
 	 * Returns an elementor team listing template
@@ -29,7 +67,7 @@ class Elementor_Team_Listing_Ajax {
 
 		if ( ! $data ) {
 			$response = array(
-				'success'   => false,
+				'success' => false,
 				'message' => __( 'Template not found.' )
 			);
 
@@ -50,20 +88,11 @@ class Elementor_Team_Listing_Ajax {
 	 */
 	public static function action_delete_template() {
 
-		$template_name  = $_REQUEST['template_name'];
-		$template_nonce = $_REQUEST['template_nonce'];
+		$template_name = $_REQUEST['template_name'];
+		$nonce         = $_REQUEST['_nonce'];
 
-		$nonce = wp_create_nonce( Elementor_Team_Listing_Widget::SECURITY_NONCE );
-
-		// security check
-		if ( ! wp_verify_nonce( $template_nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
-			$response = array(
-				'success'   => false,
-				'message' => __( 'Action forbidden. Please reload the page.' ),
-			);
-
-			wp_send_json( $response );
-		}
+		// Aborts if access not allowed
+		$nonce = self::check_security_access( $nonce );
 
 		// deletes the template
 		Team_Listing_Template_Model::delete_template( $template_name );
@@ -74,10 +103,10 @@ class Elementor_Team_Listing_Ajax {
 		}, Team_Listing_Template_Model::get_all_templates() );
 
 		$data = array(
-			'success'        => true,
-			'template_nonce' => $nonce,
-			'templates'      => $templates,
-			'message'     => __( 'Template removed.' ),
+			'success'   => true,
+			'_nonce'    => $nonce,
+			'templates' => $templates,
+			'message'   => __( 'Template removed.' ),
 		);
 
 		wp_send_json( $data );
@@ -96,17 +125,10 @@ class Elementor_Team_Listing_Ajax {
 		$template_name      = $_REQUEST['template_name'];
 		$template_container = $_REQUEST['template_container'];
 		$template_item      = $_REQUEST['template_item'];
-		$template_nonce     = $_REQUEST['template_nonce'];
+		$nonce              = $_REQUEST['_nonce'];
 
-		// security check
-		if ( ! wp_verify_nonce( $template_nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
-			$response = array(
-				'success'   => false,
-				'message' => __( 'Action forbidden. Please reload the page.' )
-			);
-
-			wp_send_json( $response );
-		}
+		// Aborts if access not allowed
+		$nonce = self::check_security_access( $nonce );
 
 		// update the template
 		$is_new_template = Team_Listing_Template_Model::update_template( array(
@@ -121,11 +143,11 @@ class Elementor_Team_Listing_Ajax {
 		}, Team_Listing_Template_Model::get_all_templates() );
 
 		$message = $is_new_template ? __( 'New template saved.' ) : __( 'Template updated' );
-		$data       = array(
-			'success'        => true,
-			'template_nonce' => wp_create_nonce( Elementor_Team_Listing_Widget::SECURITY_NONCE ),
-			'templates'      => $templates,
-			'message'     => $message
+		$data    = array(
+			'success'   => true,
+			'_nonce'    => $nonce,
+			'templates' => $templates,
+			'message'   => $message
 		);
 
 		wp_send_json( $data );
@@ -143,21 +165,51 @@ class Elementor_Team_Listing_Ajax {
 		$css   = $_REQUEST['css'];
 		$nonce = $_REQUEST['_nonce'];
 
-		// security check
-		if ( ! wp_verify_nonce( $nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
-			$response = array(
-				'success'   => false,
-				'message' => __( 'Action forbidden. Please reload the page.' )
-			);
+		// Aborts if access not allowed
+		$nonce = self::check_security_access( $nonce );
 
-			wp_send_json( $response );
-		}
-
+		// saves the css
 		Team_Listing_Custom_Css_Model::save_css( $css );
 
 		wp_send_json( array(
 			'success' => true,
-			'message' => __('Custom CSS saved.')
+			'_nonce'  => $nonce,
+			'message' => __( 'Custom CSS saved.' ),
+		) );
+
+	}
+
+	/**
+	 * Saves the configuration of the widget
+	 *
+	 * fired by 'wp_ajax_elementor_team_listing_save_widget_config'
+	 *
+	 * @return void
+	 */
+	public static function action_team_listing_save_widget_config() {
+		$css                = $_REQUEST['css'];
+		$template_name      = $_REQUEST['template_name'];
+		$template_container = $_REQUEST['template_container'];
+		$template_item      = $_REQUEST['template_item'];
+		$nonce              = $_REQUEST['_nonce'];
+
+		// Aborts if access not allowed
+		$nonce = self::check_security_access( $nonce );
+
+		// saves the css
+		Team_Listing_Custom_Css_Model::save_css( $css );
+
+		// update the template
+		Team_Listing_Template_Model::update_template( array(
+			'name'      => $template_name,
+			'container' => $template_container,
+			'item'      => $template_item,
+		) );
+
+		wp_send_json( array(
+			'success' => true,
+			'_nonce'  => $nonce,
+			'message' => __( 'Config saved.' ),
 		) );
 
 	}
@@ -190,6 +242,13 @@ class Elementor_Team_Listing_Ajax {
 			'wp_ajax_elementor_team_listing_save_css',
 			array( self::class, 'action_team_listing_save_css' )
 		);
+
+		// hook to save the widget config of team listing
+		add_action(
+			'wp_ajax_elementor_team_listing_save_widget_config',
+			array( self::class, 'action_team_listing_save_widget_config' )
+		);
+
 
 	}
 

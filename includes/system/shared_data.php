@@ -21,7 +21,7 @@ class Shared_Data extends Singleton {
 	 *
 	 * @return void
 	 */
-	public static function share_to_js_script( $js_handle, $data, $position = 'after' ) {
+	public static function share_data_to_js( $js_handle, $data, $position = 'after' ) {
 		$instance = self::get_instance();
 
 		if ( isset( $instance->handles[ $js_handle ] ) ) {

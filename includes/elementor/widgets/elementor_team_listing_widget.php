@@ -9,8 +9,10 @@
 namespace TEAMTALLY\Elementor\Widgets;
 
 use TEAMTALLY\Elementor\Elementor_Manager;
+use TEAMTALLY\Elementor\Models\Team_Listing_Custom_Css_Model;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\System\Shared_Data;
 use TEAMTALLY\System\Template;
 
 class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
@@ -62,6 +64,14 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			'handle:elementor_team_listing_script|src:js/elementor-team-listing.js',
 			true
 		);
+
+        // SHARED DATA TO JS
+        // TODO: add i18n localization for js labels
+        $data = array(
+          'nonce' => wp_create_nonce( self::SECURITY_NONCE ),
+        );
+
+        Shared_Data::share_data_to_js('elementor_team_listing_script', $data, 'before');
 
 	}
 
@@ -116,8 +126,8 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 	 * @return void
 	 */
 	protected function content_add_league_filter_section() {
-		// Content Tab Start
 
+		// Content Tab Start
 		$this->start_controls_section(
 			'league_filter_section',
 			[
@@ -349,6 +359,15 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'template_admin_notice',
+			[
+				'type'            => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'             => Template::parse( 'admin/common/admin_notice.php' ),
+				'content_classes' => 'notice notice-error is-dismissible is-hidden',
+			]
+		);
+
 		// ---------------------
 		// TAB: CHOOSE TEMPLATE
 		// ---------------------
@@ -395,27 +414,10 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
-			'template_nonce',
-			[
-				'type'    => \Elementor\Controls_Manager::HIDDEN,
-				'default' => wp_create_nonce( self::SECURITY_NONCE ),
-			]
-		);
-
-		$this->add_control(
-			'template_admin_notice',
-			[
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'  => Template::parse( 'admin/common/admin_notice.php' ),
-				'content_classes' => 'notice notice-error is-dismissible is-hidden',
-			]
-		);
-
-		$this->add_control(
 			'template_pending',
 			[
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'  => '',
+				'type'            => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'             => '',
 				'content_classes' => 'template_pending_spinner',
 			]
 		);
@@ -504,13 +506,21 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'_nonce',
+			[
+				'type'    => \Elementor\Controls_Manager::HIDDEN,
+				'default' => wp_create_nonce( self::SECURITY_NONCE ),
+			]
+		);
+
+		$this->add_control(
 			'custom_css',
 			[
 				'type'        => \Elementor\Controls_Manager::CODE,
 				'label'       => esc_html__( 'CSS Content', TEAMTALLY_TEXT_DOMAIN ),
 				'show_label'  => true,
 				'label_block' => true,
-				'default'     => '',
+				'default'     => Team_Listing_Custom_Css_Model::get_css(),
 				'language'    => 'html',
 			]
 		);
