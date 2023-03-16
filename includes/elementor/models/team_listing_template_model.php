@@ -16,7 +16,28 @@ class Team_Listing_Template_Model {
 	const DB_FILE = __DIR__ . '/team_template.xml';
 	const DB_FILE_INIT = __DIR__ . '/team_template_init.xml';
 
-	public s
+	/**
+	 * Checks if the supplied template is among the default template
+	 *
+	 * @param string $template_name
+	 *
+	 * @return bool
+	 */
+	public static function is_default_template( $template_name ) {
+		$result        = false;
+		$template_name = trim( $template_name );
+		$xml           = simplexml_load_file( self::DB_FILE_INIT );
+
+		foreach ( $xml->template as $template ) {
+			$name = trim( $template->name );
+			if ( strcasecmp( $template_name, $name ) === 0 ) {
+				$result = true;
+				break;
+			}
+		}
+
+		return $result;
+	}
 
 	/**
 	 * Returns an array of all templates
@@ -66,8 +87,8 @@ class Team_Listing_Template_Model {
 			unset( $template->item );
 		} else {
 			$is_new_template = true;
-			$node = $xml->xpath( "/templates" );
-			$node = $node ? $node[0] : $xml->addChild( 'templates' );
+			$node            = $xml->xpath( "/templates" );
+			$node            = $node ? $node[0] : $xml->addChild( 'templates' );
 
 			$template = $node->addChild( 'template' );
 			$template->addChild( 'name', $template_name );

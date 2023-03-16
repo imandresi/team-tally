@@ -336,6 +336,18 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         return controlView;
     }
 
+    /**
+     * Scrolls the editor until the control appears
+     *
+     * @param controlName
+     */
+    function scrollIntoView(controlName) {
+        const controlView = getControlView(controlName);
+        if (!controlView) return;
+
+        controlView.el.scrollIntoView(true);
+    }
+
     function createPreviewButton() {
         const panel = document.querySelector('#elementor-panel');
         const previewBtn = document.createElement('div');
@@ -502,6 +514,9 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
                         templatesHelper.showTemplateNotice(noticeType, noticeMsg);
                         templatesHelper.enableTemplateEditing(true);
+
+                        scrollIntoView('template_section');
+
                     }
                 );
 
@@ -569,6 +584,8 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                         controlView.$el.trigger('click');
                         editTemplateTab_processClickOn($controlTarget[0]);
                     }
+
+                    scrollIntoView('template_section');
 
                 });
 
@@ -693,8 +710,8 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
     }
 
-    console.log('panel', panel);
-    console.log('model', model);
+    // console.log('panel', panel);
+    // console.log('model', model);
     // console.log('view', view);
 
     /**

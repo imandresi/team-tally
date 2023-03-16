@@ -118,6 +118,18 @@ class Elementor_Team_Listing_Ajax {
 		// Aborts if access not allowed
 		$nonce = self::check_security_access( $nonce );
 
+		// Aborts if default template
+		// We should not change default template
+		if ( Team_Listing_Template_Model::is_default_template( $template_name ) ) {
+			$data = array(
+				'success' => false,
+				'message' => __( 'Default template should not be modified.' ),
+				'_nonce' => $nonce,
+			);
+
+			wp_send_json( $data );
+		}
+
 		// deletes the template
 		Team_Listing_Template_Model::delete_template( $template_name );
 
@@ -153,6 +165,18 @@ class Elementor_Team_Listing_Ajax {
 
 		// Aborts if access not allowed
 		$nonce = self::check_security_access( $nonce );
+
+		// Aborts if default template
+		// We should not change default template
+		if ( Team_Listing_Template_Model::is_default_template( $template_name ) ) {
+			$data = array(
+				'success' => false,
+				'message' => __( 'Default template should not be modified.' ),
+				'_nonce' => $nonce,
+			);
+
+			wp_send_json( $data );
+		}
 
 		// update the template
 		$is_new_template = Team_Listing_Template_Model::update_template( array(
