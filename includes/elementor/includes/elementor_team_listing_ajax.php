@@ -204,6 +204,23 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
+	 * Loads the custom css of the team listing widget panel
+	 *
+	 * fired by 'wp_ajax_elementor_team_listing_load_css'
+	 *
+	 * @return void
+	 */
+	public static function action_team_listing_load_css() {
+		$response = array(
+			'success'     => true,
+			'css_content' => Team_Listing_Custom_Css_Model::get_css(),
+		);
+
+		wp_send_json( $response );
+
+	}
+
+	/**
 	 * Saves the configuration of the widget
 	 *
 	 * fired by 'wp_ajax_elementor_team_listing_save_widget_config'
@@ -271,6 +288,12 @@ class Elementor_Team_Listing_Ajax {
 		add_action(
 			'wp_ajax_elementor_team_listing_save_css',
 			array( self::class, 'action_team_listing_save_css' )
+		);
+
+		// hook to load the custom css
+		add_action(
+			'wp_ajax_elementor_team_listing_load_css',
+			array( self::class, 'action_team_listing_load_css' )
 		);
 
 		// hook to save the widget config of team listing

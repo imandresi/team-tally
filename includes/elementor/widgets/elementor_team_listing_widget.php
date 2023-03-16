@@ -506,14 +506,6 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
-			'_nonce',
-			[
-				'type'    => \Elementor\Controls_Manager::HIDDEN,
-				'default' => wp_create_nonce( self::SECURITY_NONCE ),
-			]
-		);
-
-		$this->add_control(
 			'custom_css',
 			[
 				'type'        => \Elementor\Controls_Manager::CODE,

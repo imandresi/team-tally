@@ -38,6 +38,53 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
     let lastClickedTemplateTabBtn;
 
     /**
+     * HELPER FOR CSS
+     */
+    const cssHelper = {
+        //  cssHelper.activate(sectionInfo);
+
+        /**
+         * CSS Section is clicked
+         *
+         * @param sectionInfo
+         */
+        activate: (sectionInfo) => {
+
+            // activates or not the pending spinner
+            const setCssPending = (status = true, cssView = null) => {
+                if (!cssView) {
+                    cssView = getControlView('custom_css');
+                }
+
+                if (status) {
+                    cssView.$el.addClass('is-pending');
+                } else {
+                    cssView.$el.removeClass('is-pending');
+                }
+            }
+
+            if (!sectionInfo.isOpened) return;
+
+            setCssPending(true);
+
+            const $request = $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'elementor_team_listing_load_css',
+                },
+            });
+
+            $request.done((response) => {
+                setControlValue('custom_css', response.css_content);
+                model.setSetting('custom_css', response.css_content);
+                setCssPending(false);
+            });
+
+        }
+    }
+
+    /**
      * HELPER FOR TEMPLATES
      */
     const templatesHelper = {
@@ -78,6 +125,8 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
             if (!chooseTabView.$el.hasClass('elementor-tab-active')) return;
             setTemplateSelectPending(true, chosenTemplateView);
+
+            const currentlySelectedTemplate = model.getSetting('chosen_template');
             templatesHelper.updateTemplatesList(null);
 
             // loads list of templates
@@ -89,11 +138,10 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                 },
             });
 
-            $request.done( (response) => {
-                console.log('RESPONSE:', response);
+            $request.done((response) => {
 
                 if (response.success) {
-                    templatesHelper.updateTemplatesList(response.templates);
+                    templatesHelper.updateTemplatesList(response.templates, currentlySelectedTemplate);
                 } else {
                     templatesHelper.showTemplateNotice(
                         'notice-error',
@@ -566,12 +614,9 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
             return;
         }
 
-        /*
-         * checks if a section title is clicked
-         */
         const $target = $(target);
         if (!$target.hasClass('elementor-section-title')) {
-            return;
+            return false;
         }
 
         const $sectionTitleContainer = $target.closest('.elementor-control-type-section');
@@ -601,13 +646,14 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
         }, '');
 
-        // Secton is clicked - call callback
+        // Section is clicked - call callback
         if (sectionName) {
             panelControlSectionClicked({
                 el: $sectionTitleContainer[0],
                 sectionName: sectionName,
                 isOpened: !$sectionTitleContainer.hasClass('elementor-open'),
             });
+
         }
 
     }
@@ -626,6 +672,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
     function panelControlSectionClicked(sectionInfo) {
 
         switch (sectionInfo.sectionName) {
+
             case 'template_section':
                 // as we are still in the capture event, we have to
                 // wait a little in order for elementor to process
@@ -636,12 +683,18 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                     templatesHelper.activate(sectionInfo);
                 }, 500);
                 break;
+
+            case 'custom_css_section':
+                setTimeout(() => {
+                    cssHelper.activate(sectionInfo);
+                }, 500);
+                break;
         }
 
     }
 
-    // console.log('panel', panel);
-    // console.log('model', model);
+    console.log('panel', panel);
+    console.log('model', model);
     // console.log('view', view);
 
     /**

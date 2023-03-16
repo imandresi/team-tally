@@ -16,6 +16,8 @@ class Team_Listing_Template_Model {
 	const DB_FILE = __DIR__ . '/team_template.xml';
 	const DB_FILE_INIT = __DIR__ . '/team_template_init.xml';
 
+	public s
+
 	/**
 	 * Returns an array of all templates
 	 *

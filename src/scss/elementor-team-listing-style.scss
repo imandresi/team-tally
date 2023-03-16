@@ -122,3 +122,31 @@
   }
 }
 
+.elementor-control-custom_css {
+  &.is-pending {
+    .ace_scroller {
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 100;
+      }
+    }
+
+    .ace_content {
+      &::before {
+        content: "\e931"; // spinner
+        font-family: eicons;
+        font-size: 30px;
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        animation: teamtally-rotate 1s linear infinite;
+        z-index: 120;
+      }
+    }
+  }
+}
