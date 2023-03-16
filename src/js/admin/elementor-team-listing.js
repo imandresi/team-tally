@@ -348,32 +348,20 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         controlView.el.scrollIntoView(true);
     }
 
+    /**
+     * Creates a PREVIEW AND SAVE button on top and bottom of the panel container
+     */
     function createPreviewButton() {
-        const panel = document.querySelector('#elementor-panel');
+        if (panel.el.querySelector(".team-preview-button")) return;
+
         const previewBtn = document.createElement('div');
         previewBtn.setAttribute('class', 'team-preview-button');
         previewBtn.innerHTML = `<button class="elementor-button elementor-button-default" type="button">SAVE AND PREVIEW IN EDITOR</button>`;
 
-        const panelContainer = panel.querySelector("#elementor-panel-page-editor");
+        const panelContainer = panel.el.querySelector("#elementor-panel-page-editor");
         panelContainer.prepend(previewBtn);
         panelContainer.appendChild(previewBtn.cloneNode(true));
 
-    }
-
-    function setPanelNavigationEvent() {
-        const panel = document.querySelector('#elementor-panel');
-        const panelNavigationEl = panel.querySelector(".elementor-panel-navigation");
-        const panelNavigationEvent = e => {
-            const target = e.target.parentElement;
-
-            if ((target.classList.contains('elementor-component-tab')) &&
-                (!target.classList.contains('elementor-active'))) {
-                setPanelNavigationEvent();
-                createPreviewButton();
-            }
-        };
-
-        panelNavigationEl.addEventListener('click', panelNavigationEvent);
     }
 
     /**
@@ -385,10 +373,14 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      * @param e
      */
     function panelOnClick(e) {
+
         const target = e.target;
 
         // this will prevent the event to execute for other widget panels
-        if (panel.currentPageView.model.attributes.widgetType !== WIDGET_NAME) {
+        if ((panel &&
+            panel.currentPageView &&
+            panel.currentPageView.model &&
+            panel.currentPageView.model.get('widgetType')) !== WIDGET_NAME) {
             return;
         }
 
@@ -597,6 +589,23 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         }
 
         /**
+         * Checks if the navigation panels button are clicked
+         *
+         * @returns {boolean}
+         */
+        function panelNavigation_processClickOn() {
+            const $target = $(target);
+
+            if (!$target.closest('.elementor-panel-navigation-tab ')) {
+                return false;
+            }
+
+            createPreviewButton();
+
+            return true;
+        }
+
+        /**
          * main operations for 'panelOnClick()'
          */
 
@@ -615,6 +624,11 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
             return;
         }
 
+        // NAVIGATION BUTTONS
+        if (panelNavigation_processClickOn()) {
+            return;
+        }
+
     }
 
     /**
@@ -627,7 +641,10 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         const target = e.target;
 
         // this will prevent the event to execute for other widget panels
-        if (panel.currentPageView.model.attributes.widgetType !== WIDGET_NAME) {
+        if ((panel &&
+            panel.currentPageView &&
+            panel.currentPageView.model &&
+            panel.currentPageView.model.get('widgetType')) !== WIDGET_NAME) {
             return;
         }
 
@@ -710,29 +727,37 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
     }
 
-    // console.log('panel', panel);
-    // console.log('model', model);
+    /**
+     * Initialize all events
+     */
+    function setPanelEvents() {
+
+        // This will prevent multiple executions
+        if (window.TEAMTALLY[WIDGET_NAME].isRunning) {
+            return;
+        }
+
+        window.TEAMTALLY[WIDGET_NAME].isRunning = true;
+
+        // set click event handler on the widget panel - useCapture: false
+        panel.el.addEventListener('click', panelOnClick, false);
+
+        // set click event handler on the widget panel - useCapture: true
+        // used to detect if a section is clicked or not
+        panel.el.addEventListener('click', panelCaptureOnClick, true);
+
+    }
+
+    console.log('panel', panel);
+    console.log('model', model);
     // console.log('view', view);
 
     /**
      * Initialization part
      */
 
-    // This will prevent multiple executions
-    if (!window.TEAMTALLY[WIDGET_NAME].isRunning) {
-        window.TEAMTALLY[WIDGET_NAME].isRunning = true;
-
-        setPanelNavigationEvent();
-        createPreviewButton();
-
-        // set click event handler on the widget panel - useCapture: false
-        panel.content.el.addEventListener('click', panelOnClick, false);
-
-        // set click event handler on the widget panel - useCapture: true
-        // used to detect if a section is clicked or not
-        panel.content.el.addEventListener('click', panelCaptureOnClick, true);
-
-    }
+    setPanelEvents();
+    createPreviewButton();
 
 });
 
