@@ -76,7 +76,9 @@
 }
 
 @keyframes spinner {
-  to {transform: rotate(360deg);}
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner:before {
@@ -94,3 +96,29 @@
   border-top-color: #000;
   animation: spinner .6s linear infinite;
 }
+
+@keyframes teamtally-rotate {
+  from {
+    transform: rotate(0deg)
+  }
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+.elementor-control-chosen_template {
+  &.is-pending {
+    .elementor-control-input-wrapper {
+      &::before {
+        content: "\e931"; // spinner
+        font-family: eicons;
+        font-size: 20px;
+        position: absolute;
+        left: -25px;
+        top: 5px;
+        animation: teamtally-rotate 1s linear infinite;
+      }
+    }
+  }
+}
+

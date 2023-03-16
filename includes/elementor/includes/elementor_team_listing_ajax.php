@@ -55,6 +55,30 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
+	 * Returns the list of all templates
+	 *
+	 * fired by 'wp_ajax_elementor_team_listing_get_all_templates'
+	 *
+	 * @return void
+	 */
+	public static function action_get_all_templates() {
+		$templates = Team_Listing_Template_Model::get_all_templates();
+
+		$template_names = array();
+		foreach ( $templates as $template ) {
+			$template_names[] = $template['name'];
+		}
+
+		$response = array(
+			'success'   => true,
+			'templates' => $template_names
+		);
+
+		wp_send_json( $response );
+
+	}
+
+	/**
 	 * Returns an elementor team listing template
 	 *
 	 * fired by 'wp_ajax_elementor_team_listing_get_template' hook
@@ -218,6 +242,12 @@ class Elementor_Team_Listing_Ajax {
 	 * Initialization
 	 */
 	public static function init() {
+
+		// hook to query the list of all templates
+		add_action(
+			'wp_ajax_elementor_team_listing_get_all_templates',
+			array( self::class, 'action_get_all_templates' )
+		);
 
 		// hook to query a template by template name
 		add_action(

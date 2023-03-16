@@ -12,7 +12,24 @@ const $e = window.$e;
  * DATA SENT BY PHP
  *   string nonce
  */
+
+if (!window.TEAMTALLY) {
+    window.TEAMTALLY = {
+        SHARED_DATA: {}
+    };
+}
+
 const SHARED_DATA = window.TEAMTALLY.SHARED_DATA;
+
+/**
+ * Various constants
+ */
+
+const WIDGET_NAME = 'team_listing_widget';
+
+if (!window.TEAMTALLY[WIDGET_NAME]) {
+    window.TEAMTALLY[WIDGET_NAME] = {};
+}
 
 /**
  * Action automatically triggered when the 'team_listing_widget' panel is activated
@@ -24,6 +41,70 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      * HELPER FOR TEMPLATES
      */
     const templatesHelper = {
+
+        /**
+         * Template Section is clicked
+         *
+         * @param sectionInfo
+         */
+        activate: (sectionInfo) => {
+
+            // disable the select control and adds a spinner if is pending
+            const setTemplateSelectPending = (status = true, chosenTemplateView = null) => {
+
+                if (!chosenTemplateView) {
+                    chosenTemplateView = getControlView('chosen_template');
+                }
+
+                const $selectEl = chosenTemplateView.$el.find('select');
+
+                if (status) {
+                    chosenTemplateView.$el.addClass('is-pending');
+                    $selectEl.attr('disabled', 'disabled');
+                } else {
+                    chosenTemplateView.$el.removeClass('is-pending');
+                    $selectEl.removeAttr('disabled');
+                }
+            }
+
+            if (!sectionInfo.isOpened) return;
+
+            // check if 'CHOOSE' tab is clicked
+            const chooseTabView = getControlView('use_template_tab');
+            if (!chooseTabView) return;
+
+            const chosenTemplateView = getControlView('chosen_template');
+            setTemplateSelectPending(false, chosenTemplateView);
+
+            if (!chooseTabView.$el.hasClass('elementor-tab-active')) return;
+            setTemplateSelectPending(true, chosenTemplateView);
+            templatesHelper.updateTemplatesList(null);
+
+            // loads list of templates
+            const $request = $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'elementor_team_listing_get_all_templates',
+                },
+            });
+
+            $request.done( (response) => {
+                console.log('RESPONSE:', response);
+
+                if (response.success) {
+                    templatesHelper.updateTemplatesList(response.templates);
+                } else {
+                    templatesHelper.showTemplateNotice(
+                        'notice-error',
+                        'ERROR: Can not load the list of templates'
+                    );
+                }
+
+                setTemplateSelectPending(false, chosenTemplateView);
+            });
+
+        },
 
         /**
          * Displays a notice inside the TEMPLATE CONTROL TAB
@@ -236,7 +317,7 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
     }
 
     /**
-     * Click event on the panel
+     * Click event on the panel during the bubbling phase
      *
      * Uses 'event delegation' to handle clicks on elements
      * contained inside the panel.
@@ -245,6 +326,11 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      */
     function panelOnClick(e) {
         const target = e.target;
+
+        // this will prevent the event to execute for other widget panels
+        if (panel.currentPageView.model.attributes.widgetType !== WIDGET_NAME) {
+            return;
+        }
 
         /**
          * Checks if the edit button of the template tab is clicked and processes it
@@ -466,19 +552,117 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
     }
 
+    /**
+     * onClick event handler on the panel during the capture phase
+     *
+     * @param e
+     */
+    function panelCaptureOnClick(e) {
+
+        const target = e.target;
+
+        // this will prevent the event to execute for other widget panels
+        if (panel.currentPageView.model.attributes.widgetType !== WIDGET_NAME) {
+            return;
+        }
+
+        /*
+         * checks if a section title is clicked
+         */
+        const $target = $(target);
+        if (!$target.hasClass('elementor-section-title')) {
+            return;
+        }
+
+        const $sectionTitleContainer = $target.closest('.elementor-control-type-section');
+        const sectionTitleClasses = Array.from($sectionTitleContainer[0].classList);
+        const sectionName = sectionTitleClasses.reduce((newValue, value) => {
+            const exclude = [
+                'elementor-control-type-section',
+                'elementor-control-separator-none',
+                'elementor-control'
+            ];
+
+            // value found - check if it is a section id
+            if (!~exclude.indexOf(value)) {
+                const re = /^elementor\-control\-(.+)/i;
+                const matches = value.match(re);
+
+                if (matches) {
+                    const sectionName = matches[1];
+                    const section = panel.currentPageView.options.controls[sectionName];
+                    if (section && section.type === 'section') {
+                        newValue = sectionName;
+                    }
+                }
+            }
+
+            return newValue;
+
+        }, '');
+
+        // Secton is clicked - call callback
+        if (sectionName) {
+            panelControlSectionClicked({
+                el: $sectionTitleContainer[0],
+                sectionName: sectionName,
+                isOpened: !$sectionTitleContainer.hasClass('elementor-open'),
+            });
+        }
+
+    }
+
+    /**
+     * Callback fired when a section of the widget panel is clicked
+     *
+     * sectionInfo = {
+     *     el: DOM Element of the section container,
+     *     sectionName: ...,
+     *     isOpened: ...
+     * }
+     *
+     * @param sectionInfo
+     */
+    function panelControlSectionClicked(sectionInfo) {
+
+        switch (sectionInfo.sectionName) {
+            case 'template_section':
+                // as we are still in the capture event, we have to
+                // wait a little in order for elementor to process
+                // correctly all its internal routines in the bubbling
+                // phase before excuting ours.
+                // TODO: check for better solutions
+                setTimeout(() => {
+                    templatesHelper.activate(sectionInfo);
+                }, 500);
+                break;
+        }
+
+    }
+
     // console.log('panel', panel);
     // console.log('model', model);
     // console.log('view', view);
-    console.log('shared data', SHARED_DATA);
 
     /**
      * Initialization part
      */
-    setPanelNavigationEvent();
-    createPreviewButton();
 
-    // set click event handler on the widget panel
-    panel.content.$el.on('click', panelOnClick);
+    // This will prevent multiple executions
+    if (!window.TEAMTALLY[WIDGET_NAME].isRunning) {
+        window.TEAMTALLY[WIDGET_NAME].isRunning = true;
+
+        setPanelNavigationEvent();
+        createPreviewButton();
+
+        // set click event handler on the widget panel - useCapture: false
+        panel.content.el.addEventListener('click', panelOnClick, false);
+
+        // set click event handler on the widget panel - useCapture: true
+        // used to detect if a section is clicked or not
+        panel.content.el.addEventListener('click', panelCaptureOnClick, true);
+
+    }
 
 });
 
