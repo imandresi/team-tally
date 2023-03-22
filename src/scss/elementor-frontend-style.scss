@@ -1,0 +1,44 @@
+/* ELEMENTOR FRONTEND */
+
+/**
+ * ELEMENTOR TEAM TEMPLATE 01
+ */
+.elementor-teamtally-team__template__01 {
+  $dark-color: #888888;
+  $grey-color: #eeeeee;
+
+  .content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    border-top: 3px solid $dark-color;
+    border-bottom: 3px solid $dark-color;
+
+    & > div {
+      padding: 10px;
+      border-top: 1px solid $dark-color;
+      border-bottom: 1px solid $dark-color;
+
+      &.even {
+        background-color: $grey-color;
+      }
+
+      &.odd {
+
+      }
+
+      &.header {
+        text-transform: uppercase;
+        font-weight: bold;
+        background-color: $dark-color;
+        color: white;
+      }
+
+    }
+
+  }
+
+  .paginator {
+
+  }
+}

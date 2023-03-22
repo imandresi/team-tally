@@ -24,6 +24,7 @@ class Shared_Data extends Singleton {
 	public static function share_data_to_js( $js_handle, $data, $position = 'after' ) {
 		$instance = self::get_instance();
 
+		// already inserted ?
 		if ( isset( $instance->handles[ $js_handle ] ) ) {
 			return;
 		}
@@ -36,6 +37,8 @@ class Shared_Data extends Singleton {
 		);
 
 		wp_add_inline_script( $js_handle, $js_code, $position );
+
+		// this initialization prevent multiple insertion of the script
 		$instance->handles[ $js_handle ] = true;
 
 	}

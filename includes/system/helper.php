@@ -1177,6 +1177,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		}
 
 		/**
+		 * Returns a version number and an unique id to be used to load css or js
+		 *
+		 * @param $force_reload
+		 *
+		 * @return string
+		 */
+		public static function version( $force_reload = false ) {
+			$version = TEAMTALLY_VERSION . ( $force_reload ? '_' . uniqid() : '' );
+
+			return $version;
+
+		}
+
+		/**
 		 * Enqueues a css style or a script from a string data
 		 *
 		 * This function is similar to wp_enqueue_script / wp_enqueue_style
@@ -1384,7 +1398,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 	} /* End of class Helper */
 
-	Helper::$DEBUG_FILENAME = Helper::dirname(__DIR__, 6) . '/debug.txt';
+	Helper::$DEBUG_FILENAME = Helper::dirname( __DIR__, 6 ) . '/debug.txt';
 
 
 }

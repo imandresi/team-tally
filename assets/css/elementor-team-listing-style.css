@@ -164,6 +164,10 @@
 }
 
 .elementor-control-custom_css.is-pending .ace_scroller::before {
+  cursor: wait !important;
+}
+
+.elementor-control-custom_css.is-pending .ace_scroller::before {
   content: "";
   display: block;
   position: absolute;
@@ -171,6 +175,9 @@
   height: 100%;
   background-color: white;
   z-index: 100;
+}
+.elementor-control-custom_css.is-pending .ace_content::before {
+  cursor: wait !important;
 }
 .elementor-control-custom_css.is-pending .ace_content::before {
   content: "\e931";

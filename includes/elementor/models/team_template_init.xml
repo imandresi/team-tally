@@ -2,29 +2,49 @@
 <templates>
 
     <template>
-        <name>Template name 1</name>
+        <name>List of Teams</name>
         <container>
             <![CDATA[
-<p>TEMPLATE 1: This is the container</p>
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'content'
+  'pagination'
+==============================
+-->
+<div class="elementor-teamtally-team__template__01">
+  <div class="content">
+    <div class="header">League Name</div>
+    <div class="header">Team Name</div>
+    <div class="header">Team NickName</div>
+    {{{content}}}
+  </div>
+  <nav class="pagination">{{{pagination}}}</nav>
+</div>
             ]]>
         </container>
         <item>
             <![CDATA[
-<p>TEMPLATE 1: This is the item</p>
-            ]]>
-        </item>
-    </template>
-
-    <template>
-        <name>Template name 2</name>
-        <container>
-            <![CDATA[
-<p>TEMPLATE 2: This is the container</p>
-            ]]>
-        </container>
-        <item>
-            <![CDATA[
-<p>TEMPLATE 2: This is the item</p>
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'league_id'
+  'team_id'
+  'team_name'
+  'team_nickname'
+  'team_history'
+  'team_logo_url'
+  'league_name'
+  'league_country'
+  'league_logo_url'
+  'class'
+==============================
+-->
+<div class="{{{class}}}"><a href="{{{league_id}}}">{{{league_name}}}</a></div>
+<div class="{{{class}}}"><a href="{{{team_id}}}">{{{team_name}}}</a></div>
+<div class="{{{class}}}">{{{team_nickname}}}</div>
             ]]>
         </item>
     </template>

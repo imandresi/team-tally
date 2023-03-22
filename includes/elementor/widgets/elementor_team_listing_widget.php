@@ -9,11 +9,14 @@
 namespace TEAMTALLY\Elementor\Widgets;
 
 use TEAMTALLY\Elementor\Elementor_Manager;
-use TEAMTALLY\Elementor\Models\Team_Listing_Custom_Css_Model;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
+use TEAMTALLY\Models\Leagues_Model;
+use TEAMTALLY\Models\Teams_Model;
+use TEAMTALLY\System\Dynamic_Css;
 use TEAMTALLY\System\Helper;
 use TEAMTALLY\System\Shared_Data;
 use TEAMTALLY\System\Template;
+use WP_Query;
 
 class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
@@ -36,15 +39,45 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		// script to load
 		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'widget_enqueue_editor_scripts' ) );
 
+		// loads frontend styles
+		add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_frontend_styles' ) );
+
 	}
 
 	/**
-	 * NOT CALLED
-	 * TODO: remove perhaps ??
+	 * Loads all the frontend stylesheets
+	 *
+	 * @return void
+	 */
+	public function enqueue_frontend_styles() {
+
+		// register widget styles
+		wp_register_style(
+			'elementor-frontend-style',
+			TEAMTALLY_ASSETS_CSS_URI . 'elementor-frontend-style.css',
+			[],
+			Helper::version( true )
+		);
+
+	}
+
+
+	/**
+	 * Script dependencies
+	 *
 	 * @return string[]
 	 */
 	public function get_script_depends() {
 		return [ 'elementor_team_listing' ];
+	}
+
+	/**
+	 * Styles dependencies
+	 *
+	 * @return string[]
+	 */
+	public function get_style_depends() {
+		return [ 'elementor-frontend-style' ];
 	}
 
 	/**
@@ -65,13 +98,13 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			true
 		);
 
-        // SHARED DATA TO JS
-        // TODO: add i18n localization for js labels
-        $data = array(
-          'nonce' => wp_create_nonce( self::SECURITY_NONCE ),
-        );
+		// SHARED DATA TO JS
+		// TODO: add i18n localization for js labels
+		$data = array(
+			'nonce' => wp_create_nonce( self::SECURITY_NONCE ),
+		);
 
-        Shared_Data::share_data_to_js('elementor_team_listing_script', $data, 'before');
+		Shared_Data::share_data_to_js( 'elementor_team_listing_script', $data, 'before' );
 
 	}
 
@@ -145,7 +178,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
-				'default'      => 'off',
+				'default'      => '',
 				'return_value' => 'on',
 			]
 		);
@@ -154,17 +187,32 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			'league_use_http_query',
 			[
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
-				'label'        => esc_html__( 'Pick value from HTTP query', TEAMTALLY_TEXT_DOMAIN ),
+				'label'        => esc_html__( 'Pick value from HTTP query first', TEAMTALLY_TEXT_DOMAIN ),
+				'description'  => esc_html__( 'Use HTTP query value if available otherwise use below value', TEAMTALLY_TEXT_DOMAIN ),
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
-				'default'      => 'off',
+				'default'      => '',
 				'return_value' => 'on',
 				'condition'    => array(
 					'league_activate_filtering' => 'on',
 				)
 			]
 		);
+
+		// prepare league control options
+		$leagues        = Leagues_Model::get_all_leagues();
+		$league_options = array();
+
+		if ( $leagues ) {
+			foreach ( $leagues as $league ) {
+				$data = $league['data'];
+				if ( ! $data ) {
+					continue;
+				}
+				$league_options[ $data['term_id'] ] = $data[ Leagues_Model::LEAGUES_FIELD_NAME ];
+			}
+		}
 
 		$this->add_control(
 			'league',
@@ -174,11 +222,8 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'show_label' => true,
 				'condition'  => array(
 					'league_activate_filtering' => 'on',
-					'league_use_http_query'     => '',
 				),
-				'options'    => [
-					'2' => 'Premier League',
-				]
+				'options'    => $league_options,
 			]
 
 		);
@@ -210,7 +255,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
-				'default'      => 'off',
+				'default'      => '',
 				'return_value' => 'on',
 			]
 		);
@@ -219,11 +264,12 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			'team_id_use_http_query',
 			[
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
-				'label'        => esc_html__( 'Pick value from HTTP query', TEAMTALLY_TEXT_DOMAIN ),
+				'label'        => esc_html__( 'Pick value from HTTP query first', TEAMTALLY_TEXT_DOMAIN ),
+				'description'  => esc_html__( 'Use HTTP query value if available otherwise use below value', TEAMTALLY_TEXT_DOMAIN ),
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
-				'default'      => 'off',
+				'default'      => '',
 				'return_value' => 'on',
 				'condition'    => array(
 					'team_id_activate_filtering' => 'on',
@@ -241,7 +287,6 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'max'        => '9999999',
 				'condition'  => array(
 					'team_id_activate_filtering' => 'on',
-					'team_id_use_http_query'     => '',
 				)
 			]
 
@@ -274,7 +319,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
-				'default'      => 'off',
+				'default'      => '',
 				'return_value' => 'on',
 			]
 		);
@@ -512,8 +557,8 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'label'       => esc_html__( 'CSS Content', TEAMTALLY_TEXT_DOMAIN ),
 				'show_label'  => true,
 				'label_block' => true,
-				'default'     => Team_Listing_Custom_Css_Model::get_css(),
-				'language'    => 'html',
+				'default'     => '',
+				'language'    => 'css',
 			]
 		);
 
@@ -549,6 +594,42 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			]
 		);
 
+
+		$this->add_control(
+			'pagination_enabled',
+			[
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label'        => esc_html__( 'Enable pagination', TEAMTALLY_TEXT_DOMAIN ),
+				'show_label'   => true,
+				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
+				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
+				'default'      => '',
+				'return_value' => 'on',
+				'condition'    => array(
+					'pagination_display_all_rows' => 'on',
+				)
+			]
+		);
+
+
+		$this->add_control(
+			'pagination_rows_per_page',
+			[
+				'type'       => \Elementor\Controls_Manager::NUMBER,
+				'label'      => esc_html__( 'Rows per page for pagination', TEAMTALLY_TEXT_DOMAIN ),
+				'show_label' => true,
+				'min'        => '1',
+				'max'        => '9999999',
+				'default'    => '10',
+				'condition'  => array(
+					'pagination_display_all_rows' => 'on',
+					'pagination_enabled'          => 'on',
+				)
+			]
+
+		);
+
+
 		$this->add_control(
 			'pagination_rows_to_display',
 			[
@@ -565,18 +646,6 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
 		);
 
-		$this->add_control(
-			'pagination_rows_per_page',
-			[
-				'type'       => \Elementor\Controls_Manager::NUMBER,
-				'label'      => esc_html__( 'Rows per page', TEAMTALLY_TEXT_DOMAIN ),
-				'show_label' => true,
-				'min'        => '1',
-				'max'        => '9999999',
-				'default'    => '10',
-			]
-
-		);
 
 		$this->end_controls_section();
 	}
@@ -705,14 +774,210 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 	}
 
 	protected function render() {
+
 		$settings = $this->get_settings_for_display();
-		?>
 
-        <p class="hello-world">
-            TEST
-        </p>
+		// get the templates
+		$template_name = $settings['chosen_template'];
+		$template      = Team_Listing_Template_Model::get_template( $template_name );
 
-		<?php
+		if ( ! $template ) {
+			_e( 'Please choose a template for displaying the list of teams.', TEAMTALLY_TEXT_DOMAIN );
+
+			return;
+		}
+
+		/*
+		 *  initialize query arguments
+		 */
+		$args = array(
+			'post_type'   => Teams_Model::TEAMS_POST_TYPE,
+			'post_status' => 'publish',
+		);
+
+		// League filtering
+		if ( $settings['league_activate_filtering'] ) {
+			$http_query_league = $settings['league_use_http_query'] ? Helper::get_var( $_REQUEST['league'], false ) : false;
+			$league            = $http_query_league ?: $settings['league'];
+
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => Leagues_Model::LEAGUES_TAXONOMY_NAME,
+					'field'    => 'term_id',
+					'terms'    => $league
+				)
+			);
+		}
+
+		// Team #ID filtering
+		if ( $settings['team_id_activate_filtering'] ) {
+			$http_query_team_id = $settings['team_id_use_http_query'] ? Helper::get_var( $_REQUEST['team_id'], false ) : false;
+			$team_id            = $http_query_team_id ?: $settings['team_id'];
+
+			$args['p'] = $team_id;
+		}
+
+		// Keyword filtering
+		if ( $settings['keyword_activate_filtering'] ) {
+			$args['s'] = $settings['keyword'];
+		}
+
+		// Rows ordering
+		$args['orderby'] = $settings['order_by_field'] == 1 ? 'team_name' : 'team_nickname';
+		$args['order']   = $settings['order_by_direction'] == 1 ? 'ASC' : 'DESC';
+
+		// Pagination
+		$rows_to_display  = - 1;
+		$show_paginator   = false;
+		$args['nopaging'] = true;
+		$paged            = 1;
+
+		if ( $settings['pagination_display_all_rows'] ) {
+			$show_paginator = $settings['pagination_enabled'];
+			if ( $show_paginator ) {
+				$args['nopaging']       = false;
+				$args['posts_per_page'] = intval( $settings['pagination_rows_per_page'] );
+
+				$paged         = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+				$args['paged'] = $paged;
+			}
+		} else {
+			$rows_to_display = intval( $settings['pagination_rows_to_display'] );
+		}
+
+		/*
+		 * Build items content
+		 */
+		$html        = '';
+		$posts_count = 0;
+		$query       = new WP_Query( $args );
+
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$posts_count ++;
+				$post       = $query->post;
+				$item_class = 'team-item ';
+
+				// extract data
+				$team          = Teams_Model::get_team( $post );
+				$team_id       = Helper::get_var( $team['data']['ID'], '' );
+				$team_name     = Helper::get_var( $team['data'][ Teams_Model::TEAMS_FIELD_NAME ], '' );
+				$team_nickname = Helper::get_var( $team['data'][ Teams_Model::TEAMS_FIELD_NICKNAME ], '' );
+				$team_history  = Helper::get_var( $team['data'][ Teams_Model::TEAMS_FIELD_HISTORY ], '' );
+				$team_logo_url = Helper::get_var( $team['data'][ Teams_Model::TEAMS_FIELD_LOGO ]['URL'], '' );
+
+				// builds css class
+				$item_status = $posts_count == 1 ? 'first-item' : '';
+
+				if ( ( ( $rows_to_display > 0 ) && ( $posts_count >= $rows_to_display ) ) ||
+				     ( $posts_count >= $query->post_count ) ) {
+					$item_status = 'last-item';
+				}
+
+				if ( $rows_to_display == 1 ) {
+					$item_status = 'only-item';
+				}
+
+				$item_class .= $item_status . ' ';
+				$item_class .= $posts_count % 2 ? 'even' : 'odd';
+
+				$league_id       = '';
+				$league_name     = '';
+				$league_country  = '';
+				$league_logo_url = '';
+
+				$terms = get_the_terms( $post, Leagues_Model::LEAGUES_TAXONOMY_NAME );
+				if ( $terms ) {
+					$league         = Leagues_Model::get_league( $terms[0] );
+					$league_id      = Helper::get_var( $league['data']['term_id'], '' );
+					$league_name    = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ], '' );
+					$league_country = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_COUNTRY ], '' );
+
+					$league_logo_id = Helper::get_var( $league['data'][ Leagues_Model::LEAGUES_FIELD_PHOTO ]['id'], null );
+
+					if ( $league_logo_id ) {
+						$league_logo_url = wp_get_attachment_image_url(
+							$league_logo_id,
+							array( 500, 500 ),
+							false
+						);
+					}
+				}
+
+				$params = array(
+					'league_id'       => $league_id,
+					'team_id'         => $team_id,
+					'team_name'       => $team_name,
+					'team_nickname'   => $team_nickname,
+					'team_history'    => $team_history,
+					'team_logo_url'   => $team_logo_url,
+					'league_name'     => $league_name,
+					'league_country'  => $league_country,
+					'league_logo_url' => $league_logo_url,
+					'class'           => $item_class,
+				);
+
+				// builds item html
+				$html .= Template::parse(
+					$template['item'], $params
+				);
+
+				if ( ( $rows_to_display > 0 ) && ( $posts_count >= $rows_to_display ) ) {
+					break;
+				}
+
+			}
+		} else {
+			$html = __( 'No posts found', TEAMTALLY_TEXT_DOMAIN );
+		}
+
+		wp_reset_postdata();
+
+		// apply template container
+		if ( $posts_count ) {
+
+			// build paginator
+			$pagination = '';
+
+			if ( $show_paginator ) {
+				$total_pages = $query->max_num_pages;
+				if ( $total_pages > 1 ) {
+					$current_page = $paged;
+					$pagination   .= paginate_links( array(
+						'base'      => get_pagenum_link( 1 ) . '%_%',
+						'format'    => '/page/%#%',
+						'current'   => $current_page,
+						'total'     => $total_pages,
+						'prev_text' => __( '&laquo; Previous' ),
+						'next_text' => __( 'Next &raquo;' )
+					) );
+				}
+			}
+
+			// html from elementor
+			$html = Template::parse(
+				$template['container'],
+				array(
+					'content'    => $html,
+					'pagination' => $pagination,
+				)
+			);
+
+			// final html - adds the 'custom css' style
+			$html = Template::parse(
+				'front/teams/teams_listing.php',
+				array(
+					'elementor_content' => $html,
+					'elementor_custom_css' => $settings['custom_css'],
+				)
+			);
+
+		}
+
+		// final display
+		print $html;
+
 	}
 
 }

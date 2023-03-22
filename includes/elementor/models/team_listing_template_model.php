@@ -26,13 +26,20 @@ class Team_Listing_Template_Model {
 	public static function is_default_template( $template_name ) {
 		$result        = false;
 		$template_name = trim( $template_name );
-		$xml           = simplexml_load_file( self::DB_FILE_INIT );
 
-		foreach ( $xml->template as $template ) {
-			$name = trim( $template->name );
-			if ( strcasecmp( $template_name, $name ) === 0 ) {
-				$result = true;
-				break;
+		if ( ! file_exists( self::DB_FILE_INIT ) ) {
+			return false;
+		}
+
+		$xml = simplexml_load_file( self::DB_FILE_INIT );
+
+		if ( $xml && $xml->template ) {
+			foreach ( $xml->template as $template ) {
+				$name = trim( $template->name );
+				if ( strcasecmp( $template_name, $name ) === 0 ) {
+					$result = true;
+					break;
+				}
 			}
 		}
 
@@ -48,14 +55,18 @@ class Team_Listing_Template_Model {
 
 		$templates = array();
 
+		self::verify();
+
 		$xml = simplexml_load_file( self::DB_FILE );
 
-		foreach ( $xml->template as $template ) {
-			$templates[] = array(
-				'name'      => trim( (string) $template->name ),
-				'container' => trim( (string) $template->container ),
-				'item'      => trim( (string) $template->item ),
-			);
+		if ( $xml && $xml->template ) {
+			foreach ( $xml->template as $template ) {
+				$templates[] = array(
+					'name'      => trim( (string) $template->name ),
+					'container' => trim( (string) $template->container ),
+					'item'      => trim( (string) $template->item ),
+				);
+			}
 		}
 
 		return $templates;
@@ -73,6 +84,8 @@ class Team_Listing_Template_Model {
 		$template_name      = trim( $template_data['name'] );
 		$template_container = trim( $template_data['container'] );
 		$template_item      = trim( $template_data['item'] );
+
+		self::verify();
 
 		$xml = simplexml_load_file( self::DB_FILE, SimpleXMLElement_Extended::class );
 
@@ -111,6 +124,8 @@ class Team_Listing_Template_Model {
 	 * @return boolean
 	 */
 	public static function delete_template( $template_name ) {
+		self::verify();
+
 		$xml = simplexml_load_file( self::DB_FILE, SimpleXMLElement_Extended::class );
 
 		$template_selector = "//template[name='" . addslashes( $template_name ) . "']";
@@ -137,6 +152,7 @@ class Team_Listing_Template_Model {
 	public static function get_template( $template_name ) {
 		$template_name = trim( strtoupper( $template_name ) );
 
+		self::verify();
 		$xml = simplexml_load_file( self::DB_FILE );
 
 		foreach ( $xml->template as $template ) {
@@ -152,6 +168,17 @@ class Team_Listing_Template_Model {
 
 		return false;
 
+	}
+
+	/**
+	 * Verifiies if the database is ok
+	 *
+	 * @return void
+	 */
+	public static function verify() {
+		if ( ! file_exists( self::DB_FILE ) ) {
+			@copy( self::DB_FILE_INIT, self::DB_FILE );
+		}
 	}
 
 	/**

@@ -16,6 +16,7 @@ use TEAMTALLY\Elementor\Elementor_Manager;
 use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\System\Hook_Recorder;
 use TEAMTALLY\System\Singleton;
 
 class Admin_Loader extends Singleton {
@@ -66,11 +67,10 @@ class Admin_Loader extends Singleton {
 
 		Admin_Menu::load();
 		Admin_Notices::load();
-		Elementor_Manager::init();
 
 		// Loading
 		$this->init_admin_leagues();
-		
+
 	}
 
 	/**

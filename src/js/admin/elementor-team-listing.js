@@ -4,8 +4,8 @@ import {displayNotice, hideNotice} from "./module-custom-admin-notice";
  * Initialize global variables
  */
 const elementor = window.elementor;
-const $ = window.jQuery;
 const ajaxurl = window.ajaxurl;
+const $ = window.jQuery;
 const $e = window.$e;
 
 /**
@@ -31,6 +31,8 @@ if (!window.TEAMTALLY[WIDGET_NAME]) {
     window.TEAMTALLY[WIDGET_NAME] = {};
 }
 
+const EVENT_NAME_KEYPRESS_CUSTOM_CSS = 'elementor/widget/team_listing_widget/custom_css/keypress';
+
 /**
  * Action automatically triggered when the 'team_listing_widget' panel is activated
  */
@@ -41,31 +43,39 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      * HELPER FOR CSS
      */
     const cssHelper = {
-        //  cssHelper.activate(sectionInfo);
+
+        /**
+         * Activates or not the pending spinner
+         *
+         * @param status
+         * @param cssView
+         * @returns {boolean}
+         */
+        setPendingStatus: (status = true, cssView = null) => {
+            if (!cssView) {
+                cssView = getControlView('custom_css');
+            }
+
+            if (!cssView) return false;
+
+            if (status) {
+                cssView.$el.addClass('is-pending');
+            } else {
+                cssView.$el.removeClass('is-pending');
+            }
+
+            return true;
+
+        },
 
         /**
          * CSS Section is clicked
          *
          * @param sectionInfo
          */
-        activate: (sectionInfo) => {
-
-            // activates or not the pending spinner
-            const setCssPending = (status = true, cssView = null) => {
-                if (!cssView) {
-                    cssView = getControlView('custom_css');
-                }
-
-                if (status) {
-                    cssView.$el.addClass('is-pending');
-                } else {
-                    cssView.$el.removeClass('is-pending');
-                }
-            }
-
+        activateSection: (sectionInfo) => {
             if (!sectionInfo.isOpened) return;
-
-            setCssPending(true);
+            if (!cssHelper.setPendingStatus(true)) return;
 
             const $request = $.ajax({
                 url: ajaxurl,
@@ -78,10 +88,37 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
             $request.done((response) => {
                 setControlValue('custom_css', response.css_content);
                 model.setSetting('custom_css', response.css_content);
-                setCssPending(false);
+                cssHelper.setPendingStatus(false);
             });
 
-        }
+        },
+
+        /**
+         * Saves the custom css control content
+         */
+        save: () => {
+            const custom_css = model.getSetting('custom_css');
+            const nonce = SHARED_DATA.nonce;
+
+            cssHelper.setPendingStatus(true);
+
+            const $request = $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'elementor_team_listing_save_css',
+                    custom_css: custom_css,
+                    _nonce: nonce,
+                },
+            });
+
+            $request.done(function (response) {
+                SHARED_DATA.nonce = response._nonce;
+                cssHelper.setPendingStatus(false);
+            });
+
+        },
+
     }
 
     /**
@@ -268,7 +305,6 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         const template_name = model.getSetting('template_name');
         const template_container = model.getSetting('template_container');
         const template_item = model.getSetting('template_item');
-        const custom_css = model.getSetting('custom_css');
         const nonce = SHARED_DATA.nonce;
 
         templatesHelper.enableTemplateEditing(false);
@@ -281,7 +317,6 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                 template_name: template_name,
                 template_container: template_container,
                 template_item: template_item,
-                custom_css: custom_css,
                 _nonce: nonce,
             },
         });
@@ -349,22 +384,6 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
     }
 
     /**
-     * Creates a PREVIEW AND SAVE button on top and bottom of the panel container
-     */
-    function createPreviewButton() {
-        if (panel.el.querySelector(".team-preview-button")) return;
-
-        const previewBtn = document.createElement('div');
-        previewBtn.setAttribute('class', 'team-preview-button');
-        previewBtn.innerHTML = `<button class="elementor-button elementor-button-default" type="button">SAVE AND PREVIEW IN EDITOR</button>`;
-
-        const panelContainer = panel.el.querySelector("#elementor-panel-page-editor");
-        panelContainer.prepend(previewBtn);
-        panelContainer.appendChild(previewBtn.cloneNode(true));
-
-    }
-
-    /**
      * Click event on the panel during the bubbling phase
      *
      * Uses 'event delegation' to handle clicks on elements
@@ -373,7 +392,6 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      * @param e
      */
     function panelOnClick(e) {
-
         const target = e.target;
 
         // this will prevent the event to execute for other widget panels
@@ -589,18 +607,19 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
         }
 
         /**
-         * Checks if the navigation panels button are clicked
-         *
+         * Checks if the PREVIEW AND SAVE BUTTON is clicked
          * @returns {boolean}
          */
-        function panelNavigation_processClickOn() {
+        function previewBtn_processClickOn() {
             const $target = $(target);
 
-            if (!$target.closest('.elementor-panel-navigation-tab ')) {
+            if ((!$target.filter('button').length) || (!$target.closest('.team-preview-button').length)) {
                 return false;
             }
 
-            createPreviewButton();
+            // saves the template and the css
+            saveWidgetConfig();
+            applyCustomCSS();
 
             return true;
         }
@@ -626,6 +645,11 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
 
         // NAVIGATION BUTTONS
         if (panelNavigation_processClickOn()) {
+            return;
+        }
+
+        // PREVIEW AND SAVE BUTTON
+        if (previewBtn_processClickOn()) {
             return;
         }
 
@@ -712,18 +736,28 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
                 // wait a little in order for elementor to process
                 // correctly all its internal routines in the bubbling
                 // phase before excuting ours.
-                // TODO: check for better solutions
+                // TODO: look for better solutions
                 setTimeout(() => {
                     templatesHelper.activate(sectionInfo);
                 }, 500);
                 break;
 
-            case 'custom_css_section':
-                setTimeout(() => {
-                    cssHelper.activate(sectionInfo);
-                }, 500);
-                break;
         }
+
+    }
+
+    /**
+     * Applies the custom css
+     *
+     * @param cssData
+     */
+    function applyCustomCSS(cssData = null) {
+        cssData = cssData || model.getSetting('custom_css');
+
+        const styleEl = document.querySelector('#elementor_team_listing_style-inline-css');
+        if (!styleEl) return;
+
+        styleEl.textContent = cssData;
 
     }
 
@@ -757,11 +791,8 @@ elementor.hooks.addAction('panel/open_editor/widget/team_listing_widget', functi
      */
 
     setPanelEvents();
-    createPreviewButton();
 
 });
-
-
 
 
 

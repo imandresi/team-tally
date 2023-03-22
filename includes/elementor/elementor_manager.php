@@ -13,6 +13,7 @@ use TEAMTALLY\Elementor\Includes\Elementor_Team_Listing_Ajax;
 use TEAMTALLY\Elementor\Widgets\Elementor_Team_Listing_Widget;
 use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\System\Hook_Recorder;
 
 class Elementor_Manager {
 
@@ -52,7 +53,7 @@ class Elementor_Manager {
 	 *
 	 * @return bool
 	 */
-	public static function is_compatible() {
+	private static function is_compatible() {
 
 		if ( ! did_action( 'elementor/loaded' ) ) {
 			Admin_Notices::set_message(
@@ -97,7 +98,7 @@ class Elementor_Manager {
 	 */
 	public static function setup_environment() {
 
-		// Adding the TEAM TALLY Elementor Category
+		// Adding the TEAM TALLY Elementor Category in the Editor
 		add_action( 'elementor/elements/categories_registered', function ( $elements_manager ) {
 			$elements_manager->add_category(
 				self::ELEMENTOR_CATEGORY_SLUG,
@@ -123,12 +124,16 @@ class Elementor_Manager {
 	 */
 	public static function init() {
 
-		if ( self::is_compatible() ) {
-			add_action( 'elementor/init', array( self::class, 'setup_environment' ) );
-
-			// initialize all ajax
-			Elementor_Team_Listing_Ajax::init();
+		// checks if elementor can be used with the plugin
+		if ( ! self::is_compatible() ) {
+			return;
 		}
+
+		// setup environment
+		add_action( 'elementor/init', array( self::class, 'setup_environment' ) );
+
+		// initialize all ajax
+		Elementor_Team_Listing_Ajax::init();
 
 	}
 

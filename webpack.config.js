@@ -22,7 +22,8 @@ const commonConfig = {
         },
         'frontend-style': './src/scss/frontend-style.scss',
         'admin-style': './src/scss/admin-style.scss',
-        'elementor-team-listing-style': './src/scss/elementor-team-listing-style.scss'
+        'elementor-team-listing-style': './src/scss/elementor-team-listing-style.scss',
+        'elementor-frontend-style': './src/scss/elementor-frontend-style.scss',
     },
 
     output: {

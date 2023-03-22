@@ -10,6 +10,7 @@ namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
+use TEAMTALLY\Elementor\Elementor_Manager;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
@@ -45,6 +46,9 @@ class Loader extends Singleton {
 
 		// Loads admin routines
 		Admin_Loader::load();
+
+		// Loads both admin/frontend elementor routines
+		Elementor_Manager::init();
 
 		// Loads controllers
 		Leagues_Controller::init();

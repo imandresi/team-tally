@@ -8,7 +8,6 @@
 
 namespace TEAMTALLY\Elementor\Includes;
 
-use TEAMTALLY\Elementor\Models\Team_Listing_Custom_Css_Model;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Elementor\Widgets\Elementor_Team_Listing_Widget;
 use TEAMTALLY\System\Helper;
@@ -124,7 +123,7 @@ class Elementor_Team_Listing_Ajax {
 			$data = array(
 				'success' => false,
 				'message' => __( 'Default template should not be modified.' ),
-				'_nonce' => $nonce,
+				'_nonce'  => $nonce,
 			);
 
 			wp_send_json( $data );
@@ -159,8 +158,8 @@ class Elementor_Team_Listing_Ajax {
 	public static function action_update_template() {
 
 		$template_name      = $_REQUEST['template_name'];
-		$template_container = $_REQUEST['template_container'];
-		$template_item      = $_REQUEST['template_item'];
+		$template_container = stripslashes( $_REQUEST['template_container'] );
+		$template_item      = stripslashes( $_REQUEST['template_item'] );
 		$nonce              = $_REQUEST['_nonce'];
 
 		// Aborts if access not allowed
@@ -171,12 +170,14 @@ class Elementor_Team_Listing_Ajax {
 		if ( Team_Listing_Template_Model::is_default_template( $template_name ) ) {
 			$data = array(
 				'success' => false,
-				'message' => __( 'Default template should not be modified.' ),
-				'_nonce' => $nonce,
+				'message' => __( 'Default template should not be modified. Please rename it.' ),
+				'_nonce'  => $nonce,
 			);
 
 			wp_send_json( $data );
 		}
+
+		Helper::debug( $template_container, '$template_container', true );
 
 		// update the template
 		$is_new_template = Team_Listing_Template_Model::update_template( array(
@@ -203,48 +204,6 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
-	 * Saves the custom css of the team listing widget panel
-	 *
-	 * fired by 'wp_ajax_elementor_team_listing_save_css'
-	 *
-	 * @return void
-	 */
-	public static function action_team_listing_save_css() {
-		$css   = $_REQUEST['css'];
-		$nonce = $_REQUEST['_nonce'];
-
-		// Aborts if access not allowed
-		$nonce = self::check_security_access( $nonce );
-
-		// saves the css
-		Team_Listing_Custom_Css_Model::save_css( $css );
-
-		wp_send_json( array(
-			'success' => true,
-			'_nonce'  => $nonce,
-			'message' => __( 'Custom CSS saved.' ),
-		) );
-
-	}
-
-	/**
-	 * Loads the custom css of the team listing widget panel
-	 *
-	 * fired by 'wp_ajax_elementor_team_listing_load_css'
-	 *
-	 * @return void
-	 */
-	public static function action_team_listing_load_css() {
-		$response = array(
-			'success'     => true,
-			'css_content' => Team_Listing_Custom_Css_Model::get_css(),
-		);
-
-		wp_send_json( $response );
-
-	}
-
-	/**
 	 * Saves the configuration of the widget
 	 *
 	 * fired by 'wp_ajax_elementor_team_listing_save_widget_config'
@@ -252,17 +211,13 @@ class Elementor_Team_Listing_Ajax {
 	 * @return void
 	 */
 	public static function action_team_listing_save_widget_config() {
-		$css                = $_REQUEST['css'];
 		$template_name      = $_REQUEST['template_name'];
-		$template_container = $_REQUEST['template_container'];
-		$template_item      = $_REQUEST['template_item'];
+		$template_container = stripslashes( $_REQUEST['template_container'] );
+		$template_item      = stripslashes( $_REQUEST['template_item'] );
 		$nonce              = $_REQUEST['_nonce'];
 
 		// Aborts if access not allowed
 		$nonce = self::check_security_access( $nonce );
-
-		// saves the css
-		Team_Listing_Custom_Css_Model::save_css( $css );
 
 		// update the template
 		Team_Listing_Template_Model::update_template( array(
@@ -306,18 +261,6 @@ class Elementor_Team_Listing_Ajax {
 		add_action(
 			'wp_ajax_elementor_team_listing_delete_template',
 			array( self::class, 'action_delete_template' )
-		);
-
-		// hook to save the custom css of team listing
-		add_action(
-			'wp_ajax_elementor_team_listing_save_css',
-			array( self::class, 'action_team_listing_save_css' )
-		);
-
-		// hook to load the custom css
-		add_action(
-			'wp_ajax_elementor_team_listing_load_css',
-			array( self::class, 'action_team_listing_load_css' )
 		);
 
 		// hook to save the widget config of team listing

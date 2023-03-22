@@ -18,17 +18,17 @@ class Template {
 
 		if ( is_array( $var_list ) ) {
 			foreach ( $var_list as $key => $value ) {
-				$value = !$value ? '' : $value;
+				$value = ! $value ? '' : $value;
 				if ( ( is_string( $value ) ) || ( is_numeric( $value ) ) ) {
 
 					// value will not be escaped
 					$search = '{{{' . $key . '}}}';
-					$html = str_replace( $search, $value, $html );
+					$html   = str_replace( $search, $value, $html );
 
 					// value will be escaped
 					$search = '{{' . $key . '}}';
 					$value  = esc_html( $value );
-					$html = str_replace( $search, $value, $html );
+					$html   = str_replace( $search, $value, $html );
 
 				}
 			}
@@ -68,7 +68,7 @@ class Template {
 	 */
 	public static function parse( $template, $attributes = array() ) {
 
-		$html = '';
+		$html = $template;
 
 		// adds constants to $attributes
 		$constants  = Helper::get_defined_constants();
@@ -76,10 +76,12 @@ class Template {
 
 		// Is the template a file ?
 		// The template path has to be relative to the template directory
-		$full_template_filename = TEAMTALLY_TEMPLATES_DIR . $template;
-		if ( is_file( $full_template_filename ) ) {
-			// evaluates php codes
-			$html = self::evaluate_php_file( $full_template_filename, $attributes );
+		if ( strlen( $template ) < 128 ) {
+			$full_template_filename = TEAMTALLY_TEMPLATES_DIR . $template;
+			if ( is_file( $full_template_filename ) ) {
+				// evaluates php codes
+				$html = self::evaluate_php_file( $full_template_filename, $attributes );
+			}
 		}
 
 		// evaluates template variables
