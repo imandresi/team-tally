@@ -8,10 +8,10 @@
 
 namespace TEAMTALLY\Elementor\Models;
 
-class Team_Listing_Template_Model extends Template_Base_Model_Abstract {
+class League_Listing_Template_Model extends Template_Base_Model_Abstract {
 
-	const DB_FILE = __DIR__ . '/team_template.xml';
-	const DB_FILE_INIT = __DIR__ . '/team_template_init.xml';
+	const DB_FILE = __DIR__ . '/league_template.xml';
+	const DB_FILE_INIT = __DIR__ . '/league_template_init.xml';
 
 	/**
 	 * Name of current template database

@@ -53,6 +53,39 @@ class Leagues_Model {
 	}
 
 	/**
+	 * Returns a list of all taxonomy countries
+	 *
+	 * @return array
+	 */
+	public static function get_all_countries() {
+		$terms = get_terms( array(
+			'taxonomy' => self::LEAGUES_TAXONOMY_NAME,
+			'hide_empty' => false,
+		) );
+
+		$league_countries = array();
+
+		foreach ( $terms as $term ) {
+			$league_country = get_term_meta(
+				$term->term_id,
+				self::LEAGUES_FIELD_COUNTRY,
+				true
+			);
+
+			if ( ! empty( $league_country ) ) {
+				$league_countries[] = $league_country;
+			}
+		}
+
+		$unique_league_countries = array_unique( $league_countries );
+
+		sort($unique_league_countries);
+
+		return $unique_league_countries;
+
+	}
+
+	/**
 	 * Deletes a league
 	 *
 	 * @param $league_id

@@ -8,8 +8,10 @@
 
 namespace TEAMTALLY\Elementor;
 
-use Elementor\Core\Admin\Admin;
+use TEAMTALLY\Elementor\Includes\Elementor_Ajax;
+use TEAMTALLY\Elementor\Includes\Elementor_League_Listing_Ajax;
 use TEAMTALLY\Elementor\Includes\Elementor_Team_Listing_Ajax;
+use TEAMTALLY\Elementor\Widgets\Elementor_League_Listing_Widget;
 use TEAMTALLY\Elementor\Widgets\Elementor_Team_Listing_Widget;
 use TEAMTALLY\System\Admin_Notices;
 use TEAMTALLY\System\Helper;
@@ -33,6 +35,7 @@ class Elementor_Manager {
 	 */
 	public static function register_widgets( $widgets_manager ) {
 		$widgets_manager->register( new Elementor_Team_Listing_Widget() );
+		$widgets_manager->register( new Elementor_League_Listing_Widget() );
 	}
 
 	/**
@@ -133,7 +136,7 @@ class Elementor_Manager {
 		add_action( 'elementor/init', array( self::class, 'setup_environment' ) );
 
 		// initialize all ajax
-		Elementor_Team_Listing_Ajax::init();
+		Elementor_Ajax::load();
 
 	}
 

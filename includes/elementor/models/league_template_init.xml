@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <template>
+        <name>List of Leagues</name>
+        <container>
+            <![CDATA[
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'content'
+==============================
+-->
+<div class="elementor-teamtally-leagues">
+    {{{content}}}
+</div>
+            ]]>
+        </container>
+        <item>
+            <![CDATA[
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'league_id'
+  'league_name'
+  'league_country'
+  'league_logo_url'
+  'class'
+==============================
+-->
+<div class="league-item {{{class}}}">
+    <a href="{{{league_id}}}">
+        <div class="league-logo" style="background-image: url({{{league_logo_url}}});"></div>
+        <div class="league-info">
+            <div class="league-name">{{{league_name}}}</div>
+            <div class="league-country">{{{league_country}}}</div>
+        </div>
+    </a>
+</div>
+
+            ]]>
+        </item>
+    </template>
+
+</templates>

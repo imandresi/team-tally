@@ -1396,6 +1396,36 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			return preg_match( "/\.(png|jpg|jpeg|gif|bmp)\s*$/i", $filename );
 		}
 
+
+		/**
+		 * Removes php code from a string
+		 *
+		 * @param string $value
+		 *
+		 * @return string
+		 */
+		public static function remove_php_code( $value ) {
+			$value = str_replace( '<?php', '&lt;php', $value );
+			$value = str_replace( '?>', '?&gt;', $value );
+			$value = str_replace( '<?=', '&lt;?=', $value );
+
+			return $value;
+
+		}
+
+		/**
+		 * Remove html comments from a string
+		 *
+		 * @param $value
+		 *
+		 * @return array|string|string[]|null
+		 */
+		public static function remove_html_comments( $value ) {
+			$clean_string = preg_replace( '/<!--(?!>)(?:(?!-->).)*-->/s', '', $value );
+
+			return $clean_string;
+		}
+
 	} /* End of class Helper */
 
 	Helper::$DEBUG_FILENAME = Helper::dirname( __DIR__, 6 ) . '/debug.txt';

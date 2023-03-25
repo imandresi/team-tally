@@ -2,30 +2,72 @@
 /**
  * Created by PhpStorm.
  * User: Itanjaka Mandresi
- * Date: 11/03/2023
- * Time: 08:57
+ * Date: 24/03/2023
+ * Time: 05:54
  */
 
 namespace TEAMTALLY\Elementor\Includes;
 
+use TEAMTALLY\Elementor\Models\League_Listing_Template_Model;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
+use TEAMTALLY\Elementor\Widgets\Elementor_League_Listing_Widget;
 use TEAMTALLY\Elementor\Widgets\Elementor_Team_Listing_Widget;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\System\Singleton;
 
-class Elementor_Team_Listing_Ajax {
+class Elementor_Ajax extends Singleton {
 
 	const HAVE_ACCESS_RIGHTS = TEAMTALLY_USER_CAPABILITY;
+
+	private $widget_class;
+	private $template_model_class;
+
+	/**
+	 * Executes some initializations before really processing the request
+	 *
+	 * @return void
+	 */
+	private function setup_request() {
+		$widget_name = Helper::get_var( $_REQUEST['widget_name'] );
+
+		if ( ! in_array( $widget_name, array(
+			'league_listing_widget',
+			'team_listing_widget',
+		) ) ) {
+			$response = array(
+				'success' => false,
+				'message' => __( 'Bad parameters.' ),
+			);
+
+			wp_send_json( $response );
+		}
+
+		switch ( $widget_name ) {
+			case 'league_listing_widget':
+				$this->widget_class         = Elementor_League_Listing_Widget::class;
+				$this->template_model_class = League_Listing_Template_Model::class;
+				break;
+
+			case 'team_listing_widget':
+			default:
+				$this->widget_class         = Elementor_Team_Listing_Widget::class;
+				$this->template_model_class = Team_Listing_Template_Model::class;
+				break;
+		}
+
+	}
 
 	/**
 	 * Checks security access to the ajax functionality
 	 *
 	 * @return string
 	 */
-	private static function check_security_access( $nonce ) {
+	private function check_security_access( $nonce ) {
 		$forbidden = false;
 
-		$message   = '';
-		$new_nonce = wp_create_nonce( Elementor_Team_Listing_Widget::SECURITY_NONCE );
+		$message      = '';
+		$widget_class = $this->widget_class;
+		$new_nonce    = wp_create_nonce( $widget_class::SECURITY_NONCE );
 
 		if ( ! current_user_can( self::HAVE_ACCESS_RIGHTS ) ) {
 			$message   = __( 'Action forbidden.' );
@@ -33,7 +75,7 @@ class Elementor_Team_Listing_Ajax {
 		}
 
 		// security check
-		if ( ! wp_verify_nonce( $nonce, Elementor_Team_Listing_Widget::SECURITY_NONCE ) ) {
+		if ( ! wp_verify_nonce( $nonce, $widget_class::SECURITY_NONCE ) ) {
 			$message   = __( 'Action forbidden. Please reload the page.' );
 			$forbidden = true;
 		}
@@ -55,12 +97,16 @@ class Elementor_Team_Listing_Ajax {
 	/**
 	 * Returns the list of all templates
 	 *
-	 * fired by 'wp_ajax_elementor_team_listing_get_all_templates'
+	 * fired by 'wp_ajax_elementor_league_listing_get_all_templates'
 	 *
 	 * @return void
 	 */
-	public static function action_get_all_templates() {
-		$templates = Team_Listing_Template_Model::get_all_templates();
+	public function action_get_all_templates() {
+
+		$this->setup_request();
+		$template_model = $this->template_model_class;
+
+		$templates = $template_model::get_all_templates();
 
 		$template_names = array();
 		foreach ( $templates as $template ) {
@@ -77,15 +123,18 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
-	 * Returns an elementor team listing template
+	 * Returns an elementor league listing template
 	 *
-	 * fired by 'wp_ajax_elementor_team_listing_get_template' hook
+	 * fired by 'wp_ajax_elementor_league_listing_get_template' hook
 	 *
 	 * @return void
 	 */
-	public static function action_get_template() {
+	public function action_get_template() {
+		$this->setup_request();
+		$template_model = $this->template_model_class;
+
 		$template_name = $_REQUEST['template_name'];
-		$data          = Team_Listing_Template_Model::get_template( $template_name );
+		$data          = $template_model::get_template( $template_name );
 
 		if ( ! $data ) {
 			$response = array(
@@ -102,23 +151,25 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
-	 * Deletes an elementor team listing template
+	 * Deletes an elementor league listing template
 	 *
-	 * fired by 'wp_ajax_elementor_team_listing_delete_template' hook
+	 * fired by 'wp_ajax_elementor_league_listing_delete_template' hook
 	 *
 	 * @return void
 	 */
-	public static function action_delete_template() {
+	public function action_delete_template() {
+		$this->setup_request();
+		$template_model = $this->template_model_class;
 
 		$template_name = $_REQUEST['template_name'];
 		$nonce         = $_REQUEST['_nonce'];
 
 		// Aborts if access not allowed
-		$nonce = self::check_security_access( $nonce );
+		$nonce = $this->check_security_access( $nonce );
 
 		// Aborts if default template
 		// We should not change default template
-		if ( Team_Listing_Template_Model::is_default_template( $template_name ) ) {
+		if ( $template_model::is_default_template( $template_name ) ) {
 			$data = array(
 				'success' => false,
 				'message' => __( 'Default template should not be modified.' ),
@@ -129,12 +180,12 @@ class Elementor_Team_Listing_Ajax {
 		}
 
 		// deletes the template
-		Team_Listing_Template_Model::delete_template( $template_name );
+		$template_model::delete_template( $template_name );
 
 		// JSON response
 		$templates = array_map( function ( $template ) {
 			return $template['name'];
-		}, Team_Listing_Template_Model::get_all_templates() );
+		}, $template_model::get_all_templates() );
 
 		$data = array(
 			'success'   => true,
@@ -148,13 +199,15 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
-	 * Updates an elementor team listing template
+	 * Updates an elementor league listing template
 	 *
-	 * fired by 'wp_ajax_elementor_team_listing_update_template' hook
+	 * fired by 'wp_ajax_elementor_league_listing_update_template' hook
 	 *
 	 * @return void
 	 */
-	public static function action_update_template() {
+	public function action_update_template() {
+		$this->setup_request();
+		$template_model = $this->template_model_class;
 
 		$template_name      = $_REQUEST['template_name'];
 		$template_container = stripslashes( $_REQUEST['template_container'] );
@@ -162,11 +215,11 @@ class Elementor_Team_Listing_Ajax {
 		$nonce              = $_REQUEST['_nonce'];
 
 		// Aborts if access not allowed
-		$nonce = self::check_security_access( $nonce );
+		$nonce = $this->check_security_access( $nonce );
 
 		// Aborts if default template
 		// We should not change default template
-		if ( Team_Listing_Template_Model::is_default_template( $template_name ) ) {
+		if ( $template_model::is_default_template( $template_name ) ) {
 			$data = array(
 				'success' => false,
 				'message' => __( 'Default template should not be modified. Please rename it.' ),
@@ -176,10 +229,8 @@ class Elementor_Team_Listing_Ajax {
 			wp_send_json( $data );
 		}
 
-		Helper::debug( $template_container, '$template_container', true );
-
 		// update the template
-		$is_new_template = Team_Listing_Template_Model::update_template( array(
+		$is_new_template = $template_model::update_template( array(
 			'name'      => $template_name,
 			'container' => $template_container,
 			'item'      => $template_item,
@@ -188,7 +239,7 @@ class Elementor_Team_Listing_Ajax {
 		// JSON response
 		$templates = array_map( function ( $template ) {
 			return $template['name'];
-		}, Team_Listing_Template_Model::get_all_templates() );
+		}, $template_model::get_all_templates() );
 
 		$message = $is_new_template ? __( 'New template saved.' ) : __( 'Template updated' );
 		$data    = array(
@@ -203,72 +254,40 @@ class Elementor_Team_Listing_Ajax {
 	}
 
 	/**
-	 * Saves the configuration of the widget
-	 *
-	 * fired by 'wp_ajax_elementor_team_listing_save_widget_config'
-	 *
-	 * @return void
+	 * Automatically called at initialization
 	 */
-	public static function action_team_listing_save_widget_config() {
-		$template_name      = $_REQUEST['template_name'];
-		$template_container = stripslashes( $_REQUEST['template_container'] );
-		$template_item      = stripslashes( $_REQUEST['template_item'] );
-		$nonce              = $_REQUEST['_nonce'];
-
-		// Aborts if access not allowed
-		$nonce = self::check_security_access( $nonce );
-
-		// update the template
-		Team_Listing_Template_Model::update_template( array(
-			'name'      => $template_name,
-			'container' => $template_container,
-			'item'      => $template_item,
-		) );
-
-		wp_send_json( array(
-			'success' => true,
-			'_nonce'  => $nonce,
-			'message' => __( 'Config saved.' ),
-		) );
-
-	}
-
-	/**
-	 * Initialization
-	 */
-	public static function init() {
-
+	protected function init() {
 		// hook to query the list of all templates
 		add_action(
-			'wp_ajax_elementor_team_listing_get_all_templates',
-			array( self::class, 'action_get_all_templates' )
+			'wp_ajax_elementor_get_all_templates',
+			array( $this, 'action_get_all_templates' )
 		);
 
 		// hook to query a template by template name
 		add_action(
-			'wp_ajax_elementor_team_listing_get_template',
-			array( self::class, 'action_get_template' )
+			'wp_ajax_elementor_get_template',
+			array( $this, 'action_get_template' )
 		);
 
 		// hook to save or update a template
 		add_action(
-			'wp_ajax_elementor_team_listing_update_template',
-			array( self::class, 'action_update_template' )
+			'wp_ajax_elementor_update_template',
+			array( $this, 'action_update_template' )
 		);
 
 		// hook to delete a template by template name
 		add_action(
-			'wp_ajax_elementor_team_listing_delete_template',
-			array( self::class, 'action_delete_template' )
+			'wp_ajax_elementor_delete_template',
+			array( $this, 'action_delete_template' )
 		);
 
-		// hook to save the widget config of team listing
-		add_action(
-			'wp_ajax_elementor_team_listing_save_widget_config',
-			array( self::class, 'action_team_listing_save_widget_config' )
-		);
+	}
 
-
+	/**
+	 * Loader
+	 */
+	public static function load() {
+		self::get_instance();
 	}
 
 }

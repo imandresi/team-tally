@@ -16,13 +16,13 @@ const commonConfig = {
             import: './src/js/admin/admin-script-index.js',
             filename: './js/[name].js'
         },
-        'elementor-team-listing': {
-            import: './src/js/admin/elementor-team-listing.js',
+        'elementor-widget': {
+            import: './src/js/admin/elementor-widget.js',
             filename: './js/[name].js'
         },
         'frontend-style': './src/scss/frontend-style.scss',
         'admin-style': './src/scss/admin-style.scss',
-        'elementor-team-listing-style': './src/scss/elementor-team-listing-style.scss',
+        'elementor-widget-style': './src/scss/elementor-widget-style.scss',
         'elementor-frontend-style': './src/scss/elementor-frontend-style.scss',
     },
 

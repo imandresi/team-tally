@@ -5,6 +5,10 @@
 /**
  * ELEMENTOR TEAM TEMPLATE 01
  */
+.elementor-teamtally-team__template__01 {
+  width: 100%;
+  overflow: auto;
+}
 .elementor-teamtally-team__template__01 .content {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -24,4 +28,45 @@
   font-weight: bold;
   background-color: #888888;
   color: white;
+}
+/**
+ * ELEMENTOR: List of leagues - Template 01
+ */
+.elementor-teamtally-leagues {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.elementor-teamtally-leagues .league-item {
+  border: 1px solid #cccccc;
+  box-sizing: border-box;
+  width: 350px;
+}
+.elementor-teamtally-leagues .league-item .league-logo {
+  background-size: cover;
+  aspect-ratio: 1000/753;
+  border-bottom: 1px solid #cccccc;
+}
+.elementor-teamtally-leagues .league-item .league-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 15px;
+}
+.elementor-teamtally-leagues .league-item .league-info .league-name {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.elementor-teamtally-leagues .league-item:hover {
+  border: 5px solid #98370d;
+}
+.elementor-teamtally-leagues .league-item a {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  color: #444444;
+}
+.elementor-teamtally-leagues .league-item a:hover {
+  color: #98370d;
 }
