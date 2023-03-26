@@ -9,6 +9,7 @@
 namespace TEAMTALLY\Elementor\Widgets;
 
 use TEAMTALLY\Elementor\Elementor_Manager;
+use TEAMTALLY\Elementor\Includes\Elementor_League_Listing_Pagination;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
@@ -41,28 +42,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		// script to load
 		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'widget_enqueue_editor_scripts' ) );
 
-		// loads frontend styles
-		add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_frontend_styles' ) );
-
 	}
-
-	/**
-	 * Loads all the frontend stylesheets
-	 *
-	 * @return void
-	 */
-	public function enqueue_frontend_styles() {
-
-		// register widget styles
-		wp_register_style(
-			'elementor-frontend-style',
-			TEAMTALLY_ASSETS_CSS_URI . 'elementor-frontend-style.css',
-			[],
-			Helper::version( true )
-		);
-
-	}
-
 
 	/**
 	 * Script dependencies
@@ -79,7 +59,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 	 * @return string[]
 	 */
 	public function get_style_depends() {
-		return [ 'elementor-frontend-style' ];
+		return [ 'teamtally-elementor-frontend-style' ];
 	}
 
 	/**
@@ -104,7 +84,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		// TODO: add i18n localization for js labels
 		$data = array(
 			'widget_name' => self::WIDGET_NAME,
-			'nonce' => wp_create_nonce( self::SECURITY_NONCE ),
+			'nonce'       => wp_create_nonce( self::SECURITY_NONCE ),
 		);
 
 		Shared_Data::share_data_to_js( 'elementor_team_listing_script', $data, 'before' );
@@ -470,18 +450,30 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
 	}
 
-	protected function render() {
-
-		$settings = $this->get_settings_for_display();
+	/**
+	 * Generates the main html result
+	 *
+	 * This html is used either by PHP or JS
+	 *
+	 * @param $widget_id
+	 * @param $settings
+	 * @param $paged
+	 *
+	 * @return array
+	 */
+	public static function pre_render( $widget_id, $settings, $paged = 1 ) {
 
 		// get the templates
 		$template_name = $settings['chosen_template'];
 		$template      = Team_Listing_Template_Model::get_template( $template_name );
 
 		if ( ! $template ) {
-			_e( 'Please choose a template for displaying the list of teams.', TEAMTALLY_TEXT_DOMAIN );
+			$data = array(
+				'success' => false,
+				'html'    => __( 'Please choose a template for displaying the list of teams.', TEAMTALLY_TEXT_DOMAIN ),
+			);
 
-			return;
+			return $data;
 		}
 
 		$template['item']      = Helper::remove_html_comments( Helper::get_var( $template['item'], '' ) );
@@ -530,16 +522,13 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		$rows_to_display  = - 1;
 		$show_paginator   = false;
 		$args['nopaging'] = true;
-		$paged            = 1;
 
 		if ( $settings['pagination_display_all_rows'] ) {
 			$show_paginator = $settings['pagination_enabled'];
 			if ( $show_paginator ) {
 				$args['nopaging']       = false;
 				$args['posts_per_page'] = intval( $settings['pagination_rows_per_page'] );
-
-				$paged         = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
-				$args['paged'] = $paged;
+				$args['paged']          = $paged;
 			}
 		} else {
 			$rows_to_display = intval( $settings['pagination_rows_to_display'] );
@@ -629,7 +618,12 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
 			}
 		} else {
-			$html = __( 'No posts found', TEAMTALLY_TEXT_DOMAIN );
+			$data = array(
+				'success' => false,
+				'html'    => __( 'No posts found', TEAMTALLY_TEXT_DOMAIN ),
+			);
+
+			return $data;
 		}
 
 		wp_reset_postdata();
@@ -644,13 +638,15 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				$total_pages = $query->max_num_pages;
 				if ( $total_pages > 1 ) {
 					$current_page = $paged;
-					$pagination   .= paginate_links( array(
-						'base'      => get_pagenum_link( 1 ) . '%_%',
-						'format'    => '/page/%#%',
+					$pagination   .= Elementor_League_Listing_Pagination::paginate_links( array(
+						'base'      => '%_%',
+						'format'    => '%#%',
 						'current'   => $current_page,
 						'total'     => $total_pages,
 						'prev_text' => __( '&laquo; Previous' ),
-						'next_text' => __( 'Next &raquo;' )
+						'next_text' => __( 'Next &raquo;' ),
+						'end_size'  => 5,
+						'widget_id' => $widget_id,
 					) );
 				}
 			}
@@ -663,13 +659,51 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 					'pagination' => $pagination,
 				)
 			);
+		}
 
-			// final html - adds the 'custom css' style
+		$data = array(
+			'success' => true,
+			'html'    => $html,
+		);
+
+		return $data;
+
+	}
+
+	/**
+	 * Generates the final output
+	 *
+	 * @return void
+	 */
+	protected function render() {
+
+		$widget_id = $this->get_id();
+		$settings  = $this->get_settings_for_display();
+
+		$data = $this->pre_render( $widget_id, $settings );
+		$html = $data['html'];
+
+		// apply template container
+		if ( $data['success'] ) {
+
+			// prepares js code used for javascript interaction
+			// such as pagination
+			$data = array(
+				$widget_id => $settings,
+				'ajaxurl'  => admin_url( 'admin-ajax.php' ),
+			);
+
+			$js_code      = Shared_Data::build_js_from_data( $data );
+			$container_id = self::WIDGET_NAME . '_' . $widget_id;
+
+			// builds the final html
 			$html = Template::parse(
 				'front/teams_listing.php',
 				array(
 					'elementor_content'    => $html,
 					'elementor_custom_css' => $settings['custom_css'],
+					'js_code'              => $js_code,
+					'container_id'         => $container_id,
 				)
 			);
 

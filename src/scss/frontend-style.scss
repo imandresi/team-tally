@@ -1,0 +1,38 @@
+
+@keyframes teamtally-rotate {
+  from {
+    transform: rotate(0deg)
+  }
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+.elementor-widget-team_listing_widget {
+  position: relative;
+
+  .spinner-container {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+
+    &::before {
+      content: "\e931"; // spinner
+      font-family: eicons;
+      font-size: 50px;
+      color: black;
+      display: inline-block;
+      animation: teamtally-rotate 1s linear infinite;
+      opacity: 0.4;
+      margin-top: 25px;
+    }
+
+    &.visible {
+      display: block;
+    }
+
+  }
+}

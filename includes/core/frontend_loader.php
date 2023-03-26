@@ -25,7 +25,7 @@ class Frontend_Loader extends Singleton {
 			'js/frontend-script.js',
 		);
 
-		Helper::str_enqueue_script_list( $script_list );
+		Helper::str_enqueue_script_list( $script_list, TEAMTALLY_DEV_MODE );
 
 	}
 

@@ -15,9 +15,9 @@ TEMPLATE VARIABLES:
 -->
 <div class="elementor-teamtally-team__template__01">
   <div class="content">
-    <div class="header">League Name</div>
     <div class="header">Team Name</div>
     <div class="header">Team NickName</div>
+    <div class="header">League Name</div>
     {{{content}}}
   </div>
   <nav class="pagination">{{{pagination}}}</nav>
@@ -42,9 +42,9 @@ TEMPLATE VARIABLES:
   'class'
 ==============================
 -->
-<div class="{{{class}}}"><a href="{{{league_id}}}">{{{league_name}}}</a></div>
 <div class="{{{class}}}"><a href="{{{team_id}}}">{{{team_name}}}</a></div>
 <div class="{{{class}}}">{{{team_nickname}}}</div>
+<div class="{{{class}}}">{{{league_name}}}</div>
             ]]>
         </item>
     </template>

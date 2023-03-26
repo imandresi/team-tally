@@ -254,6 +254,25 @@ class Elementor_Ajax extends Singleton {
 	}
 
 	/**
+	 * Gets a pre-rendering of the front of the team listing
+	 *
+	 * This hook is used by the ajax pagination of the team listing
+	 *
+	 * Fired by 'wp_ajax_elementor_pre_render_team_listing'
+	 *
+	 * @return void
+	 */
+	public function action_pre_render_team_listing() {
+		$settings  = Helper::get_var( $_REQUEST['settings'] );
+		$paged     = Helper::get_var( $_REQUEST['paged'] );
+		$widget_id = Helper::get_var( $_REQUEST['widget_id'] );
+
+		$data = Elementor_Team_Listing_Widget::pre_render($widget_id, $settings, $paged);
+
+		wp_send_json($data);
+	}
+
+	/**
 	 * Automatically called at initialization
 	 */
 	protected function init() {
@@ -279,6 +298,17 @@ class Elementor_Ajax extends Singleton {
 		add_action(
 			'wp_ajax_elementor_delete_template',
 			array( $this, 'action_delete_template' )
+		);
+
+		// hook to pre-render the team listing widget
+		add_action(
+			'wp_ajax_nopriv_elementor_pre_render_team_listing',
+			array( $this, 'action_pre_render_team_listing' )
+		);
+
+		add_action(
+			'wp_ajax_elementor_pre_render_team_listing',
+			array( $this, 'action_pre_render_team_listing' )
 		);
 
 	}

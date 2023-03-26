@@ -118,6 +118,27 @@ class Elementor_Manager {
 		// Init Controls
 		add_action( 'elementor/controls/register', array( self::class, 'register_controls' ) );
 
+		// prepare styles
+		add_action( 'elementor/preview/enqueue_styles', array( self::class, 'enqueue_css_js' ) );
+		add_action( 'elementor/frontend/before_enqueue_styles', array( self::class, 'enqueue_css_js' ) );
+
+	}
+
+	/**
+	 * Loads common scripts/css used by the widgets
+	 *
+	 * @return void
+	 */
+	public static function enqueue_css_js() {
+		wp_register_style(
+			'teamtally-elementor-frontend-style',
+			TEAMTALLY_ASSETS_CSS_URI . 'elementor-frontend-style.css',
+			[],
+			Helper::version( true )
+		);
+
+		wp_enqueue_style( 'teamtally-elementor-frontend-style' );
+
 	}
 
 	/**

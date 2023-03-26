@@ -29,6 +29,25 @@ class Shared_Data extends Singleton {
 			return;
 		}
 
+		$js_code = self::build_js_from_data( $data );
+
+		wp_add_inline_script( $js_handle, $js_code, $position );
+
+		// this initialization prevent multiple insertion of the script
+		$instance->handles[ $js_handle ] = true;
+
+	}
+
+	/**
+	 * Creates the javascript code allowing data sharing
+	 *
+	 * @param $data
+	 * @param $add_script_tag
+	 *
+	 * @return string
+	 */
+	public static function build_js_from_data( $data, $add_script_tag = false ) {
+
 		$js_code = Template::parse(
 			'admin/common/shared_data.php',
 			array(
@@ -36,10 +55,11 @@ class Shared_Data extends Singleton {
 			)
 		);
 
-		wp_add_inline_script( $js_handle, $js_code, $position );
+		if ( $add_script_tag ) {
+			$js_code = "<script>$js_code</script>";
+		}
 
-		// this initialization prevent multiple insertion of the script
-		$instance->handles[ $js_handle ] = true;
+		return $js_code;
 
 	}
 

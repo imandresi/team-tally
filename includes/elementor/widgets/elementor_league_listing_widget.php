@@ -41,26 +41,6 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 		// script to load
 		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'widget_enqueue_editor_scripts' ) );
 
-		// loads frontend styles
-		add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_frontend_styles' ) );
-
-	}
-
-	/**
-	 * Loads all the frontend stylesheets
-	 *
-	 * @return void
-	 */
-	public function enqueue_frontend_styles() {
-
-		// register widget styles
-		wp_register_style(
-			'elementor-frontend-style',
-			TEAMTALLY_ASSETS_CSS_URI . 'elementor-frontend-style.css',
-			[],
-			Helper::version( true )
-		);
-
 	}
 
 
@@ -79,7 +59,7 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 	 * @return string[]
 	 */
 	public function get_style_depends() {
-		return [ 'elementor-frontend-style' ];
+		return [ 'teamtally-elementor-frontend-style' ];
 	}
 
 	/**
@@ -286,6 +266,11 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 
 	}
 
+	/**
+	 * Generates the final output
+	 *
+	 * @return void
+	 */
 	protected function render() {
 
 		$settings = $this->get_settings_for_display();
