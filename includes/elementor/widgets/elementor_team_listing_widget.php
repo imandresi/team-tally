@@ -488,6 +488,8 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		);
 
 		// League filtering
+		$title = __( 'List of teams' );
+
 		if ( $settings['league_activate_filtering'] ) {
 			$http_query_league = $settings['league_use_http_query'] ? Helper::get_var( $_REQUEST['league_id'], false ) : false;
 			$league            = $http_query_league ?: $settings['league'];
@@ -499,6 +501,16 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 					'terms'    => $league
 				)
 			);
+
+			if ( $league ) {
+				$owner_league = Leagues_Model::get_league( $league );
+				$title = $owner_league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ];
+				$title        = __(
+					sprintf( 'Teams from: %s',  $title),
+					TEAMTALLY_TEXT_DOMAIN
+				);
+			}
+
 		}
 
 		// Team #ID filtering
@@ -655,6 +667,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			$html = Template::parse(
 				$template['container'],
 				array(
+					'title'      => $title,
 					'content'    => $html,
 					'pagination' => $pagination,
 				)
