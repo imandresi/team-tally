@@ -350,6 +350,7 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 				}
 
 				$counter ++;
+				$term_id        = Helper::get_var( $term_data['data']['term_id'] );
 				$league_name    = Helper::get_var( $term_data['data'][ Leagues_Model::LEAGUES_FIELD_NAME ], '' );
 				$league_country = Helper::get_var( $term_data['data'][ Leagues_Model::LEAGUES_FIELD_COUNTRY ], '' );
 				$league_logo_id = Helper::get_var( $term_data['data'][ Leagues_Model::LEAGUES_FIELD_PHOTO ]['id'], '' );
@@ -371,7 +372,7 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 				$class .= $counter % 2 == 0 ? ' odd' : ' even';
 
 				$params = array(
-					'league_id'       => $league_id,
+					'league_id'       => $term_id,
 					'league_name'     => $league_name,
 					'league_country'  => $league_country,
 					'league_logo_url' => $league_logo_url,

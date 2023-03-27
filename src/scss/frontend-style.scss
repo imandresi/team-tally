@@ -1,4 +1,7 @@
 
+/**
+ * TEAMTALLY: TEAM LISTING
+ */
 @keyframes teamtally-rotate {
   from {
     transform: rotate(0deg)
@@ -35,4 +38,76 @@
     }
 
   }
+}
+
+/**
+ * TEAMTALLY: TEAM DETAIL
+ */
+.teamtally-team-detail {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 110px 1fr;
+  grid-template-areas:
+    "metadata logo"
+    "history logo";
+
+  width: 100%;
+
+  .team-metadata {
+    grid-area: metadata;
+    border: 1px solid #bbbbbb;
+    background-color: #eeeeee;
+    padding: 10px;
+    margin-bottom: 30px;
+
+    display: grid;
+    grid-template-columns: 100px 1fr;
+
+    * {
+      font-size: 100%;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-weight: bold;
+    }
+
+  }
+
+  .team-history {
+    grid-area: history;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .team-logo {
+    grid-area: logo;
+    text-align: center;
+
+    img {
+      display: inline-block;
+      width: 100%;
+      max-width: 600px;
+      min-width: 300px;
+
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "metadata"
+      "logo"
+      "history";
+
+    .team-logo {
+
+      img {
+        max-width: 500px;
+      }
+    }
+  }
+
 }

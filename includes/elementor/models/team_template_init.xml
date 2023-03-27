@@ -49,4 +49,59 @@ TEMPLATE VARIABLES:
         </item>
     </template>
 
+    <template>
+        <name>Team Detail</name>
+        <container>
+            <![CDATA[
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'content'
+  'pagination'
+==============================
+-->
+<div class="elementor-teamtally-team__template__02">
+  <div class="content">
+    {{{content}}}
+  </div>
+  <nav class="pagination">{{{pagination}}}</nav>
+</div>
+            ]]>
+        </container>
+        <item>
+            <![CDATA[
+<!--
+==============================
+TEMPLATE VARIABLES:
+==============================
+  'league_id'
+  'team_id'
+  'team_name'
+  'team_nickname'
+  'team_history'
+  'team_logo_url'
+  'league_name'
+  'league_country'
+  'league_logo_url'
+  'class'
+==============================
+-->
+<div class="teamtally-team-detail">
+    <section class="team-metadata">
+        <h1>Nickname</h1>
+        <p>{{{team_nickname}}}</p>
+
+        <h1>League</h1>
+        <p>{{{league_name}}}</p>
+    </section>
+    <div class="team-history">{{{team_history}}}</div>
+    <div class="team-logo">
+        <img src="{{{team_logo_url}}}" alt="">
+    </div>
+</div>
+            ]]>
+        </item>
+    </template>
+
 </templates>

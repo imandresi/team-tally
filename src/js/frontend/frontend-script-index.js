@@ -66,3 +66,12 @@ function widgetNavigate(widgetId, page) {
 
 }
 
+/**
+ * Back button implementation
+ */
+jQuery(document).ready(function() {
+    jQuery('#btn-back').on('click', function() {
+        window.history.go(-1);
+        return false;
+    });
+});

@@ -171,7 +171,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			[
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'label'        => esc_html__( 'Pick value from HTTP query first', TEAMTALLY_TEXT_DOMAIN ),
-				'description'  => esc_html__( 'Use HTTP query value if available otherwise use below value', TEAMTALLY_TEXT_DOMAIN ),
+				'description'  => esc_html__( 'Use HTTP query value from "league_id" if available otherwise use below value', TEAMTALLY_TEXT_DOMAIN ),
 				'show_label'   => true,
 				'label_on'     => esc_html__( 'Yes', TEAMTALLY_TEXT_DOMAIN ),
 				'label_off'    => esc_html__( 'No', TEAMTALLY_TEXT_DOMAIN ),
@@ -489,7 +489,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
 		// League filtering
 		if ( $settings['league_activate_filtering'] ) {
-			$http_query_league = $settings['league_use_http_query'] ? Helper::get_var( $_REQUEST['league'], false ) : false;
+			$http_query_league = $settings['league_use_http_query'] ? Helper::get_var( $_REQUEST['league_id'], false ) : false;
 			$league            = $http_query_league ?: $settings['league'];
 
 			$args['tax_query'] = array(
@@ -620,7 +620,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		} else {
 			$data = array(
 				'success' => false,
-				'html'    => __( 'No posts found', TEAMTALLY_TEXT_DOMAIN ),
+				'html'    => __( 'No teams found', TEAMTALLY_TEXT_DOMAIN ),
 			);
 
 			return $data;
