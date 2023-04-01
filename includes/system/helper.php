@@ -12,6 +12,10 @@
 
 namespace TEAMTALLY\System;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ZipArchive;
+
 if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 	class Helper {
@@ -1425,6 +1429,141 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 			return $clean_string;
 		}
+
+		/**
+		 * Deletes a directory recursively
+		 *
+		 * @param $path
+		 * @param $safeguard - absolute folder from which deletion is forbidden
+		 *
+		 * @return void
+		 */
+		public static function delete_directory( $path, $safeguard = false ) {
+			$path = self::normalize_path( $path, false );
+
+			if ( $safeguard ) {
+				$safeguard = self::normalize_path( $safeguard, true );
+			}
+
+			$do_delete = ! $safeguard || (bool) strstr( $path, $safeguard );
+
+			if ( is_dir( $path ) ) {
+				$files = scandir( $path );
+				foreach ( $files as $file ) {
+					if ( $file != '.' && $file != '..' ) {
+						self::delete_directory( $path . '/' . $file, $safeguard );
+					}
+				}
+
+				if ( $do_delete ) {
+					rmdir( $path );
+				}
+
+			} else {
+				if ( $do_delete ) {
+					unlink( $path );
+				}
+			}
+
+		}
+
+		/**
+		 * Returns the upload_dir specific for the plugin
+		 *
+		 * @return array|false
+		 */
+		public static function upload_dir( $subdir = '' ) {
+			$wp_upload_dir = wp_upload_dir( null, true );
+
+			if ( ! $wp_upload_dir ) {
+				return false;
+			}
+
+			$suffix = '/' . strtolower( PROJECT_NAME ) . '/' . $subdir;
+
+			$upload_dir = self::normalize_path( $wp_upload_dir['basedir'], false ) . $suffix;
+
+			$upload_dir = self::normalize_path( $upload_dir, true );
+
+			if ( ! is_dir( $upload_dir ) ) {
+				wp_mkdir_p($upload_dir);
+			}
+
+			$upload_url = $wp_upload_dir['baseurl'] . $suffix;
+
+			return array(
+				'upload_dir' => $upload_dir,
+				'upload_url' => $upload_url,
+			);
+
+		}
+
+		/**
+		 * Compresses a folder into a ZIP file
+		 *
+		 * @param $folder_path
+		 * @param $zip_filename
+		 *
+		 * @return boolean
+		 */
+		public static function create_zip_file( $folder_path, $zip_filename ) {
+			$folder_path = self::normalize_path( $folder_path, false );
+
+			// Create a new ZipArchive object
+			$zip = new ZipArchive();
+
+			// Open the zip file for writing
+			if ( $zip->open( $zip_filename, ZipArchive::CREATE ) !== true ) {
+				return false;
+			}
+
+			// Add the files from the folder to the zip file
+			$files = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator( $folder_path ),
+				RecursiveIteratorIterator::LEAVES_ONLY
+			);
+
+			foreach ( $files as $name => $file ) {
+				// Skip directories (they are added automatically)
+				if ( ! $file->isDir() ) {
+					// Get real and relative path for current file
+					$filePath     = $file->getRealPath();
+					$relativePath = substr( $filePath, strlen( $folder_path ) + 1 );
+
+					// Add current file to archive
+					$zip->addFile( $filePath, $relativePath );
+				}
+			}
+
+			// Close the zip file
+			$zip->close();
+
+			return true;
+		}
+
+		/**
+		 * Unzip a file into a folder
+		 *
+		 * @param $zip_file
+		 * @param $extract_path
+		 *
+		 * @return bool
+		 */
+		public static function unzip_file( $zip_file, $extract_path ) {
+			$status = false;
+			$extract_path = self::normalize_path($extract_path, false);
+			$zip    = new ZipArchive;
+
+			if ( $zip->open( $zip_file ) === true ) {
+				$zip->extractTo( $extract_path );
+				$zip->close();
+				$status = true;
+			}
+
+			return $status;
+
+		}
+
 
 	} /* End of class Helper */
 

@@ -37,6 +37,12 @@ class Teams_Model {
 		/** @var WP_Post $team_post */
 		$team_post = $team_data['raw'];
 
+		// get the league associated to the team
+		$terms     = get_the_terms( $team_post, Leagues_Model::LEAGUES_TAXONOMY_NAME );
+		$term      = Helper::get_var( $terms[0] );
+		$league_id = $term ? $term->term_id : 0;
+
+		// builds final data
 		$team_data ['data'] = array(
 			'ID'                       => $team_post->ID,
 			self::TEAMS_FIELD_NAME     => $team_post->post_title,
@@ -45,10 +51,66 @@ class Teams_Model {
 			self::TEAMS_FIELD_LOGO     => array(
 				'ID'  => get_post_thumbnail_id( $team_post ),
 				'URL' => get_the_post_thumbnail_url( $team_post, array( 500, 500 ) ),
-			)
+			),
+			'league_id'                => $league_id,
 		);
 
 		return $team_data;
+
+	}
+
+	/**
+	 * Inserts or updates a team
+	 *
+	 * @param $team
+	 * @param $team_id
+	 *
+	 * @return int|\WP_Error
+	 */
+	public static function update_team( $team, $team_id = 0 ) {
+
+		$league_id = Helper::get_var( $team['league_id'], 0 );
+		if ( ! $league_id ) {
+			return 0;
+		}
+
+		$league_data = Leagues_Model::get_league( $league_id );
+		$league_slug = Helper::get_var( $league_data['raw']->slug );
+		if ( ! $league_slug ) {
+			return 0;
+		}
+
+		$post_data = array(
+			'ID'           => $team_id,
+			'post_title'   => $team[ self::TEAMS_FIELD_NAME ],
+			'post_content' => $team[ self::TEAMS_FIELD_HISTORY ],
+			'post_status'  => 'publish',
+			'post_type'    => self::TEAMS_POST_TYPE,
+			'meta_input'   => array(
+				self::TEAMS_FIELD_NICKNAME => $team[ self::TEAMS_FIELD_NICKNAME ]
+			),
+			'tax_input'    => array(
+				Leagues_Model::LEAGUES_TAXONOMY_NAME => array( $league_slug )
+			),
+		);
+
+		$post_id = wp_insert_post( $post_data );
+
+		// updates featured image
+		$media_id = false;
+		if ( isset( $team[ self::TEAMS_FIELD_LOGO ]['ID'] ) ) {
+			$media_id = intval( Helper::get_var( $team[ self::TEAMS_FIELD_LOGO ]['ID'], 0 ) );
+		}
+
+		if ( ! $media_id ) {
+			$media_id = intval( Helper::get_var( $team[ self::TEAMS_FIELD_LOGO ], 0 ) );
+		}
+
+		if ( $post_id && $media_id ) {
+			set_post_thumbnail( $post_id, $media_id );
+		}
+
+		return $post_id;
 
 	}
 
@@ -156,7 +218,7 @@ class Teams_Model {
 		$args = array(
 			'post_type'      => self::TEAMS_POST_TYPE,
 			'posts_per_page' => - 1, // Set to -1 to retrieve all posts of the given post type
-			'post_status' => $post_statuses,
+			'post_status'    => $post_statuses,
 		);
 
 		$posts = get_posts( $args );

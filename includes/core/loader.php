@@ -10,6 +10,7 @@ namespace TEAMTALLY\Core;
 
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
+use TEAMTALLY\Core\Admin\Plugin_Data;
 use TEAMTALLY\Elementor\Elementor_Manager;
 use TEAMTALLY\Elementor\Models\Team_Listing_Template_Model;
 use TEAMTALLY\Models\Leagues_Model;

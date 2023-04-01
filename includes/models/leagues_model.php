@@ -38,6 +38,7 @@ class Leagues_Model {
 
 		$data = array(
 			'term_id'                   => Helper::get_var( $league_data['raw']->term_id ),
+			'term_slug'                 => Helper::get_var( $league_data['raw']->slug ),
 			self::LEAGUES_FIELD_NAME    => Helper::get_var( $league_data['raw']->name ),
 			self::LEAGUES_FIELD_COUNTRY => Helper::get_var( $league_data['meta'][ self::LEAGUES_FIELD_COUNTRY ] ),
 			self::LEAGUES_FIELD_PHOTO   => array(
@@ -59,7 +60,7 @@ class Leagues_Model {
 	 */
 	public static function get_all_countries() {
 		$terms = get_terms( array(
-			'taxonomy' => self::LEAGUES_TAXONOMY_NAME,
+			'taxonomy'   => self::LEAGUES_TAXONOMY_NAME,
 			'hide_empty' => false,
 		) );
 
@@ -79,7 +80,7 @@ class Leagues_Model {
 
 		$unique_league_countries = array_unique( $league_countries );
 
-		sort($unique_league_countries);
+		sort( $unique_league_countries );
 
 		return $unique_league_countries;
 
@@ -168,7 +169,6 @@ class Leagues_Model {
 		$league_id = $term_info['term_id'];
 
 		if ( $do_update ) {
-
 			update_term_meta( $league_id, self::LEAGUES_FIELD_COUNTRY, $data[ self::LEAGUES_FIELD_COUNTRY ] );
 			update_term_meta( $league_id, self::LEAGUES_FIELD_PHOTO, $data[ self::LEAGUES_FIELD_PHOTO ] );
 		} else {

@@ -21,7 +21,7 @@ define( 'TEAMTALLY_DEV_MODE', true );
  * Path / Url constants
  */
 
-define ('TEAMTALLY_SLUG', 'team-tally');
+define( 'TEAMTALLY_SLUG', 'team-tally' );
 define( 'TEAMTALLY_TEXT_DOMAIN', TEAMTALLY_SLUG );
 
 define( 'TEAMTALLY_PLUGIN_ENTRY', Helper::normalize_path( dirname( __DIR__ ), true ) . 'team-tally.php' );
@@ -42,9 +42,13 @@ define( 'TEAMTALLY_ASSETS_IMAGES_URI', TEAMTALLY_PLUGIN_URI . TEAMTALLY_ASSETS_I
 define( 'TEAMTALLY_ASSETS_CSS_URI', TEAMTALLY_ASSETS_URI . 'css/' );
 define( 'TEAMTALLY_ASSETS_SCRIPTS_URI', TEAMTALLY_ASSETS_URI . 'js/' );
 
+define( 'TEAMTALLY_DEMO_DIR', TEAMTALLY_ROOT_DIR . '_demo/' );
+define( 'TEAMTALLY_UPLOAD_DIR', Helper::upload_dir()['upload_dir'] );
+define( 'TEAMTALLY_UPLOAD_URL', Helper::upload_dir()['upload_url'] );
+
 define( 'TEAMTALLY_USER_CAPABILITY', 'edit_posts' );
 
-define ('MINIMUM_ELEMENTOR_VERSION', '3.11.2');
-define ('MINIMUM_PHP_VERSION', '7.0');
+define( 'MINIMUM_ELEMENTOR_VERSION', '3.11.2' );
+define( 'MINIMUM_PHP_VERSION', '7.0' );
 
 require_once( TEAMTALLY_INCLUDES_DIR . 'core/loader.php' );
