@@ -118,7 +118,7 @@ class Leagues_Model {
 	 *
 	 * @return void
 	 */
-	public static function delete_all_leagues() {
+	public static function delete_all_leagues( $unregister_taxonomy = false ) {
 		$taxonomy_name = Leagues_Model::LEAGUES_TAXONOMY_NAME;
 
 		$terms = get_terms( array(
@@ -126,13 +126,31 @@ class Leagues_Model {
 			'hide_empty' => false,
 		) );
 
+		/** @var $term WP_term */
 		if ( ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
+				$term_id  = $term->term_id;
+				$media_id = get_term_meta( $term_id, Leagues_Model::LEAGUES_FIELD_PHOTO, true );
+
+				// Deletes the term
 				wp_delete_term( $term->term_id, $taxonomy_name );
+
+				// Deletes the media
+				if ( $media_id ) {
+					$status = Helper::check_media_used_by_any_post( $media_id ) ||
+					          Leagues_Model::check_media_used_by_league( $media_id );
+
+					if ( ! $status ) {
+						wp_delete_attachment( $media_id, true );
+					}
+				}
+
 			}
 		}
 
-		unregister_taxonomy( $taxonomy_name );
+		if ($unregister_taxonomy) {
+			unregister_taxonomy( $taxonomy_name );
+		}
 
 	}
 
@@ -177,6 +195,36 @@ class Leagues_Model {
 		}
 
 		return $league_id;
+
+	}
+
+	/**
+	 * Checks if the media is used by a league
+	 *
+	 * @param $media_id
+	 *
+	 * @return bool
+	 */
+	public static function check_media_used_by_league( $media_id ) {
+		$leagues_list = get_terms( self::LEAGUES_TAXONOMY_NAME, array(
+			'fields'     => 'all',
+			'hide_empty' => false,
+		) );
+
+		if ( is_wp_error( $leagues_list ) ) {
+			return false;
+		}
+
+		/** @var WP_Term $league */
+		foreach ( $leagues_list as $league ) {
+			$term_id         = $league->term_id;
+			$term_meta_value = get_term_meta( $term_id, self::LEAGUES_FIELD_PHOTO, true );
+			if ( $term_meta_value == $media_id ) {
+				return true;
+			}
+		}
+
+		return false;
 
 	}
 

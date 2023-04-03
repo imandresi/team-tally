@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Core;
 
+use TEAMTALLY\Controllers\Import_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
 use TEAMTALLY\Core\Admin\Admin_Menu;
 use TEAMTALLY\Core\Admin\Teams_List_Table;
@@ -70,6 +71,7 @@ class Admin_Loader extends Singleton {
 
 		// Loading
 		$this->init_admin_leagues();
+		Import_Controller::init();
 
 	}
 

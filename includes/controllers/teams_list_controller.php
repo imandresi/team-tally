@@ -31,7 +31,7 @@ class Teams_List_Controller extends Singleton {
 		global $post_type_object, $post_new_file;
 
 		// title initialization
-		$league_name                    = $this->teams->league['data']['league_name'];
+		$league_name                    = Helper::get_var( $this->teams->league['data']['league_name'] );
 		$new_title                      = sprintf(
 			__( 'TEAMS MANAGEMENT (League : %s)', TEAMTALLY_TEXT_DOMAIN ),
 			$league_name
@@ -41,7 +41,7 @@ class Teams_List_Controller extends Singleton {
 		// button add new
 		$post_new_file = add_query_arg( array(
 			'post_type' => 'teamtally_teams',
-			'league_id' => $this->teams->league['data']['term_id'],
+			'league_id' => Helper::get_var( $this->teams->league['data']['term_id'] ),
 		), 'post-new.php' );
 
 		// teams list table views
@@ -216,11 +216,11 @@ EOT;
 
 		// Adds the 'league_id' hidden field to the quick edit form
 		// in order to prevent bug
-		add_action('quick_edit_custom_box', function($column_name, $post_type, $taxonomy) {
-			if ($column_name == 'nickname') {
+		add_action( 'quick_edit_custom_box', function ( $column_name, $post_type, $taxonomy ) {
+			if ( $column_name == 'nickname' ) {
 				print "<input type=\"hidden\" name=\"league_id\" value=\"{$this->teams->league_id}\">";
 			}
-		}, 10, 3);
+		}, 10, 3 );
 
 	}
 

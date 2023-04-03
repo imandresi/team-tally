@@ -1,0 +1,18 @@
+/**
+ * spacing utilities
+ */
+
+@mixin spacing ($class-prefix, $property) {
+  $spacer: 1rem;
+  @for $i from 1 through 9 {
+    $space: $spacer * $i * 0.25;
+    .#{$class-prefix}-#{$i} {
+      #{$property}: #{$space};
+    }
+  }
+}
+
+@include spacing("mt", "margin-top");
+@include spacing("mb", "margin-bottom");
+@include spacing("ms", "margin-left");
+@include spacing("me", "margin-right");

@@ -8,7 +8,6 @@
 
 namespace TEAMTALLY\Core\Admin;
 
-use SimpleXMLElement;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\Models\Teams_Model;
 use TEAMTALLY\System\Helper;
@@ -27,6 +26,8 @@ class Plugin_Data extends Singleton {
 
 	private $import = array();
 
+	private $activate_filter_update_attached_file = false;
+
 
 	/**
 	 * Imports team and league data from a zip file
@@ -41,7 +42,7 @@ class Plugin_Data extends Singleton {
 		$instance         = self::get_instance();
 		$instance->import = array();
 
-		$instance->work_dir = TEAMTALLY_UPLOAD_DIR . 'tmp/' . uniqid() . '/';
+		$instance->work_dir = TEAMTALLY_TEMP_DIR . uniqid() . '/';
 		wp_mkdir_p( $instance->work_dir );
 
 		Helper::unzip_file( $zip_filename, $instance->work_dir );
@@ -80,7 +81,7 @@ class Plugin_Data extends Singleton {
 		$instance = self::get_instance();
 
 		// prepare working folder
-		$instance->work_dir = TEAMTALLY_UPLOAD_DIR . 'tmp/' . uniqid() . '/';
+		$instance->work_dir = TEAMTALLY_TEMP_DIR . uniqid() . '/';
 		wp_mkdir_p( $instance->work_dir );
 
 		$instance->_init_media();
@@ -89,20 +90,18 @@ class Plugin_Data extends Singleton {
 		$instance->_save_media();
 
 		// compresses the folder
-		$export_dir = 'exports/';
 
 		if ( ! $zip_filename ) {
-			$suffix = date('_Ymd_His');
+			$suffix       = date( '_Ymd_His' );
 			$zip_basename = "teamtally_data_export{$suffix}.zip";
-			$zip_dir      = TEAMTALLY_UPLOAD_DIR . $export_dir;
-			wp_mkdir_p( $zip_dir );
+			wp_mkdir_p( TEAMTALLY_EXPORTS_DIR );
 
-			$zip_filename = $zip_dir . $zip_basename;
+			$zip_filename = TEAMTALLY_EXPORTS_DIR . $zip_basename;
 		} else {
 			$zip_basename = basename( $zip_filename );
 		}
 
-		$zip_url = TEAMTALLY_UPLOAD_URL . $export_dir . $zip_basename;
+		$zip_url = TEAMTALLY_EXPORTS_URL . $zip_basename;
 
 		Helper::create_zip_file( $instance->work_dir, $zip_filename );
 
@@ -144,6 +143,27 @@ class Plugin_Data extends Singleton {
 	}
 
 	/**
+	 * Only keeps the relative path from the upload dir
+	 *
+	 * @param $file
+	 * @param $attachment_id
+	 *
+	 * @return array|mixed|string|string[]
+	 */
+	public function filter_update_attached_file( $file, $attachment_id ) {
+		if ( $this->activate_filter_update_attached_file ) {
+			$wp_upload_dir = wp_upload_dir( null, true );
+
+			if ( $wp_upload_dir ) {
+				$upload_dir = Helper::normalize_path( $wp_upload_dir['basedir'], true ) ;
+				$file = str_replace( $upload_dir, '', $file );
+			}
+		}
+
+		return $file;
+	}
+
+	/**
 	 * Imports 'media.json' into the media library
 	 *
 	 * Internally used by import()
@@ -177,7 +197,7 @@ class Plugin_Data extends Singleton {
 		}
 
 		// prepares imported media destination folder
-		$destination_dir = TEAMTALLY_UPLOAD_DIR . 'imports/' . date( 'Ymd_His' ) . '/';
+		$destination_dir = TEAMTALLY_IMPORTS_DIR . date( 'Ymd_His' ) . '/';
 		wp_mkdir_p( $destination_dir );
 
 		if ( is_array( $media_data ) ) {
@@ -210,6 +230,13 @@ class Plugin_Data extends Singleton {
 					'post_status'    => 'inherit'
 				);
 
+				/**
+				 * Allows the filter 'update_attached_file' to remove the prefixed
+				 * TEAMTALLY_UPLOAD_DIR from $media_filename when saving the
+				 * "_wp_attached_file" media post meta
+				 */
+				$this->activate_filter_update_attached_file = true;
+
 				$attachment_id   = wp_insert_attachment( $attachment, $media_filename );
 				$attachment_data = wp_generate_attachment_metadata( $attachment_id, $media_filename );
 
@@ -218,6 +245,12 @@ class Plugin_Data extends Singleton {
 				// updates the media data
 				$this->import['media'][ $media_id ]['new_filepath'] = $media_filename;
 				$this->import['media'][ $media_id ]['new_media_id'] = $attachment_id;
+
+				/**
+				 * deactivates the use of the filter 'update_attached_file' which
+				 * has been previously activated.
+				 */
+				$this->activate_filter_update_attached_file = false;
 
 			}
 
@@ -441,7 +474,7 @@ class Plugin_Data extends Singleton {
 	 */
 	private function _save_media() {
 		$json_filename = $this->work_dir . self::MEDIA_DATA_FILENAME;
-		$encoded_data          = json_encode( $this->media_data );
+		$encoded_data  = json_encode( $this->media_data );
 
 		file_put_contents(
 			$json_filename,
@@ -539,6 +572,7 @@ class Plugin_Data extends Singleton {
 	 * Initialization
 	 */
 	protected function init() {
+		add_action( 'update_attached_file', array( $this, "filter_update_attached_file" ), 10, 2 );
 
 	}
 

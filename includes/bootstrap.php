@@ -45,6 +45,10 @@ define( 'TEAMTALLY_ASSETS_SCRIPTS_URI', TEAMTALLY_ASSETS_URI . 'js/' );
 define( 'TEAMTALLY_DEMO_DIR', TEAMTALLY_ROOT_DIR . '_demo/' );
 define( 'TEAMTALLY_UPLOAD_DIR', Helper::upload_dir()['upload_dir'] );
 define( 'TEAMTALLY_UPLOAD_URL', Helper::upload_dir()['upload_url'] );
+define( 'TEAMTALLY_IMPORTS_DIR', TEAMTALLY_UPLOAD_DIR . 'imports/' );
+define( 'TEAMTALLY_EXPORTS_DIR', TEAMTALLY_UPLOAD_DIR . 'exports/' );
+define( 'TEAMTALLY_EXPORTS_URL', TEAMTALLY_UPLOAD_URL . 'exports/' );
+define( 'TEAMTALLY_TEMP_DIR', TEAMTALLY_UPLOAD_DIR . 'tmp/' );
 
 define( 'TEAMTALLY_USER_CAPABILITY', 'edit_posts' );
 

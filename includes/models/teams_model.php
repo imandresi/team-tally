@@ -224,7 +224,22 @@ class Teams_Model {
 		$posts = get_posts( $args );
 
 		foreach ( $posts as $post ) {
+			// get post thumbnail and deletes if unused
+			$media_id = get_post_thumbnail_id( $post );
+
+			// Deletes the post
 			wp_delete_post( $post->ID, true );
+
+			// Delete attachment
+			if ( $media_id ) {
+				$status = Helper::check_media_used_by_any_post( $media_id ) ||
+				          Leagues_Model::check_media_used_by_league( $media_id );
+
+				if ( ! $status ) {
+					wp_delete_attachment( $media_id, true );
+				}
+			}
+
 		}
 	}
 

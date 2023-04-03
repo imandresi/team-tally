@@ -39,7 +39,7 @@ class Plugin_Manager {
 		Leagues_Model::initialize_data_model();
 
 		Teams_Model::delete_all_teams();
-		Leagues_Model::delete_all_leagues();
+		Leagues_Model::delete_all_leagues(true);
 	}
 
 	/**

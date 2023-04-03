@@ -16,7 +16,17 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _module_teamtally_leagues__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module-teamtally-leagues */ \"./src/js/admin/module-teamtally-leagues.js\");\n/* harmony import */ var _module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module-teamtally-teams */ \"./src/js/admin/module-teamtally-teams.js\");\n/* harmony import */ var _module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1__);\n\r\n\r\n\r\nwindow.TEAMTALLY = {\r\n    leagues: _module_teamtally_leagues__WEBPACK_IMPORTED_MODULE_0__[\"default\"],\r\n};\r\n\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack://teamtally/./src/js/admin/admin-script-index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _module_teamtally_leagues__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module-teamtally-leagues */ \"./src/js/admin/module-teamtally-leagues.js\");\n/* harmony import */ var _module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module-teamtally-teams */ \"./src/js/admin/module-teamtally-teams.js\");\n/* harmony import */ var _module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_module_teamtally_teams__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _module_import__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./module-import */ \"./src/js/admin/module-import.js\");\n/* harmony import */ var _module_import__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_module_import__WEBPACK_IMPORTED_MODULE_2__);\n\r\n\r\n\r\n\r\nwindow.TEAMTALLY = {\r\n    leagues: _module_teamtally_leagues__WEBPACK_IMPORTED_MODULE_0__[\"default\"],\r\n};\r\n\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack://teamtally/./src/js/admin/admin-script-index.js?");
+
+/***/ }),
+
+/***/ "./src/js/admin/module-import.js":
+/*!***************************************!*\
+  !*** ./src/js/admin/module-import.js ***!
+  \***************************************/
+/***/ (() => {
+
+eval("/**\r\n * Import Module\r\n */\r\n\r\n/**\r\n * Activates the upload radio button when the file upload control is clicked\r\n */\r\nfunction initUploadEvent() {\r\n    const fileUploadEl = document.querySelector('#teamtally-import #import_data');\r\n    const uploadRadioEl = document.querySelector('#teamtally-import #import_upload_type');\r\n\r\n    if (!fileUploadEl || !uploadRadioEl) return;\r\n\r\n    fileUploadEl.addEventListener('click', e => {\r\n        uploadRadioEl.checked = true;\r\n    });\r\n\r\n}\r\n\r\n/**\r\n * Activates the archive radio button when select control is clicked\r\n */\r\nfunction initArchiveEvent() {\r\n    const archiveSelectEl = document.querySelector('#teamtally-import #import_archive');\r\n    const archiveRadioEl = document.querySelector('#teamtally-import #import_archive_type');\r\n\r\n    if (!archiveSelectEl || !archiveRadioEl) return;\r\n\r\n    archiveSelectEl.addEventListener('click', e => {\r\n        archiveRadioEl.checked = true;\r\n    });\r\n\r\n}\r\n\r\n/**\r\n * Main initialization\r\n */\r\ndocument.addEventListener('DOMContentLoaded', e => {\r\n    initUploadEvent();\r\n    initArchiveEvent();\r\n});\n\n//# sourceURL=webpack://teamtally/./src/js/admin/module-import.js?");
 
 /***/ }),
 

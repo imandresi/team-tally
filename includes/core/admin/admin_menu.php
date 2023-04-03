@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Core\Admin;
 
+use TEAMTALLY\Controllers\Import_Controller;
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
 use TEAMTALLY\Core\Plugin_Manager;
@@ -19,6 +20,8 @@ class Admin_Menu extends Singleton {
 
 	const SLUG_MAIN_MENU = 'teamtally_main_menu';
 	const SLUG_SUBMENU_LEAGUES = 'teamtally_leagues';
+	const SLUG_SUBMENU_IMPORT = 'teamtally_import';
+	const SLUG_SUBMENU_EXPORT = 'teamtally_export';
 	const SLUG_SUBMENU_ABOUT = 'teamtally_about';
 	const SLUG_SUBMENU_LEAGUES_VIEW = 'teamtally_leagues_view';
 	const SLUG_SUBMENU_LEAGUES_ADD = 'teamtally_leagues_add';
@@ -43,11 +46,11 @@ class Admin_Menu extends Singleton {
 		$this->league_id   = $this->league_data ? $this->league_data['raw']->term_id : false;
 
 		/**
-		 * Main admin menu : TOP PROF Mada
+		 * Main admin menu
 		 */
 		add_menu_page(
-			'TEAM Tally - Dashboard',
-			'TEAM Tally',
+			'TEAM TALLY - Dashboard',
+			'TEAM TALLY',
 			self::MENU_CAPABILITY,
 			self::SLUG_MAIN_MENU,
 			function () {
@@ -110,6 +113,27 @@ class Admin_Menu extends Singleton {
 				null
 			);
 		}
+
+		add_submenu_page(
+			self::SLUG_MAIN_MENU,
+			'Import Demo or file',
+			'Import Demo or file',
+			self::MENU_CAPABILITY,
+			self::SLUG_SUBMENU_IMPORT,
+			array(Import_Controller::class, 'import_page'),
+			null
+		);
+
+		add_submenu_page(
+			self::SLUG_MAIN_MENU,
+			'Export current data',
+			'Export current data',
+			self::MENU_CAPABILITY,
+			self::SLUG_SUBMENU_EXPORT,
+			function () {
+			},
+			null
+		);
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,

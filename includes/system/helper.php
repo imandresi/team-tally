@@ -125,7 +125,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		 * get_defined_constants
 		 *
 		 * Returns a list of all the constants of the plugin.
-		 * Those constants are prefixed with "TOPPROFMADA"
 		 *
 		 * @return array
 		 * @since   1.0.0
@@ -1486,7 +1485,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			$upload_dir = self::normalize_path( $upload_dir, true );
 
 			if ( ! is_dir( $upload_dir ) ) {
-				wp_mkdir_p($upload_dir);
+				wp_mkdir_p( $upload_dir );
 			}
 
 			$upload_url = $wp_upload_dir['baseurl'] . $suffix;
@@ -1550,9 +1549,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 		 * @return bool
 		 */
 		public static function unzip_file( $zip_file, $extract_path ) {
-			$status = false;
-			$extract_path = self::normalize_path($extract_path, false);
-			$zip    = new ZipArchive;
+			$status       = false;
+			$extract_path = self::normalize_path( $extract_path, false );
+			$zip          = new ZipArchive;
 
 			if ( $zip->open( $zip_file ) === true ) {
 				$zip->extractTo( $extract_path );
@@ -1562,6 +1561,29 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 
 			return $status;
 
+		}
+
+		/**
+		 * Deletes the media if it is unused
+		 *
+		 * @param $media_id
+		 *
+		 * @return bool
+		 */
+		public static function check_media_used_by_any_post( $media_id ) {
+
+			// checks if the media is used by a post
+			$posts = get_children( array(
+				'post_type'   => 'any',
+				'post_status' => 'any',
+				'numberposts' => - 1,
+				'meta_key'    => '_thumbnail_id',
+				'meta_value'  => $media_id,
+			) );
+
+			$media_used = (boolean) $posts;
+
+			return $media_used;
 		}
 
 
