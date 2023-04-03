@@ -8,6 +8,7 @@
 
 namespace TEAMTALLY\Core\Admin;
 
+use TEAMTALLY\Controllers\Export_Controller;
 use TEAMTALLY\Controllers\Import_Controller;
 use TEAMTALLY\Controllers\Leagues_Controller;
 use TEAMTALLY\Controllers\Teams_Controller;
@@ -130,8 +131,7 @@ class Admin_Menu extends Singleton {
 			'Export current data',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_EXPORT,
-			function () {
-			},
+			array(Export_Controller::class, 'export_page'),
 			null
 		);
 

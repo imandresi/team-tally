@@ -9,18 +9,22 @@
 /** @var string $nonce */
 /** @var array $archive */
 
-\TEAMTALLY\System\Helper::debug($archive, '$archive', true);
+\TEAMTALLY\System\Helper::debug( $archive, '$archive', true );
 ?>
 
 <div id="teamtally-import" class="wrap">
     <h1 class="wp-heading-inline">Import Data</h1>
 
-    <p>This section allows you to import a data set of the leagues, the teams and each of their corresponding logos which are automatically inserted inside the media library. Those data are stored in a zip file which and has been generated using the "export" functionality.</p>
+    <p>This section allows you to import a data set of the leagues, the teams and each of their corresponding logos
+        which are automatically inserted inside the media library. Those data are stored in a zip file which and has
+        been generated using the "export" functionality.</p>
 
     <p>You can use 3 sorts of data:</p>
     <ol>
         <li>"DEMO DATA" - You can use those data in order to test the plugin.</li>
-        <li>"ARCHIVE DATA" from export - Those data may be data backup. They are listed by date.</li>
+        <li>"ARCHIVE DATA" from export - Those data may be data backup. They are listed by date. Note that this option
+            is only available after using the "Export" functionality.
+        </li>
         <li>"UPLOADED" data - Those are external data you upload.</li>
     </ol>
 
