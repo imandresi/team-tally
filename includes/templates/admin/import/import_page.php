@@ -15,20 +15,25 @@
 <div id="teamtally-import" class="wrap">
     <h1 class="wp-heading-inline">Import Data</h1>
 
-    <p>This section allows you to import a data set of the leagues, the teams and each of their corresponding logos
-        which are automatically inserted inside the media library. Those data are stored in a zip file which and has
-        been generated using the "export" functionality.</p>
+    <div class="teamtally_card">
+        <h2>Description</h2>
+        <p>This section allows you to import a data set of the leagues, the teams and each of their corresponding logos
+            which are automatically inserted inside the media library. Those data are stored in a zip file which and has
+            been generated using the "export" functionality.</p>
 
-    <p>You can use 3 sorts of data:</p>
-    <ol>
-        <li>"DEMO DATA" - You can use those data in order to test the plugin.</li>
-        <li>"ARCHIVE DATA" from export - Those data may be data backup. They are listed by date. Note that this option
-            is only available after using the "Export" functionality.
-        </li>
-        <li>"UPLOADED" data - Those are external data you upload.</li>
-    </ol>
+        <p>You can use 3 sorts of data:</p>
+        <ol>
+            <li>"DEMO DATA" - You can use those data in order to test the plugin.</li>
+            <li>"ARCHIVE DATA" from export - Those data may be data backup. They are listed by date. Note that this
+                option
+                is only available after using the "Export" functionality.
+            </li>
+            <li>"UPLOADED" data - Those are external data you upload.</li>
+        </ol>
+    </div>
 
-    <form enctype="multipart/form-data" class="mt-8" method="post">
+    <h2 class="mt-8 mb-5">Choose the type of import</h2>
+    <form enctype="multipart/form-data" method="post">
         <input type="hidden" name="_nonce" value="<?= $nonce; ?>">
         <input type="hidden" name="action" value="do-import">
         <div id="demo-radio" class="mb-5">

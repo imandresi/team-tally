@@ -52,7 +52,11 @@ define( 'TEAMTALLY_TEMP_DIR', TEAMTALLY_UPLOAD_DIR . 'tmp/' );
 
 define( 'TEAMTALLY_USER_CAPABILITY', 'edit_posts' );
 
+define('TEAMTALLY_AUTHOR_EMAIL', 'itanjaka.mandresi@gmail.com');
+define('TEAMTALLY_AUTHOR_GITHUB', 'https://www.github.com/imandresi/');
+
 define( 'MINIMUM_ELEMENTOR_VERSION', '3.11.2' );
 define( 'MINIMUM_PHP_VERSION', '7.0' );
+
 
 require_once( TEAMTALLY_INCLUDES_DIR . 'core/loader.php' );

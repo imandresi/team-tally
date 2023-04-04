@@ -16,6 +16,7 @@ use TEAMTALLY\Core\Plugin_Manager;
 use TEAMTALLY\Models\Leagues_Model;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
+use TEAMTALLY\Views\About_View;
 
 class Admin_Menu extends Singleton {
 
@@ -117,32 +118,31 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'Import Demo or file',
-			'Import Demo or file',
+			'Import TEAM TALLY Demo or file',
+			'Import TEAM TALLY Demo or file',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_IMPORT,
-			array(Import_Controller::class, 'import_page'),
+			array( Import_Controller::class, 'import_page' ),
 			null
 		);
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'Export current data',
-			'Export current data',
+			'Export current TEAM TALLY data',
+			'Export current TEAM TALLY data',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_EXPORT,
-			array(Export_Controller::class, 'export_page'),
+			array( Export_Controller::class, 'export_page' ),
 			null
 		);
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'ABOUT THE AUTHOR',
+			'ABOUT',
 			'About',
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_ABOUT,
-			function () {
-			},
+			array( About_View::class, 'display_about_page' ),
 			null
 		);
 
@@ -158,19 +158,21 @@ class Admin_Menu extends Singleton {
 	 * @return void
 	 */
 	public function init_admin_menu_selected_items() {
-		add_action( 'parent_file', function ($parent_file) {
-			if ($this->active_page) {
+		add_action( 'parent_file', function ( $parent_file ) {
+			if ( $this->active_page ) {
 				$parent_file = self::SLUG_MAIN_MENU;
 			}
+
 			return $parent_file;
 		}, 10, 1 );
 
-		add_action('submenu_file', function($submenu_file, $parent_file) {
-			if ($this->active_page && $this->league_id) {
+		add_action( 'submenu_file', function ( $submenu_file, $parent_file ) {
+			if ( $this->active_page && $this->league_id ) {
 				$submenu_file .= "&league_id={$this->league_id}";
 			}
+
 			return $submenu_file;
-		}, 10, 2);
+		}, 10, 2 );
 	}
 
 	/**

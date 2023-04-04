@@ -101,7 +101,7 @@ class Admin_Notices extends Singleton {
 
 		$classes .= $is_dismissible ? ' is-dismissible' : '';
 
-		$html = "<div class=\"$classes\" style=\"padding: 10px; margin: 10px 20px 10px 2px; font-size: 14px;\">\n";
+		$html = "<div class=\"$classes\" style=\"padding: 10px; margin: 10px 0px 10px 2px; font-size: 14px;\">\n";
 
 		if ( is_array( $message ) ) {
 			$count       = count( $message );

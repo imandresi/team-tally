@@ -9,6 +9,25 @@
   gap: 15px;
 }
 
+.teamtally_card {
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  overflow: hidden;
+
+  & > p:first-child,
+  & > h1:first-child,
+  & > h2:first-child {
+    margin-top: 0;
+  }
+
+  & > p:last-child {
+    margin-bottom: 0;
+  }
+
+}
+
 /**
  * LEAGUE ITEM ICONS
  */
