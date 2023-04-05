@@ -344,7 +344,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Text Color', TEAMTALLY_TEXT_DOMAIN ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .hello-world' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .team-item.odd' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -355,7 +355,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Background Color', TEAMTALLY_TEXT_DOMAIN ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .hello-world' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .team-item.odd' => 'background-color: {{VALUE}};',
 				],
 			]
 		);
@@ -364,12 +364,11 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			\Elementor\Group_Control_Typography::get_type(),
 			[
 				'name'     => 'odd_row_typography',
-				'selector' => '{{WRAPPER}} .your-class',
+				'selector' => '{{WRAPPER}} .team-item.odd',
 			]
 		);
 
 		$this->end_controls_section();
-
 
 	}
 
@@ -394,7 +393,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Text Color', TEAMTALLY_TEXT_DOMAIN ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .hello-world' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .team-item.even' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -405,7 +404,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 				'label'     => esc_html__( 'Background Color', TEAMTALLY_TEXT_DOMAIN ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .hello-world' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .team-item.even' => 'background-color: {{VALUE}};',
 				],
 			]
 		);
@@ -414,7 +413,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			\Elementor\Group_Control_Typography::get_type(),
 			[
 				'name'     => 'even_row_typography',
-				'selector' => '{{WRAPPER}} .your-class',
+				'selector' => '{{WRAPPER}} .team-item.even',
 			]
 		);
 
@@ -504,9 +503,9 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 
 			if ( $league ) {
 				$owner_league = Leagues_Model::get_league( $league );
-				$title = $owner_league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ];
+				$title        = $owner_league['data'][ Leagues_Model::LEAGUES_FIELD_NAME ];
 				$title        = __(
-					sprintf( 'Teams from: %s',  $title),
+					sprintf( 'Teams from: %s', $title ),
 					TEAMTALLY_TEXT_DOMAIN
 				);
 			}
@@ -557,8 +556,9 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$posts_count ++;
-				$post       = $query->post;
-				$item_class = 'team-item ';
+
+				$post              = $query->post;
+				$item_class        = 'team-item ';
 
 				// extract data
 				$team          = Teams_Model::get_team( $post );
