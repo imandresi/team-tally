@@ -68,7 +68,7 @@ class Teams_Edit_Controller extends Singleton {
 	public function new_team_page_meta_boxes() {
 		add_meta_box(
 			'teamtaly_league_id',
-			'League of the team',
+			__( 'League of the team', TEAMTALLY_TEXT_DOMAIN ),
 			array( $this, 'new_team_page_meta_box_league_content' ),
 			Teams_Model::TEAMS_POST_TYPE,
 			'side',

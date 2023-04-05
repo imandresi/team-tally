@@ -51,7 +51,7 @@ class Admin_Menu extends Singleton {
 		 * Main admin menu
 		 */
 		add_menu_page(
-			'TEAM TALLY - Dashboard',
+			__( 'TEAM TALLY - Dashboard', TEAMTALLY_TEXT_DOMAIN ),
 			'TEAM TALLY',
 			self::MENU_CAPABILITY,
 			self::SLUG_MAIN_MENU,
@@ -63,8 +63,8 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'LEAGUES MANAGER',
-			'All Leagues',
+			__( 'LEAGUES MANAGER', TEAMTALLY_TEXT_DOMAIN ),
+			__( 'All Leagues', TEAMTALLY_TEXT_DOMAIN ),
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_LEAGUES_VIEW,
 			array( Leagues_Controller::class, 'admin_page_list_leagues' ),
@@ -73,8 +73,8 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'ADD / EDIT LEAGUE',
-			'Add New League',
+			__( 'ADD / EDIT LEAGUE', TEAMTALLY_TEXT_DOMAIN ),
+			__( 'Add New League', TEAMTALLY_TEXT_DOMAIN ),
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_LEAGUES_ADD,
 			array( Leagues_Controller::class, 'admin_page_add_or_edit_league' ),
@@ -90,10 +90,10 @@ class Admin_Menu extends Singleton {
 			if ( $this->league_id ) {
 				$url         = "edit.php?post_type=teamtally_teams&league_id={$this->league_id}";
 				$league_name = strtoupper( $this->league_data['data']['league_name'] );
-				$menu_title  = "Teams in {$league_name}";
+				$menu_title  = sprintf( __( 'Teams in %s', TEAMTALLY_TEXT_DOMAIN ), $league_name );
 				add_submenu_page(
 					self::SLUG_MAIN_MENU,
-					'List Teams',
+					__( 'List Teams', TEAMTALLY_TEXT_DOMAIN ),
 					$menu_title,
 					self::MENU_CAPABILITY,
 					$url,
@@ -107,8 +107,8 @@ class Admin_Menu extends Singleton {
 			$url .= $this->league_id ? "&league_id={$this->league_id}" : '';
 			add_submenu_page(
 				self::SLUG_MAIN_MENU,
-				'Add New Team',
-				'Add New Team',
+				__( 'Add New Team', TEAMTALLY_TEXT_DOMAIN ),
+				__( 'Add New Team', TEAMTALLY_TEXT_DOMAIN ),
 				self::MENU_CAPABILITY,
 				$url,
 				null,
@@ -118,8 +118,8 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'Import TEAM TALLY Demo or file',
-			'Import TEAM TALLY Demo or file',
+			__( 'Import TEAM TALLY Demo or file', TEAMTALLY_TEXT_DOMAIN ),
+			__( 'Import TEAM TALLY Demo or file', TEAMTALLY_TEXT_DOMAIN ),
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_IMPORT,
 			array( Import_Controller::class, 'import_page' ),
@@ -128,8 +128,8 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'Export current TEAM TALLY data',
-			'Export current TEAM TALLY data',
+			__( 'Export current TEAM TALLY data', TEAMTALLY_TEXT_DOMAIN ),
+			__( 'Export current TEAM TALLY data', TEAMTALLY_TEXT_DOMAIN ),
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_EXPORT,
 			array( Export_Controller::class, 'export_page' ),
@@ -138,8 +138,8 @@ class Admin_Menu extends Singleton {
 
 		add_submenu_page(
 			self::SLUG_MAIN_MENU,
-			'ABOUT',
-			'About',
+			__( 'ABOUT', TEAMTALLY_TEXT_DOMAIN ),
+			__( 'About', TEAMTALLY_TEXT_DOMAIN ),
 			self::MENU_CAPABILITY,
 			self::SLUG_SUBMENU_ABOUT,
 			array( About_View::class, 'display_about_page' ),

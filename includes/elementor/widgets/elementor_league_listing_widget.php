@@ -364,7 +364,6 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 					);
 				}
 
-				// TODO: complete the class name
 				$class = count( $terms ) == 1 ? 'only-item' :
 					( $counter >= count( $terms ) ? 'last-item' :
 						( $counter == 1 ? 'first-item' : '' ) );
@@ -410,7 +409,7 @@ class Elementor_League_Listing_Widget extends \Elementor\Widget_Base {
 		}
 
 		if ( ! $html ) {
-			$html = __( 'No posts found', TEAMTALLY_TEXT_DOMAIN );
+			$html = __( 'No leagues found', TEAMTALLY_TEXT_DOMAIN );
 		}
 
 		// final display

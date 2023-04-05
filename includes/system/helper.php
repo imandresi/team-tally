@@ -370,7 +370,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Helper' ) ) {
 			$html = join( " ", $attributes_list );
 			$html = "<" . $html . ">";
 
-			if ( false == $auto_close_single_tag ) {
+			if ( ! $auto_close_single_tag ) {
 				$html .= $content . "</{$tag}>";
 			}
 

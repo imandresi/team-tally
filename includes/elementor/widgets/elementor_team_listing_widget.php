@@ -81,7 +81,7 @@ class Elementor_Team_Listing_Widget extends \Elementor\Widget_Base {
 		);
 
 		// SHARED DATA TO JS
-		// TODO: add i18n localization for js labels
+		// TODO: add i18n localization for js labels (just use below $data array)
 		$data = array(
 			'widget_name' => self::WIDGET_NAME,
 			'nonce'       => wp_create_nonce( self::SECURITY_NONCE ),

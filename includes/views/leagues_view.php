@@ -416,7 +416,7 @@ class Leagues_View {
 	/**
 	 * Displays the list of all leagues
 	 *
-	 * @param array $leagues // contains the list of legues data (WP_Post)
+	 * @param array $leagues      contains the list of leagues data (WP_Post)
 	 *
 	 * @return void
 	 */
@@ -426,7 +426,7 @@ class Leagues_View {
 			return;
 		}
 
-		// http://www.teamtally.mg/wp-admin/admin.php?page=teamtally_leagues_add
+		// i.e. http://www.teamtally.mg/wp-admin/admin.php?page=teamtally_leagues_add
 		$new_league_url = add_query_arg( array(
 			'page' => 'teamtally_leagues_add'
 		), admin_url( 'admin.php' ) );

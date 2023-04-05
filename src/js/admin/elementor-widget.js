@@ -616,10 +616,6 @@ elementor.hooks.addAction(`panel/open_editor/widget/${WIDGET_NAME}`, function (p
 
     }
 
-    // console.log('panel', panel);
-    // console.log('model', model);
-    // console.log('view', view);
-
     /**
      * Initialization part
      */

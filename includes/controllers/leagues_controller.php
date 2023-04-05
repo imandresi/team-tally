@@ -86,7 +86,7 @@ class Leagues_Controller {
 
 			// check security
 			if ( ! wp_verify_nonce( $_GET['_wpnonce'], $nonce ) ) {
-				wp_die( 'Your authorization have expired.' );
+				wp_die( __( 'Your authorization have expired.', TEAMTALLY_TEXT_DOMAIN ) );
 			}
 
 			// Everything is ok. We can delete
@@ -96,16 +96,15 @@ class Leagues_Controller {
 			// display error admin notice
 			if ( ! $delete_status ) {
 				Admin_Notices::set_message(
-					'Please, make sure the league is empty before deleting it.',
+					__( 'Please, make sure the league is empty before deleting it.', TEAMTALLY_TEXT_DOMAIN ),
 					Admin_Notices::ADMIN_NOTICE_ERROR,
 					true,
 					null,
 					true
 				);
-			}
-			else {
+			} else {
 				Admin_Notices::set_message(
-					'League successfully deleted.',
+					__( 'League successfully deleted.', TEAMTALLY_TEXT_DOMAIN ),
 					Admin_Notices::ADMIN_NOTICE_SUCCESS,
 					true,
 					null,
