@@ -349,7 +349,7 @@ class Leagues_View {
 	 *
 	 * @return void
 	 */
-	public static function display_league( $league, $teams_count = 0 ) {
+	public static function display_league( $league, $teams_infos = 0 ) {
 
 		if ( ! $league ) {
 			return;
@@ -394,7 +394,7 @@ class Leagues_View {
 			'manage_teams_url'  => $manage_team_url,
 			'edit_league_url'   => admin_url( "admin.php?page=teamtally_leagues_add&term_id={$league_id}" ),
 			'remove_league_url' => $remove_league_url,
-			'teams_count'       => $teams_count,
+			'teams_infos'       => $teams_infos,
 		);
 
 		$html = Template::parse( 'admin/leagues/league_item.php', $template_data );
