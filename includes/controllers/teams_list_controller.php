@@ -147,6 +147,7 @@ class Teams_List_Controller extends Singleton {
 		add_filter( 'manage_' . Teams_Model::TEAMS_POST_TYPE . '_posts_columns', function ( $columns ) {
 			$columns = array(
 				'cb'       => $columns['cb'],
+				'id'       => '#ID',
 				'title'    => __( 'Name', TEAMTALLY_TEXT_DOMAIN ),
 				'nickname' => __( 'Nickname', TEAMTALLY_TEXT_DOMAIN ),
 				'history'  => __( 'History', TEAMTALLY_TEXT_DOMAIN ),
@@ -170,6 +171,10 @@ class Teams_List_Controller extends Singleton {
 			}
 
 			switch ( $column ) {
+				case 'id':
+					print $post_id;
+					break;
+
 				case 'nickname':
 					print $this->last_post['data'][ Teams_Model::TEAMS_FIELD_NICKNAME ];
 					break;

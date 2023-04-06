@@ -411,6 +411,13 @@
 /**
  * LIST TEAMS
  */
+.teamtally__teams__list_draft_teams .wp-list-table th.column-id, .teamtally__teams__list_draft_teams .wp-list-table td.column-id,
+.teamtally__teams__list_teams_in_trash .wp-list-table th.column-id,
+.teamtally__teams__list_teams_in_trash .wp-list-table td.column-id,
+.teamtally__teams__list_teams .wp-list-table th.column-id,
+.teamtally__teams__list_teams .wp-list-table td.column-id {
+  width: 30px;
+}
 .teamtally__teams__list_draft_teams .wp-list-table th.column-title, .teamtally__teams__list_draft_teams .wp-list-table td.column-title,
 .teamtally__teams__list_teams_in_trash .wp-list-table th.column-title,
 .teamtally__teams__list_teams_in_trash .wp-list-table td.column-title,

@@ -9,6 +9,10 @@
     .wp-list-table {
 
         th, td {
+            &.column-id {
+                width: 30px;
+            }
+
             &.column-title {
                 width: 250px;
             }
