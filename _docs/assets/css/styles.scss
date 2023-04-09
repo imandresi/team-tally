@@ -86,17 +86,24 @@ body {
       margin-top: 100px;
     }
 
-    code {
+    code:not(.hljs) {
       color: #9b0707;
     }
 
     pre {
       overflow: scroll;
-      background-color: #2b2b2b;
-      padding: 20px;
       font-size: 90%;
       code {
 
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: #0066cc;
+
+      &:hover {
+        text-decoration: underline;
       }
     }
 

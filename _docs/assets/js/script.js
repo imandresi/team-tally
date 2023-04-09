@@ -19,7 +19,7 @@ function setMenuHandler() {
  */
 document.addEventListener('DOMContentLoaded', () => {
     setMenuHandler();
-
+    hljs.highlightAll();
     tocbot.init({
         tocSelector: '#main .js-toc',
         // Where to grab the headings to build the table of contents.

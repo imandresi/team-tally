@@ -31,7 +31,7 @@ TEMPLATE VARIABLES:
 ==============================
 -->
 <div class="league-item {{{class}}}">
-    <a href="{{{league_id}}}">
+    <a href="/list-of-teams/?league_id={{{league_id}}}">
         <div class="league-logo" style="background-image: url({{{league_logo_url}}});"></div>
         <div class="league-info">
             <div class="league-name">{{{league_name}}}</div>

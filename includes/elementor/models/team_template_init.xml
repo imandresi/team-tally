@@ -97,7 +97,7 @@ TEMPLATE VARIABLES:
 	<h1>Team: {{{team_name}}}</h1>
 </header>
 
-<div class="teamtally-team-detail">
+<div class="teamtally-team-detail {{{class}}}">
     <section class="team-metadata">
         <h1>Nickname</h1>
         <p>{{{team_nickname}}}</p>
