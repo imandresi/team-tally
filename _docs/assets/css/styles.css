@@ -27,9 +27,13 @@ body {
   aspect-ratio: 378/79;
 }
 
+img {
+  max-width: 100%;
+}
+
 #main {
   display: grid;
-  grid-template-columns: 300px auto 300px;
+  grid-template-columns: 300px calc(100vw - 660px) 300px;
   grid-template-areas: "left content right";
 }
 #main .left {
@@ -38,10 +42,11 @@ body {
 #main .right {
   position: relative;
   grid-area: right;
-  padding: 20px;
 }
 #main .right .js-toc {
+  width: 300px;
   position: fixed;
+  right: 0;
   padding-left: 30px;
   padding-right: 30px;
   font-size: 85%;
@@ -88,7 +93,7 @@ body {
 }
 @media only screen and (max-width: 1200px) {
   #main {
-    grid-template-columns: auto 300px;
+    grid-template-columns: calc(100vw - 300px - 50px) 300px;
     grid-template-areas: "content right";
   }
   #main .content {
@@ -98,7 +103,7 @@ body {
 }
 @media only screen and (max-width: 800px) {
   #main {
-    grid-template-columns: auto;
+    grid-template-columns: calc(100vw - 20px);
     grid-template-areas: "content";
   }
   #main .content {
@@ -145,6 +150,17 @@ body {
 }
 .toc-list li {
   margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  body {
+    font-size: 20px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  body {
+    font-size: 16px;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -29,10 +29,15 @@ body {
   }
 }
 
+img {
+  max-width: 100%;
+}
 
 #main {
+  $menu-size: 300px;
+
   display: grid;
-  grid-template-columns: 300px auto 300px;
+  grid-template-columns: 300px calc(100vw - 660px) $menu-size;
   grid-template-areas: "left content right";
 
   .left {
@@ -42,10 +47,11 @@ body {
   .right {
     position: relative;
     grid-area: right;
-    padding: 20px;
 
     .js-toc {
+      width: $menu-size;
       position: fixed;
+      right: 0;
       padding-left: 30px;
       padding-right: 30px;
       font-size: 85%;
@@ -110,7 +116,7 @@ body {
   }
 
   @media only screen and (max-width: 1200px) {
-    grid-template-columns: auto 300px;
+    grid-template-columns: calc(100vw - $menu-size - 50px) 300px;
     grid-template-areas: "content right";
 
     .content {
@@ -120,7 +126,7 @@ body {
   }
 
   @media only screen and (max-width: 800px) {
-    grid-template-columns: auto;
+    grid-template-columns: calc(100vw - 20px);
     grid-template-areas: "content";
 
     .content {
@@ -181,5 +187,17 @@ body {
 
   li {
     margin-bottom: 10px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  body {
+    font-size: 20px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  body {
+    font-size: 16px;
   }
 }
