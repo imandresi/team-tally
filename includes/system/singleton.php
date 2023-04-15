@@ -18,7 +18,7 @@ namespace TEAMTALLY\System;
 abstract class Singleton {
 
 	/**
-	 * Contains all data used by each instances.
+	 * Contains all data used by each instance.
 	 *
 	 * It is an associative array which is keyed by class names implementing this singleton function
 	 *
@@ -138,13 +138,5 @@ abstract class Singleton {
 		// do nothing
 	}
 
-	/**
-	 * Private unserialize method to prevent unserializing of the *Singleton*
-	 * instance.
-	 *
-	 * @return void
-	 */
-	private function __wakeup() {
-		// do nothing
-	}
+
 }
