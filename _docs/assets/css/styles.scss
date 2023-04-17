@@ -1,5 +1,5 @@
 body {
-  font-family: Roboto, Arial, Helvetica;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 22px;
   padding: 0;
   color: #888888;
@@ -64,6 +64,10 @@ img {
         }
       }
 
+      .is-active-link::before {
+        background-color: orangered;
+      }
+
     }
 
     .menu {
@@ -85,7 +89,7 @@ img {
     }
 
     h3, h4, h5 {
-      font-family: Roboto Light;
+      font-family: Roboto Light, sans-serif;
     }
 
     .back-btn {
@@ -93,7 +97,11 @@ img {
     }
 
     code:not(.hljs) {
-      color: #9b0707;
+      color: #1d90d9;
+      display: inline-block;
+      background-color: #c2e5fb;
+      padding: 3px 10px;
+      margin: 3px;
     }
 
     pre {
@@ -111,6 +119,21 @@ img {
       &:hover {
         text-decoration: underline;
       }
+    }
+
+    table {
+      $border-color: #bbbbbb;
+
+      &, td  {
+        border: 1px solid $border-color;
+        border-collapse: collapse;
+        padding: 15px 20px;
+      }
+
+      td {
+        text-align: left;
+      }
+
     }
 
   }

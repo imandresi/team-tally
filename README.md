@@ -8,6 +8,15 @@ One of the standout features of "TEAM TALLY plugin" is the custom-made Elementor
 
 Whether you're a sports blogger looking to enhance your website's content or a sports professional seeking to streamline your team management processes, "TEAM TALLY plugin" is the ultimate solution. Get started today and take your sports-related website to the next level.
 
+
+![alt Elementor League Widget interface](_docs/assets/media/usage_elementor_league_add.png)
+
+![alt List of leagues](_docs/assets/media/usage_exercise_01.png)
+
+![alt List of Brazilian Teams](_docs/assets/media/usage_exercise_02.png)
+
+![alt Detail of a specific Brazilian Team](_docs/assets/media/usage_exercise_03.png)
+
 ## Main Features
 1. TEAM MANAGEMENT: Users can create and manage football/sports teams with various information such as team name, history, logo, and nickname, and associate them with a league.
 
@@ -39,6 +48,9 @@ That's it! Your plugin should now be installed and activated on your WordPress s
 To learn how to use the TEAM TALLY plugin and its various features, please refer to our [usage manual](_docs/user_manual.md). 
 
 This document provides detailed instructions on how to configure the plugin to display the list of leagues and teams, as well as how to customize pagination, output templates, and more. We encourage you to experiment with the plugin's options and have fun exploring its capabilities.
+
+## Development Process
+If you are interested on learning more about my development journey in building the TEAM TALLY plugin, please click [here](_docs/development.md).
 
 ## License
 
