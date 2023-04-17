@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAM TALLY WordPress Plugin - DEVELOPMENT PROCESS</title>
+    <link rel="stylesheet" href="assets/plugins/tocbot/tocbot.css">
+    <link rel="stylesheet" href="assets/plugins/highlight/styles/a11y-dark.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/fonts/roboto/style.css">
+    <script src="assets/plugins/tocbot/tocbot.min.js"></script>
+    <script src="assets/plugins/highlight/highlight.min.js"></script>
+    <script src="assets/js/script.js"></script>
+</head>
+<body>
+<div id="main">
+    <div class="left"></div>
+    <div class="content">
+        <div id="logo-teamtally"></div>
+
+        <h1 id="development-process">DEVELOPMENT PROCESS</h1>
+        <p>Building the TEAM TALLY WordPress plugin was a challenging and rewarding experience that allowed me to use my skills in WordPress development and plugin architecture. Throughout the development process, I encountered various obstacles that demanded creative problem-solving, resourcefulness, and meticulous attention to detail.</p>
+        <p>This section of the documentation is intended for those interested in an overview of my development journey in creating the plugin. In addition to the process, I will also be discussing the tools and technologies that I utilized.</p>
+        <p>By sharing my development journey, I aim to demonstrate my capacity to handle intricate tasks, operate independently, and produce high-quality code that satisfies the client&#39;s requirements. Thank you for taking the time to review this documentation, and I look forward to discussing my experience with you.</p>
+        <h2 id="project-requirements">Project requirements</h2>
+        <p>Create a custom WordPress plugin that will make it possible to store football/sports teams categorized by the league they are from and list them with a custom-made Elementor widget.</p>
+        <ul>
+            <li>Every team should have a name, history, logo, and a nickname</li>
+            <li>Leagues should support adding a logo</li>
+            <li>Elementor widget should make it possible to query the teams by keyword, by number, by league and change their basic styling (color, font styling)</li>
+        </ul>
+        <h2 id="project-study">Project Study</h2>
+        <p>According to the requirements, the main role of the plugin is to provide a <strong>database management of teams and leagues</strong> which will allow the user to create leagues, and to create teams associated with them.</p>
+        <p>Those users should then be able to create web pages using Elementor and incorporate those data so that web visitors could browse them.</p>
+        <p>If I put myself in the visitor&#39;s place I would need to view a list of the leagues. I would also want to know which teams compose each league. At first, I would just need a list of all the teams with just the minimum information such as Team name, nickname. But next, I may need the ability to view the full detail of a specific team.</p>
+        <p>It then appears that we need the following features:</p>
+        <h3 id="basic-features">Basic features</h3>
+        <ul>
+            <li>An Elementor widget that can display all the <em>available leagues</em> or a specific league.</li>
+            <li>Another Elementor widget that can display a <em>list of teams</em> based on a query filter that can be defined by the user. The query filter could be based on parameters such as the team ID, league ID, or a specific keyword.<ul>
+                <li>The <code>team_id</code> filter would allow displaying data for a particular team.</li>
+                <li>The <code>league_id</code> filter would enable displaying a list of teams that belong to a specific league.</li>
+                <li>The <code>keyword</code> filter would allow displaying a list of teams that contain a particular keyword. This feature would be particularly useful when integrated into a search engine.</li>
+            </ul>
+            </li>
+            <li>A <em>pagination</em> system to handle large query results for teams.</li>
+        </ul>
+        <h3 id="dynamic-query-feature">Dynamic query feature</h3>
+        <p>Now let&#39;s suppose I had created a page displaying a table listing of 20 teams from a particular league. Next, I want the click on each team&#39;s name to display their full info. <strong>It may appear that I would have to create ==20 pages== displaying full team detail for each team</strong> and then link each of them to the table listing. And what if there are 40, 60, ... 100 teams ? It would be a very exhaustive task.   </p>
+        <p>We have to find a solution in order to facilitate that process. And one that appears is the use of <em>HTTP Query Parameter</em> to transmit or to extract the <code>team_id</code> or the <code>league_id</code> value to an Elementor Widget. So, instead of creating 100 pages of teams detail, we just have to create ==one page== which is linked with that HTTP Query Parameter.</p>
+        <h3 id="rows-ordering-feature">Rows ordering feature</h3>
+        <p>Additionally, the user may also want to have the list of teams or leagues sorted by a specific field. It would then also be useful to add <em>row ordering</em> feature</p>
+        <h3 id="custom-template-feature">Custom template feature</h3>
+        <p>We talked earlier about the necessity to display two types of pages about a team:</p>
+        <ul>
+            <li>a list of teams belonging to a league</li>
+            <li>a full detail of a specific team</li>
+        </ul>
+        <p>An Elementor Widget is used to display teams data. But as we need two different results, do we need to build one widget for each type of output ? And what if the user needs another kind of output ? And another ?</p>
+        <p>The solution, is to associate a <strong>custom template feature</strong> to the team and league widget so that the user can customize the output according to their needs.</p>
+        <p>The plugin user will create its own template by entering HTML code. </p>
+        <h3 id="custom-css-feature">Custom CSS feature</h3>
+        <p>HTML templates are incomplete without CSS. Therefore, it&#39;s essential to provide users with the ability to create custom CSS for their templates. By doing so, users will be able to customize the look and feel of their website to match their desired style and branding.</p>
+        <p>Adding this feature to the TEAM TALLY plugin would enable users to create unique templates and customize their CSS styles without requiring advanced coding skills. </p>
+        <h3 id="import-export-feature">Import / Export feature</h3>
+        <p>The Import feature is primarily designed to help users quickly get up and running with the plugin by offering the option to import demo data for testing purposes. This feature can be particularly useful for users who are new to the plugin or those who want to test different scenarios without having to manually create each data entry. </p>
+        <p>Additionally, the Export feature can allow users to save their data for backup or to transfer their data to another website.</p>
+        <h3 id="summary-of-final-features-">Summary of final Features :</h3>
+        <ul>
+            <li>LEAGUE AND TEAM MANAGEMENT feature that enables the creation, modification, and deletion of leagues and teams.</li>
+            <li>ELEMENTOR WIDGETS:<ul>
+                <li><strong>Team Elementor Widget</strong> with league filtering, team filtering, keyword filtering, rows ordering, and pagination features.</li>
+                <li><strong>League Elementor Widget</strong> with league filtering and rows ordering feature.</li>
+                <li><strong>Dynamic HTTP query</strong> feature allowing the use of HTTP query parameter for <code>team_id</code> or <code>league_id</code> and transmit them to the Elementor Widget to display dynamically their content on a web page. This avoids the necessity of creating multiple pages.</li>
+                <li><strong>Custom Templates</strong> feature that allows users to create unique HTML templates for their teams and leagues display.</li>
+                <li><strong>Custom CSS</strong> feature that enables users to customize the look and feel of their templates by creating their CSS styles.</li>
+            </ul>
+            </li>
+            <li>IMPORT/EXPORT feature to quickly import demo data for testing and to make backups</li>
+        </ul>
+        <p>These features will enable users to create and manage their teams and leagues more effectively, while also providing a customizable interface for displaying that information on their website.</p>
+        <h2 id="finding-a-plugin-name">Finding a plugin name</h2>
+        <p>I didn&#39;t spend much time on finding a name for the plugin. I just submitted the requirement features to ChatGPT and asked it to give me a name for the plugin. I chose the first name on the list: TEAM TALLY</p>
+        <p>But as the project progressed, I realized that the name did not accurately reflect the plugin&#39;s features since it did not include a <strong>tally of team points</strong>. Despite this, I chose to keep the name as that feature could be considered a possible improvement for future updates to the plugin.</p>
+        <h2 id="building-the-directory-structure">Building the directory structure</h2>
+        <p>The directory structure is a crucial part on every web development project as it keeps the code organized, making it easier to write and maintain.</p>
+        <p>In any project, I always make sure to include an <code>asset</code> directory where I store all media, CSS, JS, fonts, and plugin files. </p>
+        <p>As per this project, the first structure of the directory typically follows the format below:</p>
+        <pre><code><span class="hljs-selector-tag">plugins</span>
+└── <span class="hljs-selector-tag">team-tally</span>
+    ├── <span class="hljs-selector-tag">assets</span>
+    │   ├── <span class="hljs-selector-tag">css</span>
+    │   ├── <span class="hljs-selector-tag">images</span>
+    │   └── <span class="hljs-selector-tag">js</span>
+    └── <span class="hljs-selector-tag">team-tally</span><span class="hljs-selector-class">.php</span>
+</code></pre><p>The remaining structure now depends on other factors. And we will update it progressively throughout this document.</p>
+        <h2 id="using-a-css-preprocessor">Using a CSS Preprocessor</h2>
+        <p>I find CSS preprocessors like SASS to be incredibly valuable in any web project. SASS, in particular, has helped me to organize my code by separating each feature into multiple files, keeping them modularized.</p>
+        <p>One of the features I find amazing in SASS is the nested rule feature. It follows the structure of the HTML, which makes reading the code a lot easier. With regular CSS, multiple selectors nested in CSS can quickly become a mess that&#39;s difficult to read.</p>
+        <p>But that&#39;s not all - SASS also offers other cool features like variables and mixins that help me to avoid code duplication and make the code easier to debug.</p>
+        <p>Another great advantage of SASS is its ability to group all the CSS files into a single one. This helps to improve performance by avoiding the browser having to download multiple CSS files.</p>
+        <h2 id="using-webpack">Using WebPack</h2>
+        <p>In my project, I utilized WebPack to perform several tasks, including:</p>
+        <ul>
+            <li>Compiling SCSS into CSS using fast-sass-loader</li>
+            <li>Minifying the final production CSS for faster loading performance</li>
+            <li>Combining multiple JavaScript files into a single bundle to improve loading performance</li>
+            <li>Isolating the JavaScript environment from the global environment using WebPack&#39;s module approach</li>
+        </ul>
+        <p>The source folder for WebPack is located in <code>./src</code>, which contains all the JS and SCSS source code.</p>
+        <p>The compiled files are outputted to the previously specified <code>./assets</code> folder.</p>
+        <pre><code>plugins
+└── team-tally
+    ├── assets
+    │   ├── css
+    │   ├── images
+    │   └── <span class="hljs-keyword">js
+</span>    ├── src
+    │   ├── <span class="hljs-keyword">scss
+</span>    │   └── <span class="hljs-keyword">js
+</span>    └── team-tally.php
+</code></pre><h2 id="using-git">Using Git</h2>
+        <p>After configuring those initial setup, I initiate Git to start monitoring changes in the project.</p>
+        <p>This allows me to keep a record of all changes made to the code, as well as revert back to a previous version if needed.</p>
+        <h2 id="home-made-boilerplate">Home-made boilerplate</h2>
+        <p>The most crucial part of the project is building a plugin boilerplate that will serve as the foundation. Although there are several WordPress plugin boilerplate available online, I decided to build one from scratch that meets my specific requirements. These requirements include:</p>
+        <ul>
+            <li>Isolation from WordPress environment via namespaces</li>
+            <li>Object-oriented approach</li>
+            <li>Easy implementation of the singleton pattern</li>
+            <li>Use of the MVC design pattern</li>
+            <li>Use of autoloader</li>
+            <li>Implementation of a templating engine supporting escaped/unescaped template variables as well as PHP code</li>
+            <li>Separation of frontend and admin code </li>
+        </ul>
+        <p>By meeting these requirements, the code will be more maintainable and extensible.</p>
+        <p>Below is the updated directory structure:</p>
+        <pre><code>plugins
+└── team-tally
+    ├── assets
+    │   ├── css
+    │   ├── images
+    │   └── <span class="hljs-keyword">js
+</span>    ├── includes
+    │   ├── controllers
+    │   ├── core
+    │   ├── languages
+    │   ├── models
+    │   ├── system
+    │   ├── templates
+    │   ├── views
+    │   └── <span class="hljs-keyword">bootstrap.php
+</span>    ├── src
+    │   ├── <span class="hljs-keyword">scss
+</span>    │   └── <span class="hljs-keyword">js
+</span>    └── team-tally.php
+</code></pre><h3 id="singleton-pattern">Singleton Pattern</h3>
+        <p>Some classes may use the <strong>Singleton Pattern</strong>. If applicable, instead of implementing it manually we just have to extend our class with the Singleton class from <code>./system/singleton.php</code>. Next, we implement the <code>init()</code> method which is called automatically when then class is first initialized. </p>
+        <h3 id="model-view-controller-pattern">Model / View / Controller Pattern</h3>
+        <p>The <strong>model</strong> is a class which contains all WordPress and low-level database interactions such as the use of <code>WP_Query</code>, <code>get_posts</code>, <code>get_post_meta</code>, <code>get_terms</code>, etc... </p>
+        <p>The <strong>controller</strong> is a class which contains logic, form processing etc.</p>
+        <p>The <strong>view</strong> is a class which contains codes that are in charge of output display. It initializes the parameters to be sent to the templates.</p>
+        <p>The <strong>templates</strong> contain the HTML code defining the final output. It&#39;s template variables are displayed using the braces format.</p>
+        <ul>
+            <li><code>{{..}}</code> is used for escaped output</li>
+            <li><code>{{{...}}}</code> is used for unescaped output</li>
+            <li>The use of PHP is supported for possible extensive customization. When using PHP, template variables are accessible as normal PHP variables.</li>
+        </ul>
+        <h2 id="customizing-the-admin-menu">Customizing the admin menu</h2>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>
+                    <code>$submenu</code>,
+                    <code>add_menu_page()</code>,
+                    <code>add_submenu_page()</code>
+                </td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td>
+                    <code>admin_menu</code>,
+                    <code>parent_file</code>,
+                    <code>submenu_file</code>
+                </td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/core/admin/admin_menu.php</code><br>
+                </td>
+            </tr>
+        </table>
+
+        <p>When I customized the admin menu to add the TEAM TALLY menu and submenus, I had to select a custom icon for the main menu to make it look prettier. Since there was no predefined dashicon for a football icon, I decided to use an SVG football icon to achieve the best output rendering. This has to be achieved by injecting the SVG content as a base64 data in <code>add_menu_page()</code> through a custom function reading the SVG file.</p>
+        <p>In order to be more user-friendly, I also had to change the label of the &quot;team listing&quot; submenu according to the selected league. The team listing menu is closely linked to a league. So when a league is selected, the label of the &quot;Team Listing&quot; submenu had to be changed into &quot;Teams in {league name}&quot;. Similarly, when no league is selected, the menu should be made unavailable.</p>
+        <p>After setting up the TEAM TALLY menu, I noticed that the corresponding active menu was not highlighted when the list of teams in a specific league are displayed. Upon debugging, I discovered that the problem was due to the links to the team listing which had to be suffixed with <code>&amp;league_id=...</code>. That prevented the activation of the default selection highlighting behavior of WordPress. However, after a deep dive into the WordPress code, I managed to solve the problem by adding some customization code through the <code>parent_file</code> and <code>submenu_file</code> hook filter.</p>
+        <h2 id="implementation-of-the-league-management-">Implementation of the <em>League management</em></h2>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>Taxonomy, Term Meta, Nonces, Admin Notices</td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td><code>init</code></td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/controllers/leagues_controller.php</code><br>
+                    <code>./includes/models/leagues_model.php</code><br>
+                    <code>./includes/views/leagues_view.php</code><br>
+                    <code>./templates/leagues/add_edit_league.php</code><br>
+                    <code>./templates/leagues/league_item.php</code><br>
+                    <code>./templates/leagues/list_leagues.php</code>
+                </td>
+            </tr>
+        </table>
+
+        <p>The responsibilities of the league management module include:</p>
+        <ul>
+            <li>displaying a form for creating or editing a league</li>
+            <li>displaying a list of all the leagues, where each league has a link to access modifications, deletions, and team management</li>
+            <li>deleting a specific league.</li>
+        </ul>
+        <p>I have a funny story about this module. Initially, I implemented its features using &quot;Custom Post Types&quot; instead of &quot;Taxonomy&quot;. However, when I started working on the Team management module, I realized that I could not attach a league to a team using custom post types, as taxonomy is more suitable for that.</p>
+        <p>Luckily, thanks to the adopted MVC structure, fixing the problem was as simple as changing the model to use &quot;Taxonomy&quot; instead of &quot;Custom Post types&quot;.</p>
+        <h2 id="implementation-of-the-team-management-">Implementation of the <em>Team management</em></h2>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>Custom Post Types, Post Meta, Post Term, Meta Boxes, Quick Edit, Nonces, Admin Notices, <code>WP_Posts_List_Table</code></td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td>
+                    <code>init</code>,
+                    <code>admin_head-edit.php</code>,
+                    <code>quick_edit_custom<em>box</code>,
+                    <code>manage</em>{$post_type}_posts_custom_column</code>,
+                    <code>edit_form_after_title</code>,
+                    <code>admin_head-post-new.php</code>,
+                    <code>admin_head-post.php</code>,
+                    <code>add_meta<em>boxes</em>{$post_type}</code>,
+                    <code>wp_insert_post_empty_content</code>,
+                    <code>save<em>post</em>{$post_type}</code>,
+                </td>
+            </tr>
+            <tr>
+                <td>FILTER HOOKS</td>
+                <td>
+                    <code>admin_body_class</code>,
+                    <code>views_edit-{$post_type}</code>,
+                    <code>wp_list_table_class<em>name</code>,
+                    <code>manage</em>{$post_type}_posts_columns</code>,
+                    <code>enter_title_here</code>,
+                    <code>redirect_post_location</code>,
+                    <code>wp_insert_post_empty_content</code>,
+                </td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/controllers/teams_controller.php</code><br>
+                    <code>./includes/controllers/teams_edit_controller.php</code><br>
+                    <code>./includes/controllers/teams_list_controller.php</code><br>
+                    <code>./includes/core/admin/teams_list_table.php</code><br>
+                    <code>./includes/models/teams_model.php</code><br>
+                    <code>./includes/views/teams_view.php</code><br>
+                    <code>./includes/templates/teams/edit_form.php</code><br>
+                    <code>./includes/templates/teams/meta_box_league.php</code><br>
+                </td>
+            </tr>
+        </table>
+
+        <h3 id="list-of-teams">List of teams</h3>
+        <p>Displaying the list of teams is different from displaying the list of available posts of a custom post type. Here, each team is associated with a league, so it&#39;s better for the user to see a list of teams from a specific league selected from the list of leagues.</p>
+        <p>Therefore, the entry point for the &quot;Teams Management&quot; is always the list of leagues. After selecting a team from a particular league, the user is brought to the corresponding list of teams. Below are the list of customization:</p>
+        <ul>
+            <li>The interface of the &quot;Teams Management&quot; is customized to remind the user that it&#39;s the interface of a specific league. The <strong>admin submenu</strong> is changed to include the name of the selected league, and the <strong>title of the list of teams</strong> is also changed to include the selected league.</li>
+            <li>Additionally, due to the mandatory association of a league with each team, all other post actions, including edit, delete, bulk actions, and filter, have been customized accordingly.</li>
+            <li>The post list view for teams has been customized to include additional columns for #ID, Nickname, History, and Logo.</li>
+        </ul>
+        <p>I used a customized <code>WP_Posts_List_Table</code> class to present and manage a list of teams for a particular league.</p>
+        <h3 id="edit-a-team">Edit a team</h3>
+        <p>Building the interface which allows us to create or edit a team requires us to create <strong>custom field</strong> for the Nickname and a <strong>meta box</strong> for associating a league to it. The logo is managed using post thumbnail.</p>
+        <h2 id="elementor-widgets">Elementor Widgets</h2>
+        <p>The league and team Elementor widgets have several common features, which have been implemented as PHP traits to avoid duplicating code. Additionally, both widgets share a common set of Javascript code that manages the custom template field features. This Javascript code communicates with the PHP code of the plugin using AJAX.</p>
+        <h3 id="implementation-for-the-league-elementor-widget-">Implementation for the <em>League Elementor Widget</em></h3>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>Traits, JSON, XML, Ajax, <code>\Elementor\Widget_Base</code></td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td>
+                    <code>elementor/init</code>,
+                    <code>elementor/elements/categories_registered</code>,
+                    <code>elementor/widgets/register</code>,
+                    <code>elementor/controls/register</code>,
+                    <code>elementor/preview/enqueue_styles</code>,
+                    <code>elementor/frontend/before_enqueue_styles</code>,
+                    <code>elementor/editor/after_enqueue_scripts</code>,
+                    <code>wp<em>ajax</em>{$action}</code>,
+                    <code>wp_ajax_no<em>priv</em>{$action}</code>
+                </td>
+            </tr>
+            <tr>
+                <td>ELEMENTOR JS HOOKS</td>
+                <td>
+                    <code>panel/open_editor/widget/${WIDGET_NAME}</code>
+                </td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/elementor/widgets/elementor_league_listing_widget.php</code><br>
+                    <code>./includes/elementor/widgets/elementor_manager.php</code><br>
+                    <code>./includes/elementor/widgets/elementor_widget_trait.php</code><br>
+                    <code>./includes/elementor/models/template_base_model_abstract.php</code><br>
+                    <code>./includes/elementor/models/league_listing_template_model.php</code><br>
+                    <code>./includes/elementor/models/league_template_init.xml</code><br>
+                    <code>./includes/elementor/models/league_template.xml</code><br>
+                </td>
+            </tr>
+        </table>
+
+        <h3 id="implementation-for-the-team-elementor-widget-">Implementation for the <em>Team Elementor Widget</em></h3>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>Traits, JSON, XML, Ajax, <code>\Elementor\Widget_Base</code></td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td>
+                    <code>elementor/init</code>,
+                    <code>elementor/elements/categories_registered</code>,
+                    <code>elementor/widgets/register</code>,
+                    <code>elementor/controls/register</code>,
+                    <code>elementor/preview/enqueue_styles</code>,
+                    <code>elementor/frontend/before_enqueue_styles</code>,
+                    <code>elementor/editor/after_enqueue_scripts</code>,
+                    <code>wp<em>ajax</em>{$action}</code>,
+                    <code>wp_ajax_no<em>priv</em>{$action}</code>
+                </td>
+            </tr>
+            <tr>
+                <td>ELEMENTOR JS HOOKS</td>
+                <td>
+                    <code>panel/open_editor/widget/${WIDGET_NAME}</code>
+                </td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/elementor/widgets/elementor_team_listing_widget.php</code><br>
+                    <code>./includes/elementor/widgets/elementor_manager.php</code><br>
+                    <code>./includes/elementor/widgets/elementor_widget_trait.php</code><br>
+                    <code>./includes/elementor/models/template_base_model_abstract.php</code><br>
+                    <code>./includes/elementor/models/team_listing_template_model.php</code><br>
+                    <code>./includes/elementor/models/team_template_init.xml</code><br>
+                    <code>./includes/elementor/models/team_template.xml</code><br>
+                </td>
+            </tr>
+        </table>
+
+        <h3 id="custom-templates">Custom Templates</h3>
+        <p>The custom templates consist of a &quot;container template&quot; and an &quot;item template&quot; that contain HTML codes with the option to use &quot;template variables&quot;. Each template have a name, and they are stored in an XML file. The widgets come with default templates that cannot be altered.</p>
+        <p>The &quot;Manage Output Template&quot; section of each Elementor widget has four controls: the &quot;Use template&quot; combobox, and the &quot;Template Name&quot;, &quot;Template Container&quot;, and &quot;Template item&quot; fields for modifying a template. When the section is opened, the &quot;Use template&quot; control is updated with AJAX. Any changes made to the &quot;Template Container&quot; or &quot;Template item&quot; field are automatically saved to XML after a few seconds of inactivity.</p>
+        <h3 id="custom-css">Custom CSS</h3>
+        <p>The custom CSS styles are applied on the custom templates during the rendering of the Elementor widget.  This is achieved by embedding the custom styles with the final HTML output.</p>
+        <h2 id="import-export">Import / Export</h2>
+        <table>
+            <tr>
+                <td>TECHNOLOGY</td>
+                <td>JSON, ZIP, Admin Notices, Nonces</td>
+            </tr>
+            <tr>
+                <td>ACTION HOOKS</td>
+                <td>
+                    <code>init</code>
+                </td>
+            </tr>
+            <tr>
+                <td>FILES</td>
+                <td>
+                    <code>./includes/controllers/export_controller.php</code><br>
+                    <code>./includes/controllers/import_controller.php</code><br>
+                    <code>./includes/core/admin/plugin_data.php</code><br>
+                </td>
+            </tr>
+        </table>
+
+        <p>When the data is exported, all leagues, teams and their corresponding logos are stored as XML files inside a temporary folder of the WordPress <code>upload</code> folder. That folder is then renamed and is given the name <code>teamtally_data_export{$suffix}.zip</code> where the <code>{$suffix}</code> part is the date of exportation.</p>
+        <p>The <strong>demo</strong> data which can be imported to test the plugin is just a ZIP file coming from that export process. It is stored inside the <code>./_demo/</code> folder.</p>
+        <p>When the data is imported, the ZIP file is unzipped inside a temporary folder of the WordPress <code>upload</code> folder and the extracted JSON files are inserted inside the database while logos are inserted into the media library.</p>
+        <h2 id="possible-improvements-to-bring-to-the-project">Possible improvements to bring to the project</h2>
+        <p>I believe that an improvement that could be added to the TEAM TALLY plugin would be to include a scoring system for each team, making the plugin more in line with its name. Additionally, we could also make it more extensible by adding action and filter hooks, and provide users with an easy way to add additional fields for each league or team.</p>
+
+        <div class="back-btn"><a href="index.html">Back to README</a></div>
+
+
+    </div>
+    <div class="right">
+        <div class="menu menu-icon"></div>
+        <div class="js-toc"></div>
+    </div>
+</div>
+</body>
+</html>

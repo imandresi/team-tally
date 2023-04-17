@@ -40,6 +40,9 @@ To learn how to use the TEAM TALLY plugin and its various features, please refer
 
 This document provides detailed instructions on how to configure the plugin to display the list of leagues and teams, as well as how to customize pagination, output templates, and more. We encourage you to experiment with the plugin's options and have fun exploring its capabilities.
 
+## Development Process
+If you are interested on learning more about my development journey in building the TEAM TALLY plugin, please click [here](_docs/development.md).
+
 ## License
 
 This plugin is released under the [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html) license.

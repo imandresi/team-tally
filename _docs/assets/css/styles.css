@@ -1,5 +1,5 @@
 body {
-  font-family: Roboto, Arial, Helvetica;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 22px;
   padding: 0;
   color: #888888;
@@ -57,6 +57,9 @@ img {
 #main .right .js-toc a:hover {
   color: orangered;
 }
+#main .right .js-toc .is-active-link::before {
+  background-color: orangered;
+}
 #main .right .menu {
   display: none;
 }
@@ -72,13 +75,17 @@ img {
   color: #111;
 }
 #main .content h3, #main .content h4, #main .content h5 {
-  font-family: Roboto Light;
+  font-family: Roboto Light, sans-serif;
 }
 #main .content .back-btn {
   margin-top: 100px;
 }
 #main .content code:not(.hljs) {
-  color: #9b0707;
+  color: #1d90d9;
+  display: inline-block;
+  background-color: #c2e5fb;
+  padding: 3px 10px;
+  margin: 3px;
 }
 #main .content pre {
   overflow: scroll;
@@ -90,6 +97,14 @@ img {
 }
 #main .content a:hover {
   text-decoration: underline;
+}
+#main .content table, #main .content table td {
+  border: 1px solid #bbbbbb;
+  border-collapse: collapse;
+  padding: 15px 20px;
+}
+#main .content table td {
+  text-align: left;
 }
 @media only screen and (max-width: 1200px) {
   #main {
