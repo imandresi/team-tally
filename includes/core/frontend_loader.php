@@ -8,7 +8,6 @@
 
 namespace TEAMTALLY\Core;
 
-use TEAMTALLY\Shortcodes\Shortcodes;
 use TEAMTALLY\System\Singleton;
 use TEAMTALLY\System\Helper;
 
@@ -42,9 +41,6 @@ class Frontend_Loader extends Singleton {
 
 		// Enqueuing styles and scripts
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_wp_enqueue_scripts' ) );
-
-		// Loads and registers all shortcodes
-		Shortcodes::load();
 
 	}
 

@@ -40,7 +40,7 @@ class Teams_List_Controller extends Singleton {
 
 		// button add new
 		$post_new_file = add_query_arg( array(
-			'post_type' => 'teamtally_teams',
+			'post_type' => Teams_Model::TEAMS_POST_TYPE,
 			'league_id' => Helper::get_var( $this->teams->league['data']['term_id'] ),
 		), 'post-new.php' );
 
