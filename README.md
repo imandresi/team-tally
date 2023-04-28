@@ -61,7 +61,7 @@ You are free to use, modify and redistribute this plugin, in accordance with the
 For more information about the GPL, please visit the [GNU website](https://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Contact
-If you have any questions or suggestions regarding the TEAM TALLY WordPress plugin, please feel free to contact me at <itanjaka.mandresi@gmail.com>. You can also find more information about me and my other projects on my GitHub profile: https://www.github.com/imandresi/
+If you have any questions or suggestions regarding the TEAM TALLY WordPress plugin, please feel free to contact me on my GitHub profile: https://www.github.com/imandresi/
 
 
 
