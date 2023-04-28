@@ -6,7 +6,6 @@
  * Time: 19:13
  */
 
-$exp = intval( date( 'Y' ) ) - 2020;
 ?>
 
 <div id="teamtally-about" class="wrap">
@@ -47,7 +46,7 @@ $exp = intval( date( 'Y' ) ) - 2020;
                 </p>
 
                 <p>The TEAM TALLY Plugin that you're currently using is a showcase demo of my skills and expertise. With
-                    over <?= $exp; ?> years of experience in web development, I have a deep understanding of HTML, CSS,
+                    many years of experience in web development, I have a deep understanding of HTML, CSS,
                     JavaScript, and PHP. I love solving complex problems and working with clients to bring their vision
                     to life.</p>
 

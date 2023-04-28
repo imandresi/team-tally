@@ -1,12 +1,12 @@
 <?php
 /*
 * Plugin Name:       TEAM Tally
-* Description:       With this plugin you can handle infos about Football / sports teams and display them on your website.
+* Description:       This plugin allows you to create, manage and display sports leagues and teams with Elementor integration.
 * Version:           1.0.0
 * Requires at least: 5.3
 * Requires PHP:      7.2
 * Author:            Itanjaka Mandresi
-* Author URI:        mailto:mandresi@logicia-system.com
+* Author URI:        mailto:contact@mandresi.net
 * License:           GPL v2 or later
 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 * Text Domain:       team-tally
