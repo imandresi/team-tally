@@ -36,7 +36,7 @@ Please, follow these steps in order to install the "TEAM TALLY" plugin on your W
 1. Download the plugin ZIP file and extract the files to a folder on your computer.
 2. Connect to your website via FTP or cPanel file manager.
 3. Navigate to the wp-content/plugins directory.
-4. Upload the extracted plugin folder to the plugins directory.
+4. Upload the extracted plugin into the `team-tally` folder
 5. Log in to your WordPress dashboard.
 6. Click on "Plugins" in the left-hand menu.
 7. Locate "TEAM TALLY" in the list of plugins and click "Activate".
