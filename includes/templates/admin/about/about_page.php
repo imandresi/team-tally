@@ -45,10 +45,9 @@
                     meet the unique needs of my clients.
                 </p>
 
-                <p>The TEAM TALLY Plugin that you're currently using is a showcase demo of my skills and expertise. With
-                    many years of experience in web development, I have a deep understanding of HTML, CSS,
-                    JavaScript, and PHP. I love solving complex problems and working with clients to bring their vision
-                    to life.</p>
+                <p>The TEAM TALLY Plugin that you're currently using is a showcase demo of my skills and expertise. As a
+                    skilled web developer well-versed in HTML, CSS, JavaScript, and PHP, I love solving complex problems
+                    and working with clients to bring their vision to life.</p>
 
                 <p>My focus on quality and attention to detail ensures that every project I work on is completed to the
                     highest standards. Whether you need a simple website or a complex plugin, I'm confident that I have
@@ -56,7 +55,8 @@
 
                 <p>If you're interested in hiring me for your next project, please don't hesitate to get in touch. You
                     can reach me at <a href="mailto:<?= TEAMTALLY_AUTHOR_EMAIL; ?>"><?= TEAMTALLY_AUTHOR_EMAIL; ?></a>
-                    or <a href="<?= TEAMTALLY_AUTHOR_GITHUB; ?>"><?= TEAMTALLY_AUTHOR_GITHUB; ?></a>. I look forward to hearing from
+                    or <a href="<?= TEAMTALLY_AUTHOR_GITHUB; ?>"><?= TEAMTALLY_AUTHOR_GITHUB; ?></a>. I look forward to
+                    hearing from
                     you!</p>
             </div>
         </div>
